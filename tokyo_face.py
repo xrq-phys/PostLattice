@@ -24,8 +24,12 @@ if (sys_type != "square2d"):
     sys.exit()
 phys = lattice.square_2d(a_length)
 
-greenone_fnm = "output/" + prefix + "_cisajs" + suffix + ".dat"
-greentwo_fnm = "output/" + prefix + "_cisajscktalt" + suffix + ".dat"
+if (len(sys.argv) > 3):
+    greenone_fnm = sys.argv[2]
+    greentwo_fnm = sys.argv[3]
+else:
+    greenone_fnm = "output/" + prefix + "_cisajs" + suffix + ".dat"
+    greentwo_fnm = "output/" + prefix + "_cisajscktalt" + suffix + ".dat"
 if (not path.isfile(greenone_fnm) or not path.isfile(greentwo_fnm)):
     print("Green function file does not exist.")
     sys.exit()
@@ -49,7 +53,13 @@ sstruct = operators.spin_struct(phys, [[ 2. * np.pi * (i % phys.a[1]) / phys.a[0
                                          2. * np.pi * (i / phys.a[1]) / phys.a[1] ]\
                                          for i in range(0, phys.n)])
 if (min(phys.a) >= 6):
-    sc = operators.sc_corr(phys, 2.)
+    sc = operators.sc_corr(phys, [0.9999,  # [ 1, 0 ]
+                                  1.4142,  # [ 1, 1 ]
+                                  1.9999,  # [ 2, 0 ]
+                                  2.2360,  # [ 2, 1 ]
+                                  2.8284,  # [ 2, 2 ]
+                                  2.9999,  # [ 3, 0 ]
+                                  3.1622]) # [ 3, 1 ] 
 
 greentwo_fid = open(greentwo_fnm, 'r')
 greentwo_fln = greentwo_fid.readline()
@@ -96,12 +106,14 @@ greentwo_fid.close()
 # Output Phase
 
 doublon_fid = open("doublon.txt", 'w')
-doublon_fid.write("%.10e" % doublon.value)
+doublon_fid.write("%.10e\n" % doublon.value)
 doublon_fid.close()
-if (min(phys.a) >= 6):
-    sc_fid = open("sc.txt", 'w')
-    sc_fid.write("%.10e" % sc.value)
-    sc_fid.close()
+
+sc_fid = open("sc.txt", 'w')
+for ir in range(np.size(sc.rc_list)):
+    sc_fid.write("%f %.10e\n" % (sc.rc_list[ir], sc.values[ir]))
+sc_fid.close()
+
 sstruct_fid = open("sstruct.txt", 'w')
 for y in range(phys.a[0]):
     for x in range(phys.a[1]):

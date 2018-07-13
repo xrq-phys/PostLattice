@@ -30,18 +30,18 @@ class spin_struct:
                       + self.pauliz[si][sj] * self.pauliz[sk][sl] \
                       - self.pauliy[si][sj] * self.pauliy[sk][sl]
 
-            for i in range(0, np.size(self.points, 0)):
+            for ip in range(0, np.size(self.points, 0)):
                 space_part = 1 / (3. * self.system.n ** 2) \
-                           * np.exp(1j * np.inner(self.points[i], self.system.r(i) - self.system.r(k)))
-                self.values[i] += space_part * spin_part * x
+                           * np.exp(1j * np.inner(self.points[ip], self.system.r(i) - self.system.r(k)))
+                self.values[ip] += space_part * spin_part * x
 
 class sc_corr:
     '''Superconducting Correlation'''
 
-    def __init__(self, system, r_c):
-        self.value = float(0.)
+    def __init__(self, system, rc_list):
         self.system = system
-        self.r_c = r_c
+        self.rc_list = np.array(rc_list, float)
+        self.values = np.zeros(np.size(self.rc_list), float)
 
     def measure(self, nu, snu, mu, smu, xi, sxi, eta, seta, x):
         sign = 1
@@ -60,13 +60,14 @@ class sc_corr:
         # print(self.system.r(xi))
         # print(r_g)
 
-        if (snu != smu and sxi != seta and self.system.nn[nu][mu] and self.system.nn[xi][eta] and \
-            r_m > self.r_c ** 2):
+        if (snu != smu and sxi != seta and self.system.nn[nu][mu] and self.system.nn[xi][eta]):
 
             if (snu != sxi):
                 sign = -sign
             if (np.dot(r_from, r_to) == 0): 
                 sign = -sign
-
-            self.value += x * sign / (4. * self.system.n)
+            
+            for i in range(np.size(self.rc_list)):
+                if (r_m > self.rc_list[i] ** 2):
+                    self.values[i] += x * sign / (4. * self.system.n)
 
