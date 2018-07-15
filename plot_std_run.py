@@ -40,7 +40,7 @@ for i in range(len(calc_list)):
         energy_dat[1] += float(energy_fln[0]) ** 2
         energy_fid.close()
     energy_list[i] = energy_dat[0]/total_bin
-    energy_err [i] = np.sqrt(energy_dat[1]/total_bin - energy_list[i] ** 2)
+    energy_err [i] = np.sqrt(energy_dat[1]/total_bin - energy_list[i] ** 2)/np.sqrt(total_bin)
 
     for doublon_fnm in glob(calc_dir + '/doublon.txt.*.dat.regular'):
         doublon_fid = open(doublon_fnm)
@@ -49,7 +49,7 @@ for i in range(len(calc_list)):
         doublon_dat[1] += float(doublon_fln) ** 2
         doublon_fid.close()
     doublon_list[i] = doublon_dat[0]/total_bin
-    doublon_err [i] = np.sqrt(doublon_dat[1]/total_bin - doublon_list[i] ** 2)
+    doublon_err [i] = np.sqrt(doublon_dat[1]/total_bin - doublon_list[i] ** 2)/np.sqrt(total_bin)
 
     #======================
     # Spin and SC Structure
@@ -73,7 +73,7 @@ for i in range(len(calc_list)):
         sstruct_fid.close()
     sstruct_mid = max(enumerate(np.real(sstruct_dat[:, 0])), key=itemgetter(1))[0]
     sstruct_list[i] = sstruct_dat[sstruct_mid][0]/total_bin
-    sstruct_err [i] = np.sqrt(sstruct_dat[sstruct_mid][1]/total_bin - np.abs(sstruct_list[i]) ** 2)
+    sstruct_err [i] = np.sqrt(sstruct_dat[sstruct_mid][1]/total_bin - np.abs(sstruct_list[i]) ** 2)/np.sqrt(total_bin)
     print("i = %d, Peak of spin structure factor @ the %dth q-point." % (i, sstruct_mid))
 
     for sc_fnm in glob(calc_dir + '/sc.txt.*.dat.sc'):
@@ -86,7 +86,7 @@ for i in range(len(calc_list)):
             sc_dat[j][1] += float(sc_fln[1]) ** 2
         sc_fid.close()
     sc_list[i] = sc_dat[j][0]/total_bin
-    sc_err [i] = np.sqrt(sc_dat[j][1]/total_bin - sc_list[i] ** 2)
+    sc_err [i] = np.sqrt(sc_dat[j][1]/total_bin - sc_list[i] ** 2)/np.sqrt(total_bin)
 
 #=====
 # Sort
