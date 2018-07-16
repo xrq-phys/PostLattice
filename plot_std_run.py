@@ -6,14 +6,14 @@ from glob import glob
 from operator import itemgetter
 from matplotlib import pyplot as plt
 
-sc_rnum   = 7
-total_bin = 8.
+sc_rc     = 2.
+total_bin = 0.
 calc_list = glob('U*')
 
 delta_list   = np.zeros([len(calc_list)], float)
 energy_list  = np.zeros([len(calc_list)], float)
 doublon_list = np.zeros([len(calc_list)], float)
-sstruct_list = np.zeros([len(calc_list)], complex)
+sstruct_list = np.zeros([len(calc_list)], float)
 sc_list      = np.zeros([len(calc_list)], float)
 energy_err   = np.zeros([len(calc_list)], float)
 doublon_err  = np.zeros([len(calc_list)], float)
@@ -27,6 +27,8 @@ for i in range(len(calc_list)):
     calc_dir = calc_list[i]
     exec(open(calc_dir + '/model.def'))
     delta_list[i] = float(W * L - nelec) / (W * L)
+    if (total_bin < 1E-1):
+        total_bin = len(glob(calc_dir + '/output/' + 'zvo_out_*.dat'))
 
     #====================
     # Energy and Doublon 
@@ -59,8 +61,7 @@ for i in range(len(calc_list)):
         sstruct_psz += 1
     sstruct_lkp = np.zeros([sstruct_psz, 2], int)
     sstruct_dat = np.zeros([sstruct_psz, 2], complex)
-    sc_rc       = np.zeros([7             ], float)
-    sc_dat      = np.zeros([7,           2], float)
+    sc_dat = np.zeros([2], float)
 
     for sstruct_fnm in glob(calc_dir + '/sstruct.txt.*.dat.regular'):
         sstruct_fid = open(sstruct_fnm)
@@ -68,25 +69,27 @@ for i in range(len(calc_list)):
             sstruct_fln = re.sub(' +', ' ', sstruct_fid.readline().strip()).split(' ')
             sstruct_lkp[j][0] = int(sstruct_fln[0])
             sstruct_lkp[j][1] = int(sstruct_fln[1])
-            sstruct_dat[j][0] += np.sqrt(float(sstruct_fln[2]) ** 2 + float(sstruct_fln[3]) ** 2)
+            sstruct_dat[j][0] += float(sstruct_fln[2]) * 1. + float(sstruct_fln[3]) * 1j
             sstruct_dat[j][1] += float(sstruct_fln[2]) ** 2 + float(sstruct_fln[3]) ** 2
         sstruct_fid.close()
-    sstruct_mid = max(enumerate(np.real(sstruct_dat[:, 0])), key=itemgetter(1))[0]
-    sstruct_list[i] = sstruct_dat[sstruct_mid][0]/total_bin
-    sstruct_err [i] = np.sqrt(sstruct_dat[sstruct_mid][1]/total_bin - np.abs(sstruct_list[i]) ** 2)/np.sqrt(total_bin)
-    print("i = %d, Peak of spin structure factor @ the %dth q-point." % (i, sstruct_mid))
+    sstruct_mid = max(enumerate(np.abs(sstruct_dat[:, 0])), key=itemgetter(1))[0]
+    sstruct_list[i] = np.abs(sstruct_dat[sstruct_mid][0])/total_bin
+    sstruct_err [i] = np.sqrt(sstruct_dat[sstruct_mid][1]/total_bin - np.abs(sstruct_list[i]) ** 2)/\
+                      np.sqrt(total_bin)
+    print("delta = %f, Peak of spin structure factor @ the %dth q-point." % (delta_list[i], sstruct_mid))
 
     for sc_fnm in glob(calc_dir + '/sc.txt.*.dat.sc'):
         sc_fid = open(sc_fnm)
-        for j in range(sc_rnum):
-            sc_fln = re.sub(' +', ' ', sc_fid.readline().strip()).split(' ')
-            if (sc_rc[j] < 1e-6):
-                sc_rc[j] = float(sc_fln[0])
-            sc_dat[j][0] += float(sc_fln[1])
-            sc_dat[j][1] += float(sc_fln[1]) ** 2
+        sc_fln = sc_fid.readline().strip()
+        while (sc_fln != ''):
+            sc_fln = re.sub(' +', ' ', sc_fln).split(' ')
+            if (np.abs(sc_rc - float(sc_fln[0])) < 1E-2):
+                sc_dat[0] += float(sc_fln[1])
+                sc_dat[1] += float(sc_fln[1]) ** 2
+            sc_fln = sc_fid.readline().strip()
         sc_fid.close()
-    sc_list[i] = sc_dat[j][0]/total_bin
-    sc_err [i] = np.sqrt(sc_dat[j][1]/total_bin - sc_list[i] ** 2)/np.sqrt(total_bin)
+    sc_list[i] = sc_dat[0]/total_bin
+    sc_err [i] = np.sqrt(sc_dat[1]/total_bin - sc_list[i] ** 2)/np.sqrt(total_bin)
 
 #=====
 # Sort
