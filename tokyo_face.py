@@ -52,13 +52,14 @@ doublon = operators.double_occ(phys)
 sstruct = operators.spin_struct(phys, [[ 2. * np.pi * (i % phys.a[1]) / phys.a[0], \
                                          2. * np.pi * (i / phys.a[1]) / phys.a[1] ]\
                                          for i in range(0, phys.n)])
-sc = operators.sc_corr(phys, [0.9999,  # [ 1, 0 ]
-                              1.4142,  # [ 1, 1 ]
-                              1.9999,  # [ 2, 0 ]
-                              2.2360,  # [ 2, 1 ]
-                              2.8284,  # [ 2, 2 ]
-                              2.9999,  # [ 3, 0 ]
-                              3.1622]) # [ 3, 1 ] 
+if (len(sys.argv) < 5 or sys.argv[4][0] == '-'):
+    sc = operators.sc_corr(phys, [0.9999,  # [ 1, 0 ]
+                                  1.4142,  # [ 1, 1 ]
+                                  1.9999,  # [ 2, 0 ]
+                                  2.2360,  # [ 2, 1 ]
+                                  2.8284,  # [ 2, 2 ]
+                                  2.9999,  # [ 3, 0 ]
+                                  3.1622]) # [ 3, 1 ] 
 
 greentwo_fid = open(greentwo_fnm, 'r')
 greentwo_fln = greentwo_fid.readline()
@@ -75,7 +76,8 @@ while(greentwo_fln.strip() != ''):
     x  = float(greentwo_arr[8])
     doublon.measure(i, si, j, sj, k, sk, l, sl, x)
     sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
-    sc.measure(i, si, k, sk, j, sj, l, sl, -x)
+    if (len(sys.argv) < 5 or sys.argv[4][0] == '-'):
+        sc.measure(i, si, k, sk, j, sj, l, sl, -x)
     greentwo_fln = greentwo_fid.readline()
 greentwo_fid.close()
 
@@ -83,22 +85,26 @@ greentwo_fid.close()
 # Add contribution from one-body Green function to SC or other operators 
 # that consists of 2-body operators like: c+ c+ c c.
 
-# SC
-# if (min(phys.a) >= 6):
-#     for i in range(2 * phys.n):
-#         for j in range(2 * phys.n): 
-#             ri = int(i / 2)
-#             rj = int(j / 2)
-#             si = i % 2
-#             sj = j % 2
-#             # To avoid measuring zero:
-#             if (np.abs(greenone_dat[i][j]) > 1e-4):
-#                 # Add the contribution:
-#                 # < c+_i,s c+_k,s' c_l,s' c_j,s >.
-#                 for k in range(phys.n):
-#                     for l in range(phys.n):
-#                         for s in range(2):
-#                             sc.measure(ri, si, k, s, l, s, rj, sj, greenone_dat[i][j])
+if (len(sys.argv) > 4 and sys.argv[4][0] == '+'):
+
+    print("Adding contributions from 1-body Green function...")
+    print("WARNING: This procedure is extremely time-consuming and unparallelized.")
+    print("WARNING: So it's strongly recommanded that you use an MPI-C++ implementation instead.")
+    if (min(phys.a) >= 6):
+        for i in range(2 * phys.n):
+            for j in range(2 * phys.n): 
+                ri = int(i / 2)
+                rj = int(j / 2)
+                si = i % 2
+                sj = j % 2
+                # To avoid measuring zero:
+                if (np.abs(greenone_dat[i][j]) > 1e-4):
+                    # Add the contribution:
+                    # < c+_i,s c+_k,s' c_l,s' c_j,s >.
+                    for k in range(phys.n):
+                        for l in range(phys.n):
+                            for s in range(2):
+                                sc.measure(ri, si, k, s, l, s, rj, sj, greenone_dat[i][j])
 
 #=======================================================================
 # Output Phase
@@ -107,10 +113,11 @@ doublon_fid = open("doublon.txt", 'w')
 doublon_fid.write("%.10e\n" % doublon.value)
 doublon_fid.close()
 
-sc_fid = open("sc.txt", 'w')
-for ir in range(np.size(sc.rc_list)):
-    sc_fid.write("%f %.10e\n" % (sc.rc_list[ir], sc.values[ir]))
-sc_fid.close()
+if (len(sys.argv) < 5 or sys.argv[4][0] == '-'):
+    sc_fid = open("sc.txt", 'w')
+    for ir in range(np.size(sc.rc_list)):
+        sc_fid.write("%f %.10e\n" % (sc.rc_list[ir], sc.values[ir]))
+    sc_fid.close()
 
 sstruct_fid = open("sstruct.txt", 'w')
 for y in range(phys.a[0]):
