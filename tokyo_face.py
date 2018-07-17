@@ -52,14 +52,13 @@ doublon = operators.double_occ(phys)
 sstruct = operators.spin_struct(phys, [[ 2. * np.pi * (i % phys.a[1]) / phys.a[0], \
                                          2. * np.pi * (i / phys.a[1]) / phys.a[1] ]\
                                          for i in range(0, phys.n)])
-if (min(phys.a) >= 6):
-    sc = operators.sc_corr(phys, [0.9999,  # [ 1, 0 ]
-                                  1.4142,  # [ 1, 1 ]
-                                  1.9999,  # [ 2, 0 ]
-                                  2.2360,  # [ 2, 1 ]
-                                  2.8284,  # [ 2, 2 ]
-                                  2.9999,  # [ 3, 0 ]
-                                  3.1622]) # [ 3, 1 ] 
+sc = operators.sc_corr(phys, [0.9999,  # [ 1, 0 ]
+                              1.4142,  # [ 1, 1 ]
+                              1.9999,  # [ 2, 0 ]
+                              2.2360,  # [ 2, 1 ]
+                              2.8284,  # [ 2, 2 ]
+                              2.9999,  # [ 3, 0 ]
+                              3.1622]) # [ 3, 1 ] 
 
 greentwo_fid = open(greentwo_fnm, 'r')
 greentwo_fln = greentwo_fid.readline()
