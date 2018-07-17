@@ -54,11 +54,6 @@ class sc_corr:
             r_d = self.system.r(nu) - self.system.r(xi) + np.array(i) * self.system.a
             if np.dot(r_d, r_d) < r_m:
                 r_m = np.dot(r_d, r_d)
-        #         r_g = r_d
-        # print('======')
-        # print(self.system.r(nu))
-        # print(self.system.r(xi))
-        # print(r_g)
 
         if (snu != smu and sxi != seta and self.system.nn[nu][mu] and self.system.nn[xi][eta]):
 
