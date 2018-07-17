@@ -26,12 +26,14 @@ int main(const int argc, const char *argv[])
     if (argc < 3) abort();
     int l = atoi(argv[1]),
         w = atoi(argv[2]);
+    int ntot = 0;
     int n = w * l;
     int ti[4], tj[4];
     for (auto yi = 0; yi < l; yi++)
         for (auto xi = 0; xi < l; xi++)
             for (auto yj = 0; yj < l; yj++)
                 for (auto xj = 0; xj < l; xj++) {
+                    ntot += 64;
                     nn_2d(ti, w, l, xi, yi);
                     nn_2d(tj, w, l, xj, yj);
                     for (auto i = 0; i < 4; i++)
@@ -46,6 +48,7 @@ int main(const int argc, const char *argv[])
                                    idx_2d(w, xi, yi), 1, idx_2d(w, xj, yj), 0, ti[i], 0, tj[j], 1);
                         }
                 }
+    printf(" NCisAjsCktAltSC %d ", ntot);
 
     return 0;
 }
