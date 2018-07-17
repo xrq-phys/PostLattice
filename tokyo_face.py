@@ -75,8 +75,7 @@ while(greentwo_fln.strip() != ''):
     x  = float(greentwo_arr[8])
     doublon.measure(i, si, j, sj, k, sk, l, sl, x)
     sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
-    if (min(phys.a) >= 6):
-        sc.measure(i, si, k, sk, j, sj, l, sl, -x)
+    sc.measure(i, si, k, sk, j, sj, l, sl, -x)
     greentwo_fln = greentwo_fid.readline()
 greentwo_fid.close()
 
