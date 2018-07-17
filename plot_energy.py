@@ -2,8 +2,9 @@
 
 import re
 import sys
-from matplotlib import pyplot as plt
 from os import path
+import matplotlib.pyplot as plt
+import matplotlib
 
 prefix = 'zvo'
 suffix = '001'
@@ -25,5 +26,7 @@ while(out_fln.strip() != ''):
     eng_lst.append(float(out_arr[0]))
     out_fln = out_fid.readline()
 
+if (matplotlib.__version__ >= '2.0.0'):
+    plt.style.use('classic')
 plt.plot(range(len(eng_lst)), eng_lst)
 plt.show()

@@ -3,7 +3,8 @@
 import re
 import numpy as np
 from glob import glob
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+import matplotlib
 
 fnm_list = glob('sc.txt.*.dat.sc')
 total_bin = len(fnm_list)
@@ -36,5 +37,7 @@ for fnm in fnm_list:
 sc_list = sc_list/total_bin
 sc_list[:, 1] = np.sqrt(sc_list[:, 1] - sc_list[:, 0] ** 2) #/np.sqrt(total_bin)
 
+if (matplotlib.__version__ >= '2.0.0'):
+    plt.style.use('classic')
 plt.errorbar(r_list, sc_list[:, 0], sc_list[:, 1])
 plt.show()

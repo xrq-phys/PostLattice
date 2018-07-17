@@ -4,7 +4,8 @@ import re
 import numpy as np
 from glob import glob
 from operator import itemgetter
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+import matplotlib
 
 sc_rc     = 2.
 total_bin = 0.
@@ -105,6 +106,8 @@ delta_list   = sorted(delta_list)
 
 #========================
 # Plotting Energy/Doublon
+if (matplotlib.__version__ >= '2.0.0'):
+    plt.style.use('classic')
 fig_en, ax_e = plt.subplots()
 
 color_e = 'tab:blue'
