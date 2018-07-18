@@ -63,7 +63,8 @@ doublon_fid.write("%lf" % doublon.value)
 doublon_fid.close()
 if (min(phys.a) >= 6):
     sc_fid = open("sc.txt", 'w')
-    sc_fid.write("%lf" % sc.value)
+    for ir in range(np.size(sc.rc_list)):
+        sc_fid.write("%f %.10e\n" % (np.sqrt(sc.rc_list[ir]), sc.values[ir]))
     sc_fid.close()
 sstruct_fid = open("sstruct.txt", 'w')
 for y in range(phys.a[0]):
