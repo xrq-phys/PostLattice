@@ -52,7 +52,7 @@ doublon = operators.double_occ(phys)
 sstruct = operators.spin_struct(phys, [[ 2. * np.pi * (i % phys.a[1]) / phys.a[0], \
                                          2. * np.pi * (i / phys.a[1]) / phys.a[1] ]\
                                          for i in range(0, phys.n)])
-if (len(sys.argv) < 5 or sys.argv[4][0] == '-'):
+if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
     sc = operators.sc_corr(phys, [0.9999,  # [ 1, 0 ]
                                   1.4142,  # [ 1, 1 ]
                                   1.9999,  # [ 2, 0 ]
@@ -76,7 +76,7 @@ while(greentwo_fln.strip() != ''):
     x  = float(greentwo_arr[8])
     doublon.measure(i, si, j, sj, k, sk, l, sl, x)
     sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
-    if (len(sys.argv) < 5 or sys.argv[4][0] == '-'):
+    if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
         sc.measure(i, si, k, sk, j, sj, l, sl, -x)
     greentwo_fln = greentwo_fid.readline()
 greentwo_fid.close()
@@ -113,7 +113,7 @@ doublon_fid = open("doublon.txt", 'w')
 doublon_fid.write("%.10e\n" % doublon.value)
 doublon_fid.close()
 
-if (len(sys.argv) < 5 or sys.argv[4][0] == '-'):
+if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
     sc_fid = open("sc.txt", 'w')
     for ir in range(np.size(sc.rc_list)):
         sc_fid.write("%f %.10e\n" % (sc.rc_list[ir], sc.values[ir]))
