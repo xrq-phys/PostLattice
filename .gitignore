@@ -2,6 +2,7 @@
 __pycache__/
 .vscode
 .fortls
+*.pyc
 *.swp
 *.x
 *.dSYM

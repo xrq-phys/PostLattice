@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <vector>
-#include "sc_classes.cc"
+#include "sc_classes.hh"
 
 using namespace std;
 

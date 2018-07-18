@@ -7,7 +7,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <omp.h>
-#include "sc_classes.cc"
+#include "sc_classes.hh"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
 import re
 import sys
@@ -91,21 +91,20 @@ if (len(sys.argv) > 4 and sys.argv[4][0] == '+'):
     print("Adding contributions from 1-body Green function...")
     print("WARNING: This procedure is extremely time-consuming and unparallelized.")
     print("WARNING: So it's strongly recommanded that you use an OMP-C++ implementation instead.")
-    if (min(phys.a) >= 6):
-        for i in range(2 * phys.n):
-            for j in range(2 * phys.n): 
-                ri = int(i / 2)
-                rj = int(j / 2)
-                si = i % 2
-                sj = j % 2
-                # To avoid measuring zero:
-                if (np.abs(greenone_dat[i][j]) > 1e-4):
-                    # Add the contribution:
-                    # < c+_i,s c+_k,s' c_l,s' c_j,s >.
-                    for k in range(phys.n):
-                        for l in range(phys.n):
-                            for s in range(2):
-                                sc.measure(ri, si, k, s, l, s, rj, sj, greenone_dat[i][j])
+    for i in range(2 * phys.n):
+        for j in range(2 * phys.n): 
+            ri = int(i / 2)
+            rj = int(j / 2)
+            si = i % 2
+            sj = j % 2
+            # To avoid measuring zero:
+            if (np.abs(greenone_dat[i][j]) > 1e-4):
+                # Add the contribution:
+                # < c+_i,s c+_k,s' c_l,s' c_j,s >.
+                for k in range(phys.n):
+                    for l in range(phys.n):
+                        for s in range(2):
+                            sc.measure(ri, si, k, s, l, s, rj, sj, greenone_dat[i][j])
 
 #=======================================================================
 # Output Phase
@@ -117,7 +116,7 @@ doublon_fid.close()
 if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
     sc_fid = open("sc.txt", 'w')
     for ir in range(np.size(sc.rc_list)):
-        sc_fid.write("%f %.10e\n" % (sc.rc_list[ir], sc.values[ir]))
+        sc_fid.write("%f %.10e\n" % (np.sqrt(sc.rc_list[ir]), sc.values[ir]))
     sc_fid.close()
 
 sstruct_fid = open("sstruct.txt", 'w')

@@ -160,9 +160,10 @@ struct sc_corr
                 sign = -sign;
 
             for (auto ii = 0; ii < rc_count; ii++)
-                if (rmin == rc_lst[ii])
+                if (rmin == rc_lst[ii]) {
 #pragma omp critical
                     values[ii] += x * sign / (2. * system.n);
+                }
         }
     }
 
