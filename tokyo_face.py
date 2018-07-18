@@ -11,6 +11,10 @@ import lattice
 #=======================================================================
 # Loading Phase
 
+a_length = [ -1, -1 ]
+sys_type = "unavailable"
+prefix = "unavailable"
+suffix = "unavailable"
 system_fnm = "system.py"
 if (len(sys.argv) > 1):
     system_fnm = sys.argv[1]
@@ -22,6 +26,9 @@ exec(open(system_fnm).read())
 if (sys_type != "square2d"):
     print("This system is not supported.")
     sys.exit()
+if (a_length[0] < 0 or a_length[1] < 0):
+    print("Invalid A.")
+    sys.exit()
 phys = lattice.square_2d(a_length)
 
 if (len(sys.argv) > 3):
@@ -31,7 +38,7 @@ else:
     greenone_fnm = "output/" + prefix + "_cisajs" + suffix + ".dat"
     greentwo_fnm = "output/" + prefix + "_cisajscktalt" + suffix + ".dat"
 if (not path.isfile(greenone_fnm) or not path.isfile(greentwo_fnm)):
-    print("Green function file does not exist.")
+    print("Green function file does not exist: %s and %s" % (greenone_fnm, greentwo_fnm))
     sys.exit()
 
 # Load 1-body part

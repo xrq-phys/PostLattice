@@ -8,6 +8,9 @@ from os import path
 import operators
 import lattice
 
+a_length = [ -1, -1 ]
+sys_type = "unavailable"
+rdm_fnm = "unavailable"
 system_fnm = "system.py"
 if (len(sys.argv) > 1):
     system_fnm = sys.argv[1]
@@ -16,13 +19,16 @@ if (not path.isfile(system_fnm)):
     sys.exit()
 exec(open(system_fnm).read())
 
+if (a_length[0] < 0 or a_length[1] < 0):
+    print("Invalid A.")
+    sys.exit()
 if (sys_type != "square2d"):
     print("This system is not supported.")
     sys.exit()
 phys = lattice.square_2d(a_length)
 
 if (not path.isfile(rdm_fnm)):
-    print("Green Function file does not exist.")
+    print("Green function file does not exist: %s and %s" % (rdm_fnm))
     sys.exit()
 
 doublon = operators.double_occ(phys)
