@@ -39,9 +39,9 @@ int main(const int argc, const char *argv[])
                     for (auto i = 0; i < 4; i++)
                         for (auto j = 0; j < 4; j++) {
                             printf("%d %d %d %d %d %d %d %d\n",
-                                   idx_2d(w, xi, yi), 0, idx_2d(w, xj, yj), 1, ti[i], 0, tj[j], 1);
+                                   idx_2d(w, xi, yi), 1, idx_2d(w, xj, yj), 1, ti[i], 0, tj[j], 0);
                             printf("%d %d %d %d %d %d %d %d\n",
-                                   idx_2d(w, xi, yi), 1, idx_2d(w, xj, yj), 0, ti[i], 1, tj[j], 0);
+                                   idx_2d(w, xi, yi), 0, idx_2d(w, xj, yj), 0, ti[i], 1, tj[j], 1);
                             printf("%d %d %d %d %d %d %d %d\n",
                                    idx_2d(w, xi, yi), 0, idx_2d(w, xj, yj), 1, ti[i], 1, tj[j], 0);
                             printf("%d %d %d %d %d %d %d %d\n",

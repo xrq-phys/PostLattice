@@ -17,7 +17,7 @@ class square_2d:
                 self.nn[self.idx_2d(xi, yi)][self.idx_2d((xi + 1)        % a[0], yi)] = 1
                 self.nn[self.idx_2d(xi, yi)][self.idx_2d((xi - 1 + a[0]) % a[0], yi)] = 1
 
-    def idx_2d(self, x: int, y: int):
+    def idx_2d(self, x, y):
         return y * self.a[1] + x
 
     def r(self, i):

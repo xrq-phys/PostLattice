@@ -53,13 +53,14 @@ sstruct = operators.spin_struct(phys, [[ 2. * np.pi * (i % phys.a[1]) / phys.a[0
                                          2. * np.pi * (i / phys.a[1]) / phys.a[1] ]\
                                          for i in range(0, phys.n)])
 if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
-    sc = operators.sc_corr(phys, [0.9999,  # [ 1, 0 ]
-                                  1.4142,  # [ 1, 1 ]
-                                  1.9999,  # [ 2, 0 ]
-                                  2.2360,  # [ 2, 1 ]
-                                  2.8284,  # [ 2, 2 ]
-                                  2.9999,  # [ 3, 0 ]
-                                  3.1622]) # [ 3, 1 ] 
+    sc = operators.sc_corr(phys, [0,   # [ 0, 0 ]
+                                  1,   # [ 1, 0 ]
+                                  2,   # [ 1, 1 ]
+                                  4,   # [ 2, 0 ]
+                                  5,   # [ 2, 1 ]
+                                  8,   # [ 2, 2 ]
+                                  9,   # [ 3, 0 ]
+                                  10]) # [ 3, 1 ] 
 
 greentwo_fid = open(greentwo_fnm, 'r')
 greentwo_fln = greentwo_fid.readline()
@@ -89,7 +90,7 @@ if (len(sys.argv) > 4 and sys.argv[4][0] == '+'):
 
     print("Adding contributions from 1-body Green function...")
     print("WARNING: This procedure is extremely time-consuming and unparallelized.")
-    print("WARNING: So it's strongly recommanded that you use an MPI-C++ implementation instead.")
+    print("WARNING: So it's strongly recommanded that you use an OMP-C++ implementation instead.")
     if (min(phys.a) >= 6):
         for i in range(2 * phys.n):
             for j in range(2 * phys.n): 

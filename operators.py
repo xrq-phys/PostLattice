@@ -40,7 +40,7 @@ class sc_corr:
 
     def __init__(self, system, rc_list):
         self.system = system
-        self.rc_list = np.array(rc_list, float)
+        self.rc_list = np.array(rc_list, int)
         self.values = np.zeros(np.size(self.rc_list), float)
 
     def measure(self, nu, snu, mu, smu, xi, sxi, eta, seta, x):
@@ -49,7 +49,7 @@ class sc_corr:
         r_to = self.system.r(nu) - self.system.r(mu)
         r_from = self.system.r(xi) - self.system.r(eta)
 
-        r_m = 1e+5
+        r_m = 10000
         for i in [ [0, 0], [0, 1], [0, -1], [1, 0], [1, 1], [1, -1], [-1, 0], [-1, 1], [-1, -1] ]:
             r_d = self.system.r(nu) - self.system.r(xi) + np.array(i) * self.system.a
             if np.dot(r_d, r_d) < r_m:
@@ -63,6 +63,5 @@ class sc_corr:
                 sign = -sign
             
             for i in range(np.size(self.rc_list)):
-                if (r_m > self.rc_list[i] ** 2):
-                    self.values[i] += x * sign / (4. * self.system.n)
-
+                if (r_m == self.rc_list[i]):
+                    self.values[i] += x * sign / (2. * self.system.n)

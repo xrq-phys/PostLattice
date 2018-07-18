@@ -1,12 +1,14 @@
 // Only 2D Square Lattices Now, Sorry.
 // NB IMPORTANT: all r lenghs are stored as r^2 to avoid usage of floating points.
 
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <cassert>
 #include <cstdlib>
 #include <cmath>
 #include <omp.h>
+#define DEPSILON (1e-10)
 
 using namespace std;
 
@@ -95,7 +97,7 @@ struct lattice
                 else
                     rj[0] += w;
                 rnew = inner2(ri, rj);
-                if (rtmp < rnew)
+                if (rtmp > rnew)
                     rtmp = rnew;
             }
 
@@ -106,17 +108,17 @@ struct lattice
                 else 
                     rj[1] += w;
                 rnew = inner2(ri, rj);
-                if (rtmp < rnew)
+                if (rtmp > rnew)
                     rtmp = rnew;
 
                 // Correction if both X and Y quarter are different
-                if (ri_q[0] += rj_q[0]) {
+                if (ri_q[0] != rj_q[0]) {
                     if (ri_q[0] == 0)
                         ri[0] -= w;
                     else 
                         rj[0] -= w;
                     rnew = inner2(ri, rj);
-                    if (rtmp < rnew)
+                    if (rtmp > rnew)
                         rtmp = rnew;
                 }
             }
@@ -133,12 +135,12 @@ struct lattice
 struct sc_corr
 {
     lattice &system;
+    int rc_count;
+    int rc_lst[12];
     double *values;
-    double rc_count;
-    double rc_lst[12];
 
     sc_corr(lattice &system_i, int rc_count_i)
-    : system(system_i), rc_lst({ 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 })
+    : system(system_i), rc_lst { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 }
     {
         rc_count = rc_count_i;
         values = new double[rc_count];
@@ -156,8 +158,10 @@ struct sc_corr
         int ra[2], ri[2];
         int rb[2], rj[2];
         
-        if (x > 1e-6 && si != sj && sa != sb && system.nn[a][b] && system.nn[i][j]) {
+        if (abs(x) > DEPSILON && si != sj && sa != sb && system.nn[a][b] && system.nn[i][j]) {
             sign = 1;
+            // if (a == 0 && b == 3 && i == 3 && j == 0)
+            //     cout << "HIT" << endl;
             rmin = system.calc_rmin(a, i);
 
             if (sa != si) 
@@ -165,10 +169,10 @@ struct sc_corr
             if (system.nn[a][b] != system.nn[i][j])
                 sign = -sign;
 
-            for (auto i = 0; i < rc_count; i++)
-                if (rmin == rc_lst[i])
+            for (auto ii = 0; ii < rc_count; ii++)
+                if (rmin == rc_lst[ii])
 #pragma omp critical
-                    values[i] += x * sign / (4. * system.n);
+                    values[ii] += x * sign / (2. * system.n);
         }
     }
 };
@@ -181,7 +185,7 @@ int main(const int argc, const char *argv[])
     lattice physics(atoi(argv[1]));
     sc_corr quantity(physics, atoi(argv[4]));
     assert(!(fid_g1e.fail() || fid_g2e.fail()));
-    double *x;
+    double *x, dummy;
     int *ri, *si, *ra, *sa, *rj, *sj, *rb, *sb;
     int nproc, iproc;
     bool *exec_this;
@@ -202,17 +206,17 @@ int main(const int argc, const char *argv[])
 
     // Contribution from 2-body.
     while (!fid_g2e.eof()) {
-        for (auto i = 0; i < nproc; i++)
-            if (!fid_g2e.eof())
-                fid_g2e >> rb[i] >> sb[i] >> rj[i] >> sj[i] >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i];
-            else 
+        for (auto i = 0; i < nproc; i++) {
+            fid_g2e >> rb[i] >> sb[i] >> rj[i] >> sj[i] >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i] >> dummy;
+            if (fid_g2e.eof())
                 for (auto j = i; j < nproc; j++)
                     exec_this[j] = false;
+        }
         
 #pragma omp parallel for default(shared) private(iproc)
         for (auto i = 0; i < nproc; i++)
             if (exec_this[i])
-                quantity.measure(ra[i], sa[i], rb[i], sb[i], ri[i], si[i], rj[i], sj[i], -x[i]);
+                quantity.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -x[i]);
     }
     fid_g2e.close();
 
@@ -221,16 +225,16 @@ int main(const int argc, const char *argv[])
 
     // Contribution from 1-body.
     while (!fid_g1e.eof()) {
-        for (auto i = 0; i < nproc; i++)
-            if (!fid_g1e.eof())
-                fid_g1e >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i];
-            else 
+        for (auto i = 0; i < nproc; i++) {
+            fid_g1e >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i] >> dummy;
+            if (fid_g1e.eof())
                 for (auto j = i; j < nproc; j++)
                     exec_this[j] = false;
+        }
         
 #pragma omp parallel for default(shared) private(iproc)
         for (auto i = 0; i < nproc; i++)
-            if (exec_this[i] && x[i] > 1e-6)
+            if (exec_this[i] && abs(x[i]) > DEPSILON)
                 for (auto rc = 0; rc < physics.n; rc++)
                     for (auto rk = 0; rk < physics.n; rk++)
                         for (auto sck = 0; sck < 2; sck++)
@@ -238,9 +242,9 @@ int main(const int argc, const char *argv[])
     }
     fid_g1e.close();
 
-    fstream fid_out("sc.txt");
+    fstream fid_out("sc.txt", fstream::out);
     for (auto i = 0; i < atoi(argv[4]); i++)
-        fid_out << sqrt(double(quantity.rc_lst[i])) - 1e-4 << quantity.values[i];
+        fid_out << setw(8) << sqrt(double(quantity.rc_lst[i])) << ' ' << quantity.values[i] << endl;
     fid_out.close();
 
     return 0;

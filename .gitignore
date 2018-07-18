@@ -4,3 +4,4 @@ __pycache__/
 .fortls
 *.swp
 *.x
+*.dSYM
