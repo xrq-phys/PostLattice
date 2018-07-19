@@ -69,10 +69,9 @@ int main(const int argc, const char *argv[])
 #pragma omp parallel for default(shared) private(iproc)
         for (auto i = 0; i < nproc; i++)
             if (exec_this[i] && abs(x[i]) > DEPSILON)
-                for (auto rc = 0; rc < physics.n; rc++)
-                    for (auto rk = 0; rk < physics.n; rk++)
-                        for (auto sck = 0; sck < 2; sck++)
-                            quantity.measure(ra[i], sa[i], rc, sck, rk, sck, ri[i], si[i], x[i]);
+                for (auto rk = 0; rk < physics.n; rk++)
+                    for (auto sk = 0; sk < 2; sk++)
+                        quantity.measure(ra[i], sa[i], rk, sk, rk, sk, ri[i], si[i], x[i]);
     }
     fid_g1e.close();
 

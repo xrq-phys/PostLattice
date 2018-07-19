@@ -152,9 +152,9 @@ struct sc_corr
             sign = 1;
             // if (a == 0 && b == 3 && i == 3 && j == 0)
             //     cout << "HIT" << endl;
-            rmin = system.calc_rmin(a, i);
+            rmin = system.calc_rmin(b, i);
 
-            if (sa != si) 
+            if (sb != si) 
                 sign = -sign;
             if (system.nn[a][b] != system.nn[i][j])
                 sign = -sign;

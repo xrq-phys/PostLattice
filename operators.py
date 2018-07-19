@@ -45,19 +45,19 @@ class sc_corr:
 
     def measure(self, nu, snu, mu, smu, xi, sxi, eta, seta, x):
         sign = 1
-        r_d = self.system.r(nu) - self.system.r(xi)
+        r_d = self.system.r(mu) - self.system.r(xi)
         r_to = self.system.r(nu) - self.system.r(mu)
         r_from = self.system.r(xi) - self.system.r(eta)
 
         r_m = 10000
         for i in [ [0, 0], [0, 1], [0, -1], [1, 0], [1, 1], [1, -1], [-1, 0], [-1, 1], [-1, -1] ]:
-            r_d = self.system.r(nu) - self.system.r(xi) + np.array(i) * self.system.a
+            r_d = self.system.r(mu) - self.system.r(xi) + np.array(i) * self.system.a
             if np.dot(r_d, r_d) < r_m:
                 r_m = np.dot(r_d, r_d)
 
         if (snu != smu and sxi != seta and self.system.nn[nu][mu] and self.system.nn[xi][eta]):
 
-            if (snu != sxi):
+            if (smu != sxi):
                 sign = -sign
             if (np.dot(r_from, r_to) == 0): 
                 sign = -sign

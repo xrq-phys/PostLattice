@@ -109,9 +109,8 @@ if (len(sys.argv) > 4 and sys.argv[4][0] == '+'):
                 # Add the contribution:
                 # < c+_i,s c+_k,s' c_l,s' c_j,s >.
                 for k in range(phys.n):
-                    for l in range(phys.n):
-                        for s in range(2):
-                            sc.measure(ri, si, k, s, l, s, rj, sj, greenone_dat[i][j])
+                    for s in range(2):
+                        sc.measure(ri, si, k, s, k, s, rj, sj, greenone_dat[i][j])
 
 #=======================================================================
 # Output Phase
