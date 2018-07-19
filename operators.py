@@ -19,6 +19,7 @@ class spin_struct:
     def __init__(self, system, points):
         self.system = system
         self.points = points
+        self.val_nn = float(0)
         self.values = np.zeros(np.size(points), complex)
         self.paulix = np.array([ [ 0,  1 ], [ 1,  0 ] ])
         self.pauliy = np.array([ [ 0, -1 ], [ 1,  0 ] ])  # i is expressed as i^2=-1 hence S^2 = Sx2 + Sz2 - Sy2
@@ -26,14 +27,17 @@ class spin_struct:
 
     def measure(self, i, si, j, sj, k, sk, l, sl, x):
         if (i == j and k == l):
-            spin_part = self.paulix[si][sj] * self.paulix[sk][sl] \
-                      + self.pauliz[si][sj] * self.pauliz[sk][sl] \
-                      - self.pauliy[si][sj] * self.pauliy[sk][sl]
+            spin_part = (self.paulix[si][sj] * self.paulix[sk][sl] \
+                       + self.pauliz[si][sj] * self.pauliz[sk][sl] \
+                       - self.pauliy[si][sj] * self.pauliy[sk][sl]) / 4.
 
             for ip in range(0, np.size(self.points, 0)):
                 space_part = 1 / (3. * self.system.n ** 2) \
                            * np.exp(1j * np.inner(self.points[ip], self.system.r(i) - self.system.r(k)))
                 self.values[ip] += space_part * spin_part * x
+            
+            if (self.system.nn[i][k]):
+                self.val_nn += spin_part * x
 
 class sc_corr:
     '''Superconducting Correlation'''

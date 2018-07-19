@@ -131,3 +131,7 @@ for y in range(phys.a[0]):
         sstruct_fid.write("%d %d %lf %lf\n" % (x, y, np.real(sstruct.values[x + y * phys.a[1]]), \
                                                      np.imag(sstruct.values[x + y * phys.a[1]])))
 sstruct_fid.close()
+
+spn_nn_fid = open("spn_nn.txt", 'w')
+spn_nn_fid.write("%.10e\n" % (sstruct.val_nn / phys.n / 4.))
+spn_nn_fid.close()

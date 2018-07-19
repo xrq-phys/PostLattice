@@ -1,6 +1,5 @@
 #pragma once 
 #include <cmath>
-#define DEPSILON (1e-10)
 
 struct lattice
 {
@@ -148,7 +147,7 @@ struct sc_corr
         int ra[2], ri[2];
         int rb[2], rj[2];
         
-        if (abs(x) > DEPSILON && validate(a, sa, b, sb, i, si, j, sj)) {
+        if (validate(a, sa, b, sb, i, si, j, sj)) {
             sign = 1;
             // if (a == 0 && b == 3 && i == 3 && j == 0)
             //     cout << "HIT" << endl;
@@ -160,10 +159,9 @@ struct sc_corr
                 sign = -sign;
 
             for (auto ii = 0; ii < rc_count; ii++)
-                if (rmin == rc_lst[ii]) {
+                if (rmin == rc_lst[ii])
 #pragma omp critical
                     values[ii] += x * sign / (2. * system.n);
-                }
         }
     }
 
