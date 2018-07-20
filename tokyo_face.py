@@ -11,6 +11,7 @@ import lattice
 #=======================================================================
 # Loading Phase
 
+runmode = -1
 a_length = [ -1, -1 ]
 sys_type = "unavailable"
 prefix = "unavailable"
@@ -22,6 +23,14 @@ if (not path.isfile(system_fnm)):
     print("System file does not exist.")
     sys.exit()
 exec(open(system_fnm).read())
+
+if (runmode == 'wick'):
+    runmode = 1
+elif (runmode == 'direct'):
+    runmode = 0
+else:
+    print("Bad Run Mode")
+    sys.exit()
 
 if (sys_type != "square2d"):
     print("This system is not supported.")
@@ -84,6 +93,8 @@ while(greentwo_fln.strip() != ''):
     x  = float(greentwo_arr[8])
     doublon.measure(i, si, j, sj, k, sk, l, sl, x)
     sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
+    if (runmode and si != sk):
+        sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
     if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
         sc.measure(i, si, k, sk, j, sj, l, sl, -x)
     greentwo_fln = greentwo_fid.readline()
@@ -92,6 +103,14 @@ greentwo_fid.close()
 #=======================================================================
 # Add contribution from one-body Green function to SC or other operators 
 # that consists of 2-body operators like: c+ c+ c c.
+
+if (runmode):
+    for i in range(2 * phys.n):
+        ri = int(i / 2)
+        si = i % 2
+        sstruct.measure(ri, si, ri, int(not si), \
+                                ri, int(not si), 
+                        ri, si, greenone_dat[i][i])
 
 if (len(sys.argv) > 4 and sys.argv[4][0] == '+'):
 
