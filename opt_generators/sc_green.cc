@@ -37,20 +37,16 @@ int main(const int argc, const char *argv[])
         for (auto yi = 0; yi < l; yi++)
             for (auto xi = 0; xi < w; xi++)
                 for (auto yj = 0; yj < l; yj++)
-                    for (auto xj = 0; xj < w; xj++) {
-                        ntot += 64;
+                    for (auto xj = 0; xj < w; xj++) { // Forall a, i
+                        ntot += 32;
                         nn_2d(ti, w, l, xi, yi);
                         nn_2d(tj, w, l, xj, yj);
                         for (auto i = 0; i < 4; i++)
-                            for (auto j = 0; j < 4; j++) {
+                            for (auto j = 0; j < 4; j++) { // Forall b, j
                                 printf("%d %d %d %d %d %d %d %d\n",
                                     idx_2d(w, xi, yi), 1, idx_2d(w, xj, yj), 1, ti[i], 0, tj[j], 0);
                                 printf("%d %d %d %d %d %d %d %d\n",
                                     idx_2d(w, xi, yi), 0, idx_2d(w, xj, yj), 0, ti[i], 1, tj[j], 1);
-                                printf("%d %d %d %d %d %d %d %d\n",
-                                    idx_2d(w, xi, yi), 0, idx_2d(w, xj, yj), 1, ti[i], 1, tj[j], 0);
-                                printf("%d %d %d %d %d %d %d %d\n",
-                                    idx_2d(w, xi, yi), 1, idx_2d(w, xj, yj), 0, ti[i], 0, tj[j], 1);
                             }
                     }
     else {

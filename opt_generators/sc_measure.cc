@@ -49,15 +49,17 @@ int main(const int argc, const char *argv[])
         
 #pragma omp parallel for default(shared) private(iproc)
         for (auto i = 0; i < nproc; i++)
-            if (exec_this[i])
+            if (exec_this[i] && sa[i] == si[i]) {
                 quantity.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -x[i]);
+                quantity.measure(rb[i], sb[i], ra[i], sa[i], ri[i], si[i], rj[i], sj[i],  x[i]);
+            }
     }
     fid_g2e.close();
 
     for (auto i = 0; i < nproc; i++)
         exec_this[i] = true;
 
-    // Contribution from 1-body.
+    /* Contribution from 1-body.
     while (!fid_g1e.eof()) {
         for (auto i = 0; i < nproc; i++) {
             fid_g1e >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i] >> dummy;
@@ -72,7 +74,7 @@ int main(const int argc, const char *argv[])
                 for (auto rk = 0; rk < physics.n; rk++)
                     for (auto sk = 0; sk < 2; sk++)
                         quantity.measure(ra[i], sa[i], rk, sk, rk, sk, ri[i], si[i], x[i]);
-    }
+    }*/
     fid_g1e.close();
 
     fstream fid_out("sc.txt", fstream::out);
