@@ -149,8 +149,6 @@ struct sc_corr
         
         if (validate(a, sa, b, sb, i, si, j, sj)) {
             sign = 1;
-            // if (a == 0 && b == 3 && i == 3 && j == 0)
-            //     cout << "HIT" << endl;
             rmin = system.calc_rmin(b, i);
 
             if (sb != si) 
