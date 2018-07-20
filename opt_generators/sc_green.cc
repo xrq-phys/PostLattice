@@ -25,12 +25,12 @@ void nn_2d(int *nn, int w, int l, int xi, int yi)
 
 int main(const int argc, const char *argv[])
 {
-    if (argc < 3) abort();
+    assert(argc > 2);
     int l = atoi(argv[1]),
         w = atoi(argv[2]);
     int ntot = 0;
     int n = w * l;
-    int ti[4], tj[4];
+    int ti[4], tj[4], ta[4];
 
     assert(w == l);
     if (argc == 3)
@@ -49,7 +49,20 @@ int main(const int argc, const char *argv[])
                                     idx_2d(w, xi, yi), 0, idx_2d(w, xj, yj), 0, ti[i], 1, tj[j], 1);
                             }
                     }
-    else {
+    else if (argv[3][0] == '-') {
+        auto ya = 0, xa = 0;
+        for (auto yj = 0; yj < l; yj++)
+            for (auto xj = 0; xj < w; xj++) {
+                ntot += 32;
+                nn_2d(ta, w, l, xa, ya);
+                nn_2d(tj, w, l, xj, yj);
+                for (auto i = 0; i < 4; i++)
+                    for (auto j = 0; j < 4; j++) {
+                        printf("%d %d %d %d %d %d %d %d\n", ta[i], 1, idx_2d(w, xj, yj), 1, idx_2d(w, xa, ya), 0, tj[j], 0);
+                        printf("%d %d %d %d %d %d %d %d\n", ta[i], 0, idx_2d(w, xj, yj), 0, idx_2d(w, xa, ya), 1, tj[j], 1);
+                    }
+            }
+    } else if (argv[3][0] == '+') {
         lattice physics(l);
         sc_corr quantity(physics, 8);
         for (auto yi = 0; yi < l; yi++) for (auto xi = 0; xi < l; xi++)
