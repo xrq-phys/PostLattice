@@ -13,11 +13,11 @@ using namespace std;
 
 int main(const int argc, const char *argv[])
 {
-    assert(argc == 5);
+    assert(argc > 4);
     fstream fid_g1e(argv[2]);
     fstream fid_g2e(argv[3]);
     lattice physics(atoi(argv[1]));
-    sc_corr quantity(physics, atoi(argv[4]));
+    sc_corr quantity(physics, atoi(argv[4]), argc == 6);
     assert(!(fid_g1e.fail() || fid_g2e.fail()));
     double *x, dummy;
     int *ri, *si, *ra, *sa, *rj, *sj, *rb, *sb;

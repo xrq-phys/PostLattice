@@ -1,5 +1,6 @@
 #pragma once 
 #include <cmath>
+#include <cstdio>
 
 struct lattice
 {
@@ -124,14 +125,21 @@ struct lattice
 struct sc_corr
 {
     lattice &system;
+    int run_mode;
     int rc_count;
     int rc_lst[12];
+    int rx_lst[12];
+    int ry_lst[12];
     double *values;
 
-    sc_corr(lattice &system_i, int rc_count_i)
-    : system(system_i), rc_lst { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 }
+    sc_corr(lattice &system_i, int rc_count_i, int run_mode_i = false)
+    : system(system_i), 
+      rc_lst { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 },
+      rx_lst { 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 3, 4 },
+      ry_lst { 0, 0, 1, 0, 1, 2, 0, 1, 2, 0, 3, 1 }
     {
         rc_count = rc_count_i;
+        run_mode = run_mode_i;
         values = new double[rc_count];
         for (auto i = 0; i < rc_count; i++)
             values[i] = 0;
@@ -144,22 +152,36 @@ struct sc_corr
     {
         int sign;
         int rmin;
-        int ra[2], ri[2];
-        int rb[2], rj[2];
+        int rb[2], 
+            ri[2];
         
         if (validate(a, sa, b, sb, i, si, j, sj)) {
             sign = 1;
-            rmin = system.calc_rmin(b, i);
 
             if (sb != si) 
                 sign = -sign;
             if (system.nn[a][b] != system.nn[i][j])
                 sign = -sign;
 
-            for (auto ii = 0; ii < rc_count; ii++)
-                if (rmin == rc_lst[ii])
+            if (run_mode) {
+                system.r(rb, b);
+                system.r(ri, i);
+                for (auto ii = 0; ii < rc_count; ii++)
+                    if (ri[0] - rb[0] == rx_lst[ii] && ri[1] - rb[1] == ry_lst[ii]) {
 #pragma omp critical
-                    values[ii] += x * sign / (2. * system.n);
+                        values[ii] += x * sign / (2. * system.n);
+                        printf("%d %s %d %s %d %s %d %s %d %d %f\n",
+                               a, sa ? "↓" : "↑", b, sb ? "↓" : "↑",
+                               i, si ? "↓" : "↑", j, sj ? "↓" : "↑",
+                               rx_lst[ii], ry_lst[ii], x);
+                    }
+            } else {
+                rmin = system.calc_rmin(b, i);
+                for (auto ii = 0; ii < rc_count; ii++)
+                    if (rmin == rc_lst[ii])
+#pragma omp critical
+                        values[ii] += x * sign / (2. * system.n);
+            }
         }
     }
 
