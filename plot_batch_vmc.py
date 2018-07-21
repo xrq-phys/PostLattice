@@ -121,6 +121,22 @@ sc_list      = [ x for _, x in sorted(zip(delta_list, sc_list     )) ]
 sc_err       = [ x for _, x in sorted(zip(delta_list, sc_err      )) ]
 delta_list   = sorted(delta_list)
 
+#==========================
+# Write Value/Error To File
+energy_ofid  = open("Energy_vs_Delta.dat", "w")
+doublon_ofid = open("Doublon_vs_Delta.dat", "w")
+sstruct_ofid = open("SpinStructure_vs_Delta.dat", "w")
+sc_ofid      = open("SC_Correlation_vs_Delta.dat", "w")
+for i in range(len(calc_list)):
+    energy_ofid.write("%lf %lf %lf\n" % (delta_list[i], energy_list[i], energy_err[i]))
+    doublon_ofid.write("%lf %lf %lf\n" % (delta_list[i], doublon_list[i], doublon_err[i]))
+    sstruct_ofid.write("%lf %lf %lf\n" % (delta_list[i], sstruct_list[i], sstruct_err[i]))
+    sc_ofid.write("%lf %lf %lf\n" % (delta_list[i], sc_list[i], sc_err[i]))
+energy_ofid.close()
+doublon_ofid.close()
+sstruct_ofid.close()
+sc_ofid.close()
+
 #========================
 # Plotting Energy/Doublon
 if (matplotlib.__version__ >= '2.0.0'):
