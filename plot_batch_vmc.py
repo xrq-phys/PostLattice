@@ -70,6 +70,7 @@ for i in range(len(calc_list)):
     sstruct_tmp = open(glob(calc_dir + '/sstruct.txt.' + nm_suffix + '.dat.regular')[0])
     while(sstruct_tmp.readline().strip() != ''):
         sstruct_psz += 1
+    sstruct_tmp.close()
     sstruct_lkp = np.zeros([sstruct_psz, 2], int)
     sstruct_dat = np.zeros([sstruct_psz, 2], complex)
     sc_dat = np.zeros([2], float)
@@ -87,7 +88,8 @@ for i in range(len(calc_list)):
     sstruct_list[i] = np.abs(sstruct_dat[sstruct_mid][0])/total_bin
     sstruct_err [i] = np.sqrt(sstruct_dat[sstruct_mid][1]/total_bin - np.abs(sstruct_list[i]) ** 2)/\
                       np.sqrt(total_bin - 1)
-    print("delta = %f, Peak of spin structure factor @ the %dth q-point." % (delta_list[i], sstruct_mid))
+    print("delta = %f, Peak of spin structure factor @ q-point (%fPi, %fPi)." % \
+          (delta_list[i], sstruct_lkp[sstruct_mid][0] * 2./W, sstruct_lkp[sstruct_mid][1] * 2./W))
 
     for sc_fnm in glob(calc_dir + '/sc.txt.' + sc_suffix + '.dat.sc'):
         sc_fid = open(sc_fnm)
