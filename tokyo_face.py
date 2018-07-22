@@ -12,6 +12,7 @@ import lattice
 # Loading Phase
 
 runmode = -1
+flip_index = [ -1 ]
 a_length = [ -1, -1 ]
 sys_type = "unavailable"
 prefix = "unavailable"
@@ -78,6 +79,7 @@ if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
                                   9,   # [ 3, 0 ]
                                   10]) # [ 3, 1 ] 
 
+greentwo_lnm = 0
 greentwo_fid = open(greentwo_fnm, 'r')
 greentwo_fln = greentwo_fid.readline()
 while(greentwo_fln.strip() != ''):
@@ -92,25 +94,22 @@ while(greentwo_fln.strip() != ''):
     sl =   int(greentwo_arr[7])
     x  = float(greentwo_arr[8])
     doublon.measure(i, si, j, sj, k, sk, l, sl, x)
-    sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
-    if (runmode and si != sk):
-        sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
+    if (not runmode or not flip_index[greentwo_lnm]):
+        sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
+    else:
+        if (k == l):
+            sstruct.measure(i, si, l, sl, k, sk, j, sj, greenone_dat[i + si][j + sj] - x)
+        else:
+            sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
     if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
         sc.measure(i, si, k, sk, j, sj, l, sl, -x)
     greentwo_fln = greentwo_fid.readline()
+    greentwo_lnm += 1
 greentwo_fid.close()
 
 #=======================================================================
 # Add contribution from one-body Green function to SC or other operators 
 # that consists of 2-body operators like: c+ c+ c c.
-
-if (runmode):
-    for i in range(2 * phys.n):
-        ri = int(i / 2)
-        si = i % 2
-        sstruct.measure(ri, si, ri, int(not si), \
-                                ri, int(not si), 
-                        ri, si, greenone_dat[i][i])
 
 if (len(sys.argv) > 4 and sys.argv[4][0] == '+'):
 
