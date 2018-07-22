@@ -146,9 +146,15 @@ if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
 
 sstruct_fid = open("sstruct.txt", 'w')
 for y in range(phys.a[0]):
-    for x in range(phys.a[1]):
-        sstruct_fid.write("%d %d %lf %lf\n" % (x, y, np.real(sstruct.values[x + y * phys.a[1]]), \
-                                                     np.imag(sstruct.values[x + y * phys.a[1]])))
+    if (a_length[0] != a_length[1]):
+        for x in range(phys.a[1]):
+            sstruct_fid.write("%d %d %lf %lf\n" % (x, y, np.real(sstruct.values[x + y * phys.a[1]]), \
+                                                         np.imag(sstruct.values[x + y * phys.a[1]])))
+    else:
+        for x in range(y, phys.a[1]):
+            sstruct_fid.write("%d %d %lf %lf\n" % 
+                              (x, y, np.real(sstruct.values[x + y * phys.a[1]] + sstruct.values[y + x * phys.a[1]])/2, \
+                                     np.imag(sstruct.values[x + y * phys.a[1]] + sstruct.values[y + x * phys.a[1]])/2))
 sstruct_fid.close()
 
 spn_nn_fid = open("spn_nn.txt", 'w')
