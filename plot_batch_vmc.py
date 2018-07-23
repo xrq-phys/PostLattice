@@ -36,6 +36,7 @@ for i in range(len(calc_list)):
     #===================
     # System Information
     calc_dir = calc_list[i]
+    W = 0; L = 0; nelec = -1
     exec(open(calc_dir + '/model.def'))
     delta_list[i] = float(W * L - nelec) / (W * L)
     if (total_bin < 1E-1):
