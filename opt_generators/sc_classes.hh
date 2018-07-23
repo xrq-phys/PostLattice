@@ -167,7 +167,8 @@ struct sc_corr
                 system.r(rb, b);
                 system.r(ri, i);
                 for (auto ii = 0; ii < rc_count; ii++)
-                    if (ri[0] - rb[0] == rx_lst[ii] && ri[1] - rb[1] == ry_lst[ii]) {
+                    if (ri[0] - rb[0] + system.w % system.w == rx_lst[ii] &&
+                        ri[1] - rb[1] + system.w % system.w == ry_lst[ii]) {
 #pragma omp critical
                         values[ii] += x * sign / (2. * system.n);
                         printf("%d %s %d %s %d %s %d %s %d %d %f\n",
