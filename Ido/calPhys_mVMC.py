@@ -282,7 +282,7 @@ WaveVector = WaveNumberList(Lx, Ly, APFlag)
 if len(sys.argv)>9:
     numList = sys.argv[9:]
 else:
-    numList = [ n[len(pre)+5:len(pre)+8] for n in glob.glob(pre+"_out_*.dat")]
+    numList = [ str(paraList[1]+i) for i in xrange(paraList[2])]
 numList.sort()
 nNum = len(numList)
 
@@ -304,11 +304,23 @@ for num in numList:
         data = ca.readline().split()
         # read greenFunc
         for idx in xrange(NCisAjs):
-          CisAjs[caList[idx]] = float(data[idx])
+          # support for new version of mVMC
+          if (len(data) == NCisAjs):
+            # legacy version
+            CisAjs[caList[idx]] = float(data[idx])
+          else: 
+            # new version
+            CisAjs[caList[idx]] = float(data[4])
+            data = ca.readline().split()
         data = caca.readline().split()
         # read greenFunc2
         for idx in xrange(NCisAjsCktAlt):
-          CisAjsCktAlt[cacaList[idx]] = float(data[idx])
+          # support for new version of mVMC
+          if (len(data) == NCisAjsCktAlt):
+            CisAjsCktAlt[cacaList[idx]] = float(data[idx])
+          else:
+            CisAjsCktAlt[cacaList[idx]] = float(data[8])
+            data = caca.readline().split()
 
     ca.close()
     caca.close()
