@@ -4,7 +4,7 @@ if [ -z $3 ]; then
 	echo "Usage: Merge_Green.sh Green1.def Green2.def GreenOut.def"
 fi
 
-linetot=$(expr $(cat $1 | sed '/^\s*$/d' | wc -l) + $(cat $2 | sed '/^\s*$/d' | wc -l) - 5)
+linetot=$(expr $(cat $1 | sed '/^\s*$/d' | wc -l) + $(cat $2 | sed '/^\s*$/d' | wc -l) - 10)
 
 cat > $3 << EOF
 -------------------
