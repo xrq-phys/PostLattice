@@ -79,6 +79,7 @@ if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
                                   9,   # [ 3, 0 ]
                                   10]) # [ 3, 1 ] 
 
+seen_table = {}
 greentwo_lnm = 0
 greentwo_fid = open(greentwo_fnm, 'r')
 greentwo_fln = greentwo_fid.readline()
@@ -93,16 +94,18 @@ while(greentwo_fln.strip() != ''):
     l  =   int(greentwo_arr[6])
     sl =   int(greentwo_arr[7])
     x  = float(greentwo_arr[8])
-    doublon.measure(i, si, j, sj, k, sk, l, sl, x)
-    if (not runmode or not flip_index[greentwo_lnm]):
-        sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
-    else:
-        if (k == l):
-            sstruct.measure(i, si, l, sl, k, sk, j, sj, greenone_dat[i + si][j + sj] - x)
+    if (not (i, si, j, sj, k, sk, l, sl) in seen_table):
+        seen_table[(i, si, j, sj, k, sk, l, sl)] = True
+        doublon.measure(i, si, j, sj, k, sk, l, sl, x)
+        if (not runmode or not flip_index[greentwo_lnm]):
+            sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
         else:
-            sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
-    if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
-        sc.measure(i, si, k, sk, j, sj, l, sl, -x)
+            if (k == l):
+                sstruct.measure(i, si, l, sl, k, sk, j, sj, greenone_dat[i + si][j + sj] - x)
+            else:
+                sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
+        if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
+            sc.measure(i, si, k, sk, j, sj, l, sl, -x)
     greentwo_fln = greentwo_fid.readline()
     greentwo_lnm += 1
 greentwo_fid.close()
