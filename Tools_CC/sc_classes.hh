@@ -15,17 +15,17 @@ struct lattice
         n = w * w;
         nn = new int*[n];
         rmin = new int*[n];
-        for (auto i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             nn[i] = new int[n];
             rmin[i] = new int[n];
-            for (auto j = 0; j < n; j++) {
+            for (int j = 0; j < n; j++) {
                 nn[i][j] = 0;
                 rmin[i][j] = -1;
             }
         }
 
-        for (auto xi = 0; xi < w; xi++)
-            for (auto yi = 0; yi < w; yi++) {
+        for (int xi = 0; xi < w; xi++)
+            for (int yi = 0; yi < w; yi++) {
                 nn[idx_2d(xi, yi)][idx_2d(xi, (yi + 1)     % w)] = 1;
                 nn[idx_2d(xi, yi)][idx_2d(xi, (yi - 1 + w) % w)] = 1;
                 nn[idx_2d(xi, yi)][idx_2d((xi + 1)     % w, yi)] = 2;
@@ -35,7 +35,7 @@ struct lattice
 
     ~lattice()
     {
-        for (auto i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             delete[] nn[i];
             delete[] rmin[i];
         }
@@ -141,7 +141,7 @@ struct sc_corr
         rc_count = rc_count_i;
         run_mode = run_mode_i;
         values = new double[rc_count];
-        for (auto i = 0; i < rc_count; i++)
+        for (int i = 0; i < rc_count; i++)
             values[i] = 0;
     }
 
@@ -166,7 +166,7 @@ struct sc_corr
             if (run_mode) {
                 system.r(rb, b);
                 system.r(ri, i);
-                for (auto ii = 0; ii < rc_count; ii++)
+                for (int ii = 0; ii < rc_count; ii++)
                     if (ri[0] - rb[0] + system.w % system.w == rx_lst[ii] &&
                         ri[1] - rb[1] + system.w % system.w == ry_lst[ii]) {
 #pragma omp critical
@@ -178,7 +178,7 @@ struct sc_corr
                     }
             } else {
                 rmin = system.calc_rmin(b, i);
-                for (auto ii = 0; ii < rc_count; ii++)
+                for (int ii = 0; ii < rc_count; ii++)
                     if (rmin == rc_lst[ii])
 #pragma omp critical
                         values[ii] += x * sign / (2. * system.n);

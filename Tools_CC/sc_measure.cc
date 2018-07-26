@@ -35,20 +35,20 @@ int main(const int argc, const char *argv[])
     sb = new int[nproc];
     x = new double[nproc];
     exec_this = new bool[nproc];
-    for (auto i = 0; i < nproc; i++)
+    for (int i = 0; i < nproc; i++)
         exec_this[i] = true;
 
     // Contribution from 2-body.
     while (!fid_g2e.eof()) {
-        for (auto i = 0; i < nproc; i++) {
+        for (int i = 0; i < nproc; i++) {
             fid_g2e >> rb[i] >> sb[i] >> rj[i] >> sj[i] >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i] >> dummy;
             if (fid_g2e.eof())
-                for (auto j = i; j < nproc; j++)
+                for (int j = i; j < nproc; j++)
                     exec_this[j] = false;
         }
         
 #pragma omp parallel for default(shared) private(iproc)
-        for (auto i = 0; i < nproc; i++)
+        for (int i = 0; i < nproc; i++)
             if (exec_this[i] && sa[i] == si[i]) {
                 quantity.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -x[i]);
                 quantity.measure(rb[i], sb[i], ra[i], sa[i], ri[i], si[i], rj[i], sj[i],  x[i]);
@@ -56,29 +56,29 @@ int main(const int argc, const char *argv[])
     }
     fid_g2e.close();
 
-    for (auto i = 0; i < nproc; i++)
+    for (int i = 0; i < nproc; i++)
         exec_this[i] = true;
 
     /* Contribution from 1-body.
     while (!fid_g1e.eof()) {
-        for (auto i = 0; i < nproc; i++) {
+        for (int i = 0; i < nproc; i++) {
             fid_g1e >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i] >> dummy;
             if (fid_g1e.eof())
-                for (auto j = i; j < nproc; j++)
+                for (int j = i; j < nproc; j++)
                     exec_this[j] = false;
         }
         
 #pragma omp parallel for default(shared) private(iproc)
-        for (auto i = 0; i < nproc; i++)
+        for (int i = 0; i < nproc; i++)
             if (exec_this[i])
-                for (auto rk = 0; rk < physics.n; rk++)
-                    for (auto sk = 0; sk < 2; sk++)
+                for (int rk = 0; rk < physics.n; rk++)
+                    for (int sk = 0; sk < 2; sk++)
                         quantity.measure(ra[i], sa[i], rk, sk, rk, sk, ri[i], si[i], x[i]);
     }*/
     fid_g1e.close();
 
     fstream fid_out("sc.txt", fstream::out);
-    for (auto i = 0; i < atoi(argv[4]); i++)
+    for (int i = 0; i < atoi(argv[4]); i++)
         fid_out << setw(8) << sqrt(double(quantity.rc_lst[i])) << ' ' << quantity.values[i] << endl;
     fid_out.close();
 

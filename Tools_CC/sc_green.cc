@@ -34,15 +34,15 @@ int main(const int argc, const char *argv[])
 
     assert(w == l);
     if (argc == 3)
-        for (auto yi = 0; yi < l; yi++)
-            for (auto xi = 0; xi < w; xi++)
-                for (auto yj = 0; yj < l; yj++)
-                    for (auto xj = 0; xj < w; xj++) { // Forall a, i
+        for (int yi = 0; yi < l; yi++)
+            for (int xi = 0; xi < w; xi++)
+                for (int yj = 0; yj < l; yj++)
+                    for (int xj = 0; xj < w; xj++) { // Forall a, i
                         ntot += 32;
                         nn_2d(ti, w, l, xi, yi);
                         nn_2d(tj, w, l, xj, yj);
-                        for (auto i = 0; i < 4; i++)
-                            for (auto j = 0; j < 4; j++) { // Forall b, j
+                        for (int i = 0; i < 4; i++)
+                            for (int j = 0; j < 4; j++) { // Forall b, j
                                 printf("%d %d %d %d %d %d %d %d\n",
                                     idx_2d(w, xi, yi), 1, idx_2d(w, xj, yj), 1, ti[i], 0, tj[j], 0);
                                 printf("%d %d %d %d %d %d %d %d\n",
@@ -50,14 +50,14 @@ int main(const int argc, const char *argv[])
                             }
                     }
     else if (argv[3][0] == '-') {
-        auto ya = 0, xa = 0;
-        for (auto yj = 0; yj < l; yj++)
-            for (auto xj = 0; xj < w; xj++) {
+        int ya = 0, xa = 0;
+        for (int yj = 0; yj < l; yj++)
+            for (int xj = 0; xj < w; xj++) {
                 ntot += 32;
                 nn_2d(ta, w, l, xa, ya);
                 nn_2d(tj, w, l, xj, yj);
-                for (auto i = 0; i < 4; i++)
-                    for (auto j = 0; j < 4; j++) {
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++) {
                         printf("%d %d %d %d %d %d %d %d\n", ta[i], 1, idx_2d(w, xj, yj), 1, idx_2d(w, xa, ya), 0, tj[j], 0);
                         printf("%d %d %d %d %d %d %d %d\n", ta[i], 0, idx_2d(w, xj, yj), 0, idx_2d(w, xa, ya), 1, tj[j], 1);
                     }
@@ -65,12 +65,12 @@ int main(const int argc, const char *argv[])
     } else if (argv[3][0] == '+') {
         lattice physics(l);
         sc_corr quantity(physics, 8);
-        for (auto yi = 0; yi < l; yi++) for (auto xi = 0; xi < l; xi++)
-            for (auto yj = 0; yj < l; yj++) for (auto xj = 0; xj < l; xj++)
-                for (auto ya = 0; ya < l; ya++) for (auto xa = 0; xa < l; xa++)
-                    for (auto yb = 0; yb < l; yb++) for (auto xb = 0; xb < l; xb++)
-                        for (auto si = 0; si < 2; si++) for (auto sj = 0; sj < 2; sj++)
-                            for (auto sa = 0; sa < 2; sa++) for (auto sb = 0; sb < 2; sb++) {
+        for (int yi = 0; yi < l; yi++) for (int xi = 0; xi < l; xi++)
+            for (int yj = 0; yj < l; yj++) for (int xj = 0; xj < l; xj++)
+                for (int ya = 0; ya < l; ya++) for (int xa = 0; xa < l; xa++)
+                    for (int yb = 0; yb < l; yb++) for (int xb = 0; xb < l; xb++)
+                        for (int si = 0; si < 2; si++) for (int sj = 0; sj < 2; sj++)
+                            for (int sa = 0; sa < 2; sa++) for (int sb = 0; sb < 2; sb++) {
                                 if (quantity.validate(physics.idx_2d(xi, yi), si, 
                                                       physics.idx_2d(xj, yj), sj,
                                                       physics.idx_2d(xa, ya), sa,
