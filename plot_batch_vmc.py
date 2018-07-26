@@ -11,15 +11,12 @@ import matplotlib
 sc_rc     = 2.
 total_bin = 0.
 calc_list = glob('U*')
-nm_suffix = '*'
-sc_suffix = '*'
+gf_suffix = '*'
 
 if (len(sys.argv) > 1):
     calc_list = glob(sys.argv[1])
 if (len(sys.argv) > 2):
-    nm_suffix = sys.argv[2]
-if (len(sys.argv) > 3):
-    sc_suffix = sys.argv[3]
+    gf_suffix = sys.argv[2]
 
 delta_list   = np.zeros([len(calc_list)], float)
 energy_list  = np.zeros([len(calc_list)], float)
@@ -40,14 +37,14 @@ for i in range(len(calc_list)):
     exec(open(calc_dir + '/model.def'))
     delta_list[i] = float(W * L - nelec) / (W * L)
     if (total_bin < 1E-1):
-        total_bin = len(glob(calc_dir + '/output/' + 'zvo_out_' + nm_suffix + '.dat'))
+        total_bin = len(glob(calc_dir + '/output/' + 'zvo_out_' + gf_suffix + '.dat'))
 
     #====================
     # Energy and Doublon 
     energy_dat  = np.zeros([2], float)
     doublon_dat = np.zeros([2], float)
 
-    for energy_fnm in glob(calc_dir + '/output/' + 'zvo_out_' + nm_suffix + '.dat'):
+    for energy_fnm in glob(calc_dir + '/output/' + 'zvo_out_' + gf_suffix + '.dat'):
         energy_fid = open(energy_fnm)
         energy_fln = re.sub(' +', ' ', energy_fid.readline().strip()).split(' ')
         energy_dat[0] += float(energy_fln[0])
@@ -56,7 +53,7 @@ for i in range(len(calc_list)):
     energy_list[i] = energy_dat[0]/total_bin
     energy_err [i] = np.sqrt(energy_dat[1]/total_bin - energy_list[i] ** 2)/np.sqrt(total_bin - 1)
 
-    for doublon_fnm in glob(calc_dir + '/doublon.txt.' + nm_suffix + '.dat.regular'):
+    for doublon_fnm in glob(calc_dir + '/doublon.txt.' + gf_suffix + '.dat'):
         doublon_fid = open(doublon_fnm)
         doublon_fln = doublon_fid.readline()
         doublon_dat[0] += float(doublon_fln)
@@ -68,7 +65,7 @@ for i in range(len(calc_list)):
     #======================
     # Spin and SC Structure
     sstruct_psz = 0
-    sstruct_tmp = open(glob(calc_dir + '/sstruct.txt.' + nm_suffix + '.dat.regular')[0])
+    sstruct_tmp = open(glob(calc_dir + '/sstruct.txt.' + gf_suffix + '.dat')[0])
     while(sstruct_tmp.readline().strip() != ''):
         sstruct_psz += 1
     sstruct_tmp.close()
@@ -76,7 +73,7 @@ for i in range(len(calc_list)):
     sstruct_dat = np.zeros([sstruct_psz, 2], complex)
     sc_dat = np.zeros([2], float)
 
-    for sstruct_fnm in glob(calc_dir + '/sstruct.txt.' + nm_suffix + '.dat.regular'):
+    for sstruct_fnm in glob(calc_dir + '/sstruct.txt.' + gf_suffix + '.dat'):
         sstruct_fid = open(sstruct_fnm)
         for j in range(sstruct_psz):
             sstruct_fln = re.sub(' +', ' ', sstruct_fid.readline().strip()).split(' ')
@@ -92,7 +89,7 @@ for i in range(len(calc_list)):
     print("delta = %f, Peak of spin structure factor @ q-point (%fPi, %fPi)." % \
           (delta_list[i], sstruct_lkp[sstruct_mid][0] * 2./W, sstruct_lkp[sstruct_mid][1] * 2./W))
 
-    for sc_fnm in glob(calc_dir + '/sc.txt.' + sc_suffix + '.dat.sc'):
+    for sc_fnm in glob(calc_dir + '/sc.txt.' + gf_suffix + '.dat'):
         sc_fid = open(sc_fnm)
         sc_cur = 0.
         sc_cnt = 0
