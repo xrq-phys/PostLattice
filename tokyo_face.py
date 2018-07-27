@@ -80,6 +80,7 @@ if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
                                   10]) # [ 3, 1 ] 
 
 seen_table = {}
+iiii_table = {}
 greentwo_lnm = 0
 greentwo_fid = open(greentwo_fnm, 'r')
 greentwo_fln = greentwo_fid.readline()
@@ -95,7 +96,13 @@ while(greentwo_fln.strip() != ''):
     sl =   int(greentwo_arr[7])
     x  = float(greentwo_arr[8])
     if (not (i, si, j, sj, k, sk, l, sl) in seen_table):
-        seen_table[(i, si, j, sj, k, sk, l, sl)] = True
+        if (i == j and k == l and i == k and si == sj and si != sk):
+            if (not (i, si) in iiii_table):
+                iiii_table[(i, si)] = greentwo_lnm
+            else:
+                seen_table[(i, si, j, sj, k, sk, l, sl)] = greentwo_lnm
+        else:
+            seen_table[(i, si, j, sj, k, sk, l, sl)] = greentwo_lnm
         doublon.measure(i, si, j, sj, k, sk, l, sl, x)
         if (not runmode or greentwo_lnm > len(flip_index) or not flip_index[greentwo_lnm]):
             sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
@@ -106,6 +113,11 @@ while(greentwo_fln.strip() != ''):
                 sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
         if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
             sc.measure(i, si, k, sk, j, sj, l, sl, -x)
+    else:
+        print('Duplicate on line %d and %d (header included)' % \
+              (seen_table[(i, si, j, sj, k, sk, l, sl)] + 6, greentwo_lnm + 6))
+        if (i == j and k == l and i == k and si == sj and si != sk and (i, si) in iiii_table):
+            print('   And %d.' % (iiii_table[(i, si)] + 6))
     greentwo_fln = greentwo_fid.readline()
     greentwo_lnm += 1
 greentwo_fid.close()
