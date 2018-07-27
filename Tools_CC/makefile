@@ -8,8 +8,11 @@ ifndef OMP_DIRECTIVE
 	OMP_DIRECTIVE=-fopenmp
 endif
 
-sc_green.cc.x: sc_green.cc
-	$(CC) $(OMP_DIRECTIVE) sc_green.cc -o sc_green.cc.x
+default: sc_measure.cc.x sc_green.cc.x
 
-sc_measure.cc.x: sc_measure.cc
-	$(CC) $(OMP_DIRECTIVE) sc_measure.cc -o sc_measure.cc.x
+sc_green.cc.x: sc_green.cc sc_classes.hh
+	$(CXX) $(OMP_DIRECTIVE) sc_green.cc -o sc_green.cc.x
+
+sc_measure.cc.x: sc_measure.cc sc_classes.hh
+	$(CXX) $(OMP_DIRECTIVE) sc_measure.cc -o sc_measure.cc.x
+
