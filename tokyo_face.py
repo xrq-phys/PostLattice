@@ -97,7 +97,7 @@ while(greentwo_fln.strip() != ''):
     if (not (i, si, j, sj, k, sk, l, sl) in seen_table):
         seen_table[(i, si, j, sj, k, sk, l, sl)] = True
         doublon.measure(i, si, j, sj, k, sk, l, sl, x)
-        if (not runmode or not flip_index[greentwo_lnm]):
+        if (not runmode or greentwo_lnm > len(flip_index) or not flip_index[greentwo_lnm]):
             sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
         else:
             if (k == l):
