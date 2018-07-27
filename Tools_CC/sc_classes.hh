@@ -130,15 +130,13 @@ struct sc_corr
     int rc_lst[12];
     int rx_lst[12];
     int ry_lst[12];
-    int rn_lst[12];  // Number of R vectors with the same length R_c
     double *values;
 
     sc_corr(lattice &system_i, int rc_count_i, int run_mode_i = false)
     : system(system_i), 
       rc_lst { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 },
       rx_lst { 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 3, 4 },
-      ry_lst { 0, 0, 1, 0, 1, 2, 0, 1, 2, 0, 3, 1 },
-      rn_lst { 1, 4, 4, 4, 8, 4, 4, 8, 8, 4, 4, 8 }
+      ry_lst { 0, 0, 1, 0, 1, 2, 0, 1, 2, 0, 3, 1 }
     {
         rc_count = rc_count_i;
         run_mode = run_mode_i;
@@ -178,7 +176,7 @@ struct sc_corr
                 for (int ii = 0; ii < rc_count; ii++)
                     if (rmin == rc_lst[ii])
 #pragma omp critical
-                        values[ii] += x * sign / (2. * system.n * rn_lst[ii]);
+                        values[ii] += x * sign / (2. * system.n);
             }
         }
     }
