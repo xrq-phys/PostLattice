@@ -136,8 +136,6 @@ if (len(sys.argv) > 4 and sys.argv[4][0] == '+'):
 #=======================================================================
 # Output Phase
 
-if (runmode):
-    doublon.value /= 2.
 doublon_fid = open("doublon.txt", 'w')
 doublon_fid.write("%.10e\n" % doublon.value)
 doublon_fid.close()
