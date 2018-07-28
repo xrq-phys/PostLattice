@@ -113,11 +113,11 @@ while(greentwo_fln.strip() != ''):
                 sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
         if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
             sc.measure(i, si, k, sk, j, sj, l, sl, -x)
-    else:
-        print('Duplicate on line %d and %d (header included)' % \
-              (seen_table[(i, si, j, sj, k, sk, l, sl)] + 6, greentwo_lnm + 6))
-        if (i == j and k == l and i == k and si == sj and si != sk and (i, si) in iiii_table):
-            print('   And %d.' % (iiii_table[(i, si)] + 6))
+    # else:
+    #     print('Duplicate on line %d and %d (header included)' % \
+    #           (seen_table[(i, si, j, sj, k, sk, l, sl)] + 6, greentwo_lnm + 6))
+    #     if (i == j and k == l and i == k and si == sj and si != sk and (i, si) in iiii_table):
+    #         print('   And %d.' % (iiii_table[(i, si)] + 6))
     greentwo_fln = greentwo_fid.readline()
     greentwo_lnm += 1
 greentwo_fid.close()
