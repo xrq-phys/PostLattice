@@ -8,8 +8,8 @@ from operator import itemgetter
 import matplotlib.pyplot as plt
 import matplotlib
 
-sc_rc     = 2.
-total_bin = 0.
+sc_rc     = 2.0001
+total_bin = 0.0000
 calc_list = glob('U*')
 gf_suffix = '*'
 
@@ -96,7 +96,7 @@ for i in range(len(calc_list)):
         sc_fln = sc_fid.readline().strip()
         while (sc_fln != ''):
             sc_fln = re.sub(' +', ' ', sc_fln).split(' ')
-            if (float(sc_fln[0]) - sc_rc > -1E-2):
+            if (float(sc_fln[0]) > sc_rc):
                 sc_cnt += 1
                 sc_cur += float(sc_fln[1])
             sc_fln = sc_fid.readline().strip()
