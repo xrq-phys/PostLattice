@@ -31,7 +31,7 @@ int main(const int argc, const char *argv[])
     int nproc, iproc;
     int iline;
     bool *exec_this;
-    double *x, dummy;
+    double *x, **x1e, dummy;
 
     nproc = omp_get_num_threads();
     ri = new int[nproc];
@@ -44,8 +44,22 @@ int main(const int argc, const char *argv[])
     sb = new int[nproc];
     x = new double[nproc];
     exec_this = new bool[nproc];
+    x1e = new double *[physics.n * 2];
+    for (int i = 0; i < physics.n * 2; i++) {
+        x1e[i] = new double[physics.n * 2];
+        for (int j = 0; j < physics.n * 2; j++)
+            x1e[i][j] = 0.;
+    }
 
-    // Contribution from 2-body.
+    // Load in one-body part.
+    while (true) {
+        fid_g1e >> ra[0] >> sa[0] >> ri[0] >> si[0] >> x[0] >> dummy;
+        if (fid_g1e.eof()) 
+            break;
+        x1e[ri[0] * 2 + si[0]][ra[0] * 2 + sa[0]] = x[0];
+    }
+    fid_g1e.close();
+
     iline = 0;
     while (!fid_g2e.eof()) {
         for (int i = 0; i < nproc; i++) {
@@ -78,32 +92,17 @@ int main(const int argc, const char *argv[])
             exec_this[i] = true;
         }
 
-#pragma omp parallel for default(shared) private(iproc)
+#pragma omp parallel for default(shared) private(iproc, dummy)
         for (int i = 0; i < nproc; i++)
             if (exec_this[i] && sa[i] == si[i]) {
-                quantity.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -x[i]);
-                quantity.measure(rb[i], sb[i], ra[i], sa[i], ri[i], si[i], rj[i], sj[i],  x[i]);
+                dummy = x[i] + int(ra[i] == ri[i] && rb[i] == rj[i]) / 2.
+                      - x1e[rj[i] * 2 + sj[i]][rb[i] * 2 + sb[i]] * int(ra[i] == ri[i]) / 2.
+                      - x1e[ri[i] * 2 + si[i]][ra[i] * 2 + sa[i]] * int(rb[i] == rj[i]) / 2.;
+                quantity.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -dummy);
+                quantity.measure(rb[i], sb[i], ra[i], sa[i], ri[i], si[i], rj[i], sj[i],  dummy);
             }
     }
     fid_g2e.close();
-
-    /* Contribution from 1-body.
-    while (!fid_g1e.eof()) {
-        for (int i = 0; i < nproc; i++) {
-            fid_g1e >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i] >> dummy;
-            if (fid_g1e.eof())
-                for (int j = i; j < nproc; j++)
-                    exec_this[j] = false;
-        }
-        
-#pragma omp parallel for default(shared) private(iproc)
-        for (int i = 0; i < nproc; i++)
-            if (exec_this[i])
-                for (int rk = 0; rk < physics.n; rk++)
-                    for (int sk = 0; sk < 2; sk++)
-                        quantity.measure(ra[i], sa[i], rk, sk, rk, sk, ri[i], si[i], x[i]);
-    }*/
-    fid_g1e.close();
 
     fstream fid_out("sc.txt", fstream::out);
     for (int i = 0; i < atoi(argv[4]); i++)
