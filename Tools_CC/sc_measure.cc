@@ -109,5 +109,12 @@ int main(const int argc, const char *argv[])
         fid_out << setw(8) << sqrt(double(quantity.rc_lst[i])) << ' ' << quantity.values[i] << endl;
     fid_out.close();
 
+    delete[] ri; delete[] si; delete[] rj; delete[] sj;
+    delete[] ra; delete[] sa; delete[] rb; delete[] sb;
+    delete[] x;  delete[] exec_this;
+    for (int i = 0; i < physics.n * 2; i++)
+        delete[] x1e[i];
+    delete[] x1e;
+
     return 0;
 }
