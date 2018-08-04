@@ -2,7 +2,7 @@
 #include <cstring>
 
 // {
-// There are Tool Functions.
+// These are Tool Functions.
 // TODO: Put it somewhere else.
 int inner2(int *a, int*b)
 { return ((a[0] - b[0]) * (a[0] - b[0])) + ((a[1] - b[1]) * (a[1] - b[1])); }
