@@ -1,5 +1,6 @@
 #include "lattice.hh"
 #include <cstring>
+#include <cstdlib>
 
 // {
 // These are Tool Functions.
@@ -8,8 +9,18 @@ int inner2(int *a, int*b)
 { return ((a[0] - b[0]) * (a[0] - b[0])) + ((a[1] - b[1]) * (a[1] - b[1])); }
 // }
 
+// {
+// Virtual methods that MUST be overriden.
+void lattice::lattice::r(double *r, int i)
+{ abort(); }
+void lattice::lattice::r(int *r, int i, int *r_q)
+{ abort(); }
+int lattice::lattice::calc_rmin(int i, int j)
+{ abort(); }
+// }
+
 lattice::square2d::square2d(int w_i)
-: w(w_i), lattice::lattice(w * w, 2)
+: w(w_i), lattice::lattice(w_i * w_i, 2)
 {
     // TODO: A better solution.
     int rc_s[12] = { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 };

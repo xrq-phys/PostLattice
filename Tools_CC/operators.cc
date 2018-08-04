@@ -103,6 +103,7 @@ void operators::spin_struct::measure(int i, int si, int j, int sj, int k, int sk
     for (int i = 0; i < n_points; i++) {
         double space_part = 1 / (6. * system.n * system.n) *
                             std::cos(inner_r_qidx(dr, points[i], system.dim));
+#pragma omp critical
         values[i] += spin_part * space_part * x;
     }
 }
