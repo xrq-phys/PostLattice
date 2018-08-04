@@ -8,8 +8,18 @@ ifndef OMP_DIRECTIVE
 	OMP_DIRECTIVE=-fopenmp
 endif
 
-default: sc_measure.cc.x sc_green.cc.x
+ifndef EXTRA_FLAGS
+	EXTRA_FLAGS=-O3
+endif
+
+default: sc_measure.cc.x sc_green.cc.x core.x
 
 %.cc.x: %.cc sc_classes.hh
-	$(CXX) $(OMP_DIRECTIVE) $< -o $@
+	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) $< -o $@
+
+core.x: lattice.o green_gen.o operators.o trig_lattice.o
+	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) -o core.x lattice.o green_gen.o operators.o trig_lattice.o
+
+%.o: %.cc
+	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) -c $<
 
