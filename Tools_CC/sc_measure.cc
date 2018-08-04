@@ -70,10 +70,10 @@ int main(const int argc, const char *argv[])
                     exec_this[j] = false;
                 break;
             }
-            int fld1 = 0;
+            // int fld1 = 0;
             int fld4 = idx_4so(ri[i], si[i], rj[i], sj[i], ra[i], sa[i], rb[i], sb[i], physics.n);
-            bool use_fld1 = ri[i] == rj[i] && ri[i] == ra[i] && ri[i] == rb[i] && si[i] == sa[i] && si[i] != sj[i];
-            if (use_fld1) fld1 = idx_1so(ri[i], si[i]);
+            // bool use_fld1 = ri[i] == rj[i] && ri[i] == ra[i] && ri[i] == rb[i] && si[i] == sa[i] && si[i] != sj[i];
+            // if (use_fld1) fld1 = idx_1so(ri[i], si[i]);
             if (seen_ijab.count(fld4)) { /*
                 cout << "Duplicate found at " << iline << " with " << seen_ijab[fld4];
                 if (use_fld1)
@@ -82,12 +82,14 @@ int main(const int argc, const char *argv[])
                 exec_this[i] = false; 
                 break; 
             }
+            /*
             if (use_fld1)
                 if (!seen_iiii.count(fld1))
                     seen_iiii[fld1] = iline;
                 else
                     seen_ijab[fld4] = iline;
             else
+             */
                 seen_ijab[fld4] = iline;
             exec_this[i] = true;
         }

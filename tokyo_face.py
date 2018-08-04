@@ -95,22 +95,28 @@ while(greentwo_fln.strip() != ''):
     l  =   int(greentwo_arr[6])
     sl =   int(greentwo_arr[7])
     x  = float(greentwo_arr[8])
-    if (not (i, si, j, sj, k, sk, l, sl) in seen_table):
-        if (i == j and k == l and i == k and si == sj and si != sk):
-            if (not (i, si) in iiii_table):
-                iiii_table[(i, si)] = greentwo_lnm
-            else:
-                seen_table[(i, si, j, sj, k, sk, l, sl)] = greentwo_lnm
-        else:
-            seen_table[(i, si, j, sj, k, sk, l, sl)] = greentwo_lnm
+    if (si == sj and not (i, si, j, sj, k, sk, l, sl) in seen_table):
+        # if (i == j and k == l and i == k and si == sj and si != sk):
+        #     if (not (i, si) in iiii_table):
+        #         iiii_table[(i, si)] = greentwo_lnm
+        #     else:
+        #         seen_table[(i, si, j, sj, k, sk, l, sl)] = greentwo_lnm
+        # else:
+        seen_table[(i, si, j, sj, k, sk, l, sl)] = greentwo_lnm
         doublon.measure(i, si, j, sj, k, sk, l, sl, x)
-        if (not runmode or greentwo_lnm > len(flip_index) or not flip_index[greentwo_lnm]):
-            sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
-        else:
+        sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
+        if (si != sk):
             if (k == l):
                 sstruct.measure(i, si, l, sl, k, sk, j, sj, greenone_dat[i + si][j + sj] - x)
             else:
                 sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
+        # if (not runmode or greentwo_lnm > len(flip_index) or not flip_index[greentwo_lnm]):
+        #     sstruct.measure(i, si, j, sj, k, sk, l, sl, x)
+        # else:
+        #     if (k == l):
+        #         sstruct.measure(i, si, l, sl, k, sk, j, sj, greenone_dat[i + si][j + sj] - x)
+        #     else:
+        #         sstruct.measure(i, si, l, sl, k, sk, j, sj, -x)
         if (len(sys.argv) < 5 or sys.argv[4][0] != '-'):
             sc.measure(i, si, k, sk, j, sj, l, sl, -x)
     # else:
