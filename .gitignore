@@ -4,5 +4,6 @@ __pycache__/
 .fortls
 *.pyc
 *.swp
+*.o
 *.x
 *.dSYM
