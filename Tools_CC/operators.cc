@@ -1,4 +1,5 @@
 #include "operators.hh"
+#include <cassert>
 #include <cstring>
 #include <ccomplex>
 #include <cmath>
@@ -13,6 +14,14 @@ inline double inner_r_qidx(double *r, int *qidx, const int ndim)
         sum += M_2_PI * qidx[i] * r[i];
     return sum;
 }
+// }
+
+// {
+// Virtual methods that MUST be overriden.
+void operators::operators::measure(int a, int sa, int b, int sb, 
+                                   int i, int si, int j, int sj, double x)
+{ abort(); }
+// }
 
 inline int idx_nd(const int *iqpt, const int *nqpt, const int ndim)
 {
@@ -82,7 +91,8 @@ operators::spin_struct::spin_struct(lattice::lattice system_i, int *ndiv)
     allocate_qpoints(points, ndiv, qpt_buff, 0, system.dim);
 }
 
-void operators::spin_struct::measure(int i, int si, int j, int sj, int k, int sk, int l, int sl, double x)
+void operators::spin_struct::measure(int i, int si, int j, int sj, 
+                                     int k, int sk, int l, int sl, double x)
 {
     if (i != j || k != l) 
         return;
