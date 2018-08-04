@@ -25,12 +25,6 @@ lattice::square2d::square2d(int w_i)
         }
 }
 
-lattice::square2d::~square2d()
-{
-    free_lut();
-    delete[] r_c;
-}
-
 void lattice::square2d::r(int *r, int i, int *r_q)
 { 
     // This routine sets not only \vec r, but also the quarter r_i is in
@@ -45,6 +39,14 @@ void lattice::square2d::r(int *r, int i, int *r_q)
         else 
             r_q[1] = 1;
     }
+}
+
+void lattice::square2d::r(double *rd, int i)
+{
+    int ri[2];
+    r(ri, i);
+    rd[0] = double(ri[0]);
+    rd[1] = double(ri[1]);
 }
 
 int lattice::square2d::calc_rmin(int i, int j)

@@ -29,16 +29,28 @@ namespace lattice
         }
 
         virtual ~lattice()
-        { free_lut(); }
+        {
+            free_lut(); 
+            if (r_c != nullptr) 
+                delete[] r_c; 
+        }
 
         /**
          * @brief Query integral location of site index i.
          * 
          * @param r Location will be written here. Make sure it's >= DIM.
          * @param i Index.
-         * @param r_q If the region's blocked, return block id in each direction.
+         * @param r_q If the region's sliced into blocks, return block id in each direction.
          */
         virtual void r(int *r, int i, int *r_q = nullptr);
+
+        /**
+         * @brief Query real fractional location of site index i.
+         * 
+         * @param r Location will be written here. Make sure it's >= DIM.
+         * @param i Index
+         */
+        virtual void r(double *r, int i);
 
         /**
          * @brief Calculates minimal (integral) distance squared between two sites.
@@ -69,16 +81,24 @@ namespace lattice
         int w;
 
         square2d(int w_i);
-        virtual ~square2d() override;
 
         /**
-         * @brief Implementation of r.
+         * @brief Implementation of integral r.
          * 
          * @param r Location will be written here. DIM=2
          * @param i Index.
          * @param r_q Block ID. DIM=2
          */
         virtual void r(int *r, int i, int *r_q = nullptr) override;
+
+        /**
+         * @brief Implementation of real r.
+         * 
+         * @param r Location will be written here. DIM=2
+         * @param i Index.
+         * @param r_q Block ID. DIM=2
+         */
+        virtual void r(double *r, int i) override;
 
         /**
          * @brief Implementation of prototype.
