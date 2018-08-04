@@ -82,10 +82,6 @@ namespace operators
         lattice::lattice &system;
         int n_points;
         int **points; ///< Q-points.
-        // Pauli matrices.
-        int pauli_x[2][2];
-        int pauli_y[2][2];
-        int pauli_z[2][2];
 
         /**
          * @brief Construct a new spin struct object.
@@ -93,7 +89,7 @@ namespace operators
          * @param system_i System.
          * @param ndiv Number of q-points in each dimension.
          */
-        spin_struct(lattice::lattice system_i, int *ndiv);
+        spin_struct(lattice::lattice &system_i, const int *ndiv);
 
         ~spin_struct()
         { for (int i = 0; i < n_points; i++) delete[] points[i]; delete[] points; }

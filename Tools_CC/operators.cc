@@ -4,6 +4,11 @@
 #include <ccomplex>
 #include <cmath>
 
+// Pauli matrices.
+static const int pauli_x[2][2] = { 0,  1, 1,  0 };
+static const int pauli_y[2][2] = { 0, -1, 1,  0 };
+static const int pauli_z[2][2] = { 1,  0, 0, -1 };
+
 // {
 // These are Tool Functions.
 // TODO: Put it somewhere else.
@@ -11,7 +16,7 @@ inline double inner_r_qidx(double *r, int *qidx, const int ndim)
 {
     double sum = 0;
     for (int i = 0; i < ndim; i++)
-        sum += M_2_PI * qidx[i] * r[i];
+        sum += 2 * M_PI * qidx[i] * r[i];
     return sum;
 }
 // }
@@ -77,8 +82,8 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
     }
 }
 
-operators::spin_struct::spin_struct(lattice::lattice system_i, int *ndiv)
-: operators::operators(), system(system_i) 
+operators::spin_struct::spin_struct(lattice::lattice &system_i, const int *ndiv)
+: operators::operators(), system(system_i)
 {
     // Total number of q-points.
     n_points = 1;
@@ -98,11 +103,11 @@ void operators::spin_struct::measure(int i, int si, int j, int sj,
         return;
     
     // Si \cdot Sk.
-    int spin_part = (pauli_x[si][sj] * pauli_x[sk][sl] 
-                   + pauli_z[si][sj] * pauli_z[sk][sl] 
-                   - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
+    double spin_part = (pauli_x[si][sj] * pauli_x[sk][sl] 
+                      + pauli_z[si][sj] * pauli_z[sk][sl] 
+                      - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
 
-    // exp(r * q) == cos(r * q) / 2 (by symmetry).
+    // exp(r * q) == cos(r * q) (by symmetry).
     double *dr = new double[system.dim],
            *r1 = new double[system.dim],
            *r2 = new double[system.dim];
@@ -111,7 +116,7 @@ void operators::spin_struct::measure(int i, int si, int j, int sj,
     for (int i = 0; i < system.dim; i++)
         dr[i] = r1[i] - r2[i];
     for (int i = 0; i < n_points; i++) {
-        double space_part = 1 / (6. * system.n * system.n) *
+        double space_part = 1 / (3. * system.n * system.n) *
                             std::cos(inner_r_qidx(dr, points[i], system.dim));
 #pragma omp critical
         values[i] += spin_part * space_part * x;
