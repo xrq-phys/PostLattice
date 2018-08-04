@@ -1,7 +1,7 @@
 # Simple Makefile to compile the cc programs.
 
 ifndef CXX
-	CC=g++
+	CXX=g++
 endif
 
 ifndef OMP_DIRECTIVE
