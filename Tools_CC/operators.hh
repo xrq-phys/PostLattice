@@ -19,7 +19,7 @@ namespace operators
 
         sc_corr(lattice::lattice &system_i, const int rc_count_i, const char form_i)
         : system(system_i), rc_count(rc_count_i), form(form_i)
-        { values = new double[rc_count]; }
+        { values = new double[rc_count]; for (int i = 0; i < rc_count; i++) values[i] = 0; }
 
         ~sc_corr()
         { delete[] values; }
@@ -54,5 +54,18 @@ namespace operators
          */
         bool validate(int a, int sa, int b, int sb, int i, int si, int j, int sj)
         { return si != sj && sa != sb && system.nn[a][b] && system.nn[i][j]; }
+    };
+
+    struct spin_struct
+    {
+        lattice::lattice &system;
+        int* points; ///< Q-poitns.
+        double *values; /// Measured values.
+        // Pauli matrices.
+        int pauli_x[2][2];
+        int pauli_y[2][2];
+        int pauli_z[2][2];
+
+        // NB: USE DOUBLE R ROUTINES WHEN EVALUATING
     };
 }
