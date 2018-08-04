@@ -18,8 +18,8 @@ default: sc_measure.cc.x sc_green.cc.x core.x
 	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) $< -o $@
 
 core.x: lattice.o green_gen.o operators.o trig_lattice.o
-	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) -std=c++17 -o core.x lattice.o green_gen.o operators.o trig_lattice.o
+	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) -o core.x lattice.o green_gen.o operators.o trig_lattice.o
 
 %.o: %.cc
-	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) -c $<
+	$(CXX) $(OMP_DIRECTIVE) $(EXTRA_FLAGS) -c -std=c++17 $<
 
