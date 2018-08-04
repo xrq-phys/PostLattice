@@ -66,7 +66,7 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
         if (form == 's') { /* Do nothing. */ }
         else if (form == 'd')
             if (system.nn[a][b] != system.nn[i][j] && 
-                system.nn[a][b] +  system.nn[i][j] == 1)
+                system.nn[a][b] +  system.nn[i][j] == 3)
                 sign = -sign;
 
         rmin = system.calc_rmin(b, i);
