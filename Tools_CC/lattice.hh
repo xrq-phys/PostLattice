@@ -9,12 +9,13 @@ namespace lattice
     struct lattice
     {
         int n;
+        int dim;    ///< Dimension.
         int *r_c;   ///< Minimal-r List.
         int **rmin; ///< Minimal r LUT.
         int **nn;   ///< Nearest-Neighhbour LUT.
 
-        lattice(int n_i)
-        : n(n_i)
+        lattice(int n_i, int dim_i)
+        : n(n_i), dim(dim_i)
         {
             nn = new int*[n];
             rmin = new int*[n];

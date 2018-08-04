@@ -9,7 +9,7 @@ int inner2(int *a, int*b)
 // }
 
 lattice::square2d::square2d(int w_i)
-: w(w_i), lattice::lattice(w * w)
+: w(w_i), lattice::lattice(w * w, 2)
 {
     // TODO: A better solution.
     int rc_s[12] = { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 };
