@@ -13,8 +13,13 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
 
         if (sb != si) 
             sign = -sign;
-        if (system.nn[a][b] != system.nn[i][j])
-            sign = -sign;
+
+        // Waveform factor only affects this part.
+        if (form == 's') { /* Do nothing. */ }
+        else if (form == 'd')
+            if (system.nn[a][b] != system.nn[i][j] && 
+                system.nn[a][b] +  system.nn[i][j] == 1)
+                sign = -sign;
 
         rmin = system.calc_rmin(b, i);
         for (int ii = 0; ii < rc_count; ii++)
