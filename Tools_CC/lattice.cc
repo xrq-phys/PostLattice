@@ -45,8 +45,8 @@ void lattice::square2d::r(double *rd, int i)
 {
     int ri[2];
     r(ri, i);
-    rd[0] = double(ri[0]);
-    rd[1] = double(ri[1]);
+    rd[0] = double(ri[0]) / w;
+    rd[1] = double(ri[1]) / w;
 }
 
 int lattice::square2d::calc_rmin(int i, int j)

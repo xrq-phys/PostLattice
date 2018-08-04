@@ -79,6 +79,6 @@ void lattice::trig2d::r(int *r, int i, int *r_q)
 void lattice::trig2d::r(double *r, int i)
 {
     int xi = i % a0W, yi = i / a0W;
-    r[0] = xi + double(yi % a1Lr) * a1Wr / a1Lr;
-    r[1] = yi;
+    r[0] = (xi + double(yi % a1Lr) * a1Wr / a1Lr) / a0W;
+    r[1] = (yi) / a1L;
 }
