@@ -18,7 +18,7 @@ long idx_1so(int i, int si)
 { return i * 2 + si; }
 // }
 
-void measure(lattice::lattice physics, operator_options &options)
+void measure(lattice::lattice &physics, operator_options &options)
 {
     fstream fid_g1e = fstream(options.g1e_fnm);
     fstream fid_g2e = fstream(options.g2e_fnm);

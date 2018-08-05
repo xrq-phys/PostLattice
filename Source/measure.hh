@@ -32,4 +32,4 @@ struct operator_options {
  * @param physics Lattice system.
  * @param options Options struct.
  */
-void measure(lattice::lattice physics, operator_options &options);
+void measure(lattice::lattice &physics, operator_options &options);
