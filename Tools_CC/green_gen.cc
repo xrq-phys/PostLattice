@@ -41,6 +41,11 @@ void write_caca(const char *caca_fnm, lattice::lattice &system)
                                  << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << std::endl
                                  << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << std::endl;
                         nopr += 4;
+                        if (i != k) {
+                            tmop_fid << i << ' ' << 1 << ' ' << l << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << j << ' ' << 0 << std::endl
+                                     << i << ' ' << 0 << ' ' << l << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << j << ' ' << 1 << std::endl;
+                            nopr += 2;
+                        }
                     } else if (system.nn[i][k] && system.nn[j][l]) {
                         tmop_fid << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << std::endl
                                  << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << std::endl;
