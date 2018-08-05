@@ -38,6 +38,16 @@ int main(int argc, char *argv[])
     options.g1e_fnm = inp_fid.Get("Control", "GreenOne", "Green1.txt").c_str();
     options.g2e_fnm = inp_fid.Get("Control", "GreenTwo", "Green2.txt").c_str();
     string mode_n = inp_fid.Get("Control", "Mode", "UNDEFINED");
+    // Allow command-line overriding of control parameters.
+    if (argc > 3) {
+        options.g1e_fnm = argv[2];
+        options.g2e_fnm = argv[3];
+        mode_n = "Measure";
+        if (argc == 5 && argv[4][0] == '-' && argv[4][1] == 'v')
+            options.verbose = true;
+    }
+
+    // Execute
     if (mode_n == "Gen") {
         write_ca  (options.g1e_fnm, *physics);
         write_caca(options.g2e_fnm, *physics);
