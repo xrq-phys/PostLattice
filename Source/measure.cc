@@ -89,8 +89,9 @@ void measure(lattice::lattice &physics, operator_options &options)
         for (int i = 0; i < nproc; i++)
             if (exec_this[i] && sa[i] == si[i]) {
 #pragma omp critical
-                cout << ' ' << ri[i] << ' ' << si[i] << ' ' << rj[i] << ' ' << sj[i]
-                     << ' ' << ra[i] << ' ' << sa[i] << ' ' << ra[i] << ' ' << sb[i] << ' ' << endl;
+                if (options.verbose)
+                    cout << ' ' << ri[i] << ' ' << si[i] << ' ' << rj[i] << ' ' << sj[i]
+                         << ' ' << ra[i] << ' ' << sa[i] << ' ' << ra[i] << ' ' << sb[i] << ' ' << endl;
                 if (options.sc != '-') {
                     dummy = x[i] + int(ra[i] == ri[i] && rb[i] == rj[i]) / 2.
                             - x1e[rj[i] * 2 + sj[i]][rb[i] * 2 + sb[i]] * int(ra[i] == ri[i]) / 2.
