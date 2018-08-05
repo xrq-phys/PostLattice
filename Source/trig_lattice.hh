@@ -6,7 +6,7 @@
 #include "lattice.hh"
 
 namespace lattice{
-    class trig2d
+    struct trig2d
     : lattice::lattice
     {
         int a0W, ///< Vector a0W with a0L = 0 (otherwise not supported here).
