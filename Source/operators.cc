@@ -12,7 +12,7 @@ static const int pauli_z[2][2] = { 1,  0, 0, -1 };
 // {
 // These are Tool Functions.
 // TODO: Put it somewhere else.
-inline double inner_r_qidx(double *r, int *qidx, const int ndim)
+inline double inner_r_qidx(double *r, const int *qidx, const int ndim)
 {
     double sum = 0;
     for (int i = 0; i < ndim; i++)
@@ -22,7 +22,7 @@ inline double inner_r_qidx(double *r, int *qidx, const int ndim)
 // }
 
 // {
-// Virtual methods that MUST be overriden.
+// Virtual methods that MUST be overridden.
 void operators::operators::measure(int a, int sa, int b, int sb, 
                                    int i, int si, int j, int sj, double x)
 { abort(); }
@@ -96,10 +96,10 @@ operators::spin_struct::spin_struct(lattice::lattice &system_i, const int *ndiv)
     allocate_qpoints(points, ndiv, qpt_buff, 0, system.dim);
 }
 
-void operators::spin_struct::measure(int i, int si, int j, int sj, 
-                                     int k, int sk, int l, int sl, double x)
+void operators::spin_struct::measure(int ri, int si, int rj, int sj,
+                                     int rk, int sk, int rl, int sl, double x)
 {
-    if (i != j || k != l) 
+    if (ri != rj || rk != rl)
         return;
     
     // Si \cdot Sk.
@@ -111,8 +111,8 @@ void operators::spin_struct::measure(int i, int si, int j, int sj,
     double *dr = new double[system.dim],
            *r1 = new double[system.dim],
            *r2 = new double[system.dim];
-    system.r(r1, i);
-    system.r(r2, k);
+    system.r(r1, ri);
+    system.r(r2, rk);
     for (int i = 0; i < system.dim; i++)
         dr[i] = r1[i] - r2[i];
     for (int i = 0; i < n_points; i++) {
