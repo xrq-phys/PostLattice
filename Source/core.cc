@@ -7,16 +7,18 @@
 #include "measure.hh"
 #include "lattice.hh"
 #include "trig_lattice.hh"
-#include <cassert>
+#include <iostream>
 #include <string>
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    assert(argc > 1);
+    if (argc < 2)
+    { cerr << "Usage: Post <Input>.ini" << endl; return 0; }
     INIReader inp_fid(argv[1]);
-    assert(inp_fid.ParseError() >= 0);
+    if (inp_fid.ParseError() < 0)
+    { cerr << "Bad or non-existing input file " << argv[1] << endl; abort(); }
 
     lattice::lattice *physics;
     string lattice_n = inp_fid.Get("Physics", "System", "UNDEFINED");
@@ -29,7 +31,7 @@ int main(int argc, char *argv[])
              a1W = inp_fid.GetInteger("Physics", "a1W", 0);
         physics = new lattice::trig2d(a0W, a1L, a1W);
     } else
-        abort();
+    { cerr << "System " << lattice_n << " is not supported." << endl; abort(); }
 
     operator_options options;
     options.verbose = inp_fid.GetBoolean("Control", "Verbose", false);
@@ -65,7 +67,8 @@ int main(int argc, char *argv[])
         options.sc_fnm = inp_fid.Get("Operator", "SC_Out", "sc.txt").c_str();
         options.af_fnm = inp_fid.Get("Operator", "AF_Out", "af.txt").c_str();
         measure(*physics, options);
-    }
+    } else
+    { cerr << "Unsupported job name " << mode_n << endl; abort(); }
 
     return 0;
 }
