@@ -8,4 +8,4 @@ ADD_EXECUTABLE (Post
 	green_gen.cc
 	core.cc)
 
-TARGET_LINK_LIBRARIES (Post PostLattice)
+TARGET_LINK_LIBRARIES (Post PostLattice inih)
