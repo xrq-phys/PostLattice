@@ -1,1 +1,0 @@
-These are standalone performance-optimized sc pre- and post-processors.
