@@ -4,8 +4,8 @@ ADD_LIBRARY (PostLattice
 	lattice.hh operators.hh trig_lattice.hh)
 
 ADD_EXECUTABLE (Post
-	green_gen.hh
-	green_gen.cc
+	green_gen.hh measure.hh
+	green_gen.cc measure.cc
 	core.cc)
 
 TARGET_LINK_LIBRARIES (Post PostLattice inih)
