@@ -9,26 +9,28 @@
 #define tm_fnm ("/tmp/greentwo.tmp")
 #endif
 
+using namespace std;
+
 void write_ca(const char *ca_fnm, lattice::lattice &system)
 {
-    std::fstream ca_fid(ca_fnm, std::fstream::out);
+    fstream ca_fid(ca_fnm, fstream::out);
 
-    ca_fid << "=================================" << std::endl
-           << " CiAj " << system.n * system.n * 2 << std::endl
-           << "=================================" << std::endl
-           << " CiAj Full ======================" << std::endl
-           << "=================================" << std::endl;
+    ca_fid << "=================================" << endl
+           << " CiAj " << system.n * system.n * 2 << endl
+           << "=================================" << endl
+           << " CiAj Full ======================" << endl
+           << "=================================" << endl;
     for (int i = 0; i < system.n; i++)
         for (int j = 0; j < system.n; j++) {
-            ca_fid << i << ' ' << 0 << ' ' << j << ' ' << 0 << std::endl
-                   << i << ' ' << 1 << ' ' << j << ' ' << 1 << std::endl;
+            ca_fid << i << ' ' << 0 << ' ' << j << ' ' << 0 << endl
+                   << i << ' ' << 1 << ' ' << j << ' ' << 1 << endl;
         }
     ca_fid.close();
 }
 
 void write_caca(const char *caca_fnm, lattice::lattice &system)
 {
-    std::fstream tmop_fid(tm_fnm, std::fstream::out);
+    fstream tmop_fid(tm_fnm, fstream::out);
     int nopr = 0;
     
     for (int i = 0; i < system.n; i++)
@@ -36,37 +38,37 @@ void write_caca(const char *caca_fnm, lattice::lattice &system)
             for (int k = 0; k < system.n; k++)
                 for (int l = 0; l < system.n; l++) {
                     if (i == j && k == l) {
-                        tmop_fid << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << std::endl 
-                                 << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << std::endl
-                                 << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << std::endl
-                                 << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << std::endl;
+                        tmop_fid << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << endl
+                                 << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << endl
+                                 << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << endl
+                                 << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << endl;
                         nopr += 4;
                         if (i != k) {
-                            tmop_fid << i << ' ' << 1 << ' ' << l << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << j << ' ' << 0 << std::endl
-                                     << i << ' ' << 0 << ' ' << l << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << j << ' ' << 1 << std::endl;
+                            tmop_fid << i << ' ' << 1 << ' ' << l << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << j << ' ' << 0 << endl
+                                     << i << ' ' << 0 << ' ' << l << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << j << ' ' << 1 << endl;
                             nopr += 2;
                         }
                     } else if (system.nn[i][k] && system.nn[j][l]) {
-                        tmop_fid << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << std::endl
-                                 << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << std::endl;
+                        tmop_fid << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << endl
+                                 << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << endl;
                         nopr += 2;
                     }
                 }
     tmop_fid.close();
     
-    std::fstream tmin_fid(tm_fnm);
-    std::fstream caca_fid(caca_fnm, std::fstream::out);
-    caca_fid << "=============================" << std::endl
-             << "   CiAjCkAlSCAF      " << nopr << std::endl
-             << "=============================" << std::endl
-             << "== SC/AF Correlation ========" << std::endl
-             << "=============================" << std::endl;
-    std::string io_buffer;
+    fstream tmin_fid(tm_fnm);
+    fstream caca_fid(caca_fnm, fstream::out);
+    caca_fid << "=============================" << endl
+             << "   CiAjCkAlSCAF      " << nopr << endl
+             << "=============================" << endl
+             << "== SC/AF Correlation ========" << endl
+             << "=============================" << endl;
+    string io_buffer;
     while (true) {
-        std::getline(tmin_fid, io_buffer);
+        getline(tmin_fid, io_buffer);
         if (tmin_fid.eof()) 
             break;
-        caca_fid << io_buffer << std::endl;
+        caca_fid << io_buffer << endl;
     }
     tmin_fid.close();
     caca_fid.close();
