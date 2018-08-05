@@ -1,0 +1,3 @@
+[submodule "External/inih"]
+	path = External/inih
+	url = https://github.com/xrq-phys/inih
