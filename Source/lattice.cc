@@ -62,7 +62,7 @@ void lattice::square2d::r(double *rd, int i)
 
 int lattice::square2d::calc_rmin(int i, int j)
 {
-    if (rmin[i][j] > 0)
+    if (rmin[i][j] >= 0)
         return rmin[i][j];
     else {
         int ri[2], rj[2], ri_q[2], rj_q[2];

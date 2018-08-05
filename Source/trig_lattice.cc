@@ -2,6 +2,17 @@
 #include <cstring>
 #include <numeric>
 
+// {
+// These are Tool Functions.
+// TODO: Put it somewhere else.
+int inner2_trig(const int *a, const int *b)
+{
+    return (a[0] - b[0]) * (a[0] - b[0]) +
+           (a[1] - b[1]) * (a[1] - b[1]) +
+           (a[1] - b[1]) * (a[0] - b[0]);
+}
+// }
+
 lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
 : a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i, 2)
 {
@@ -80,5 +91,58 @@ void lattice::trig2d::r(double *r, int i)
 {
     int xi = i % a0W, yi = i / a0W;
     r[0] = (xi + double(yi % a1Lr) * a1Wr / a1Lr) / a0W;
-    r[1] = (yi) / a1L;
+    r[1] = double(yi) / a1L;
+}
+
+int lattice::trig2d::calc_rmin(int i, int j) {
+    if (rmin[i][j] >= 0)
+        return rmin[i][j];
+    else {
+        double ri_f[2], rj_f[2];
+        int ri[2], rj[2];
+        int rtmp, rnew;
+        r(ri, i);
+        r(rj, j);
+        r(ri_f, i);
+        r(rj_f, j);
+
+        // [0, 0]
+        rtmp = inner2_trig(ri, rj);
+
+        // X Displacement.
+        if (ri_f[0] < rj_f[0])
+            ri[0] += a0W;
+        else
+            rj[0] += a0W;
+        rnew = inner2_trig(ri, rj);
+        if (rtmp > rnew)
+            rtmp = rnew;
+
+        // XY Displacement.
+        if (ri_f[1] < rj_f[1]) {
+            ri[0] += a1W;
+            ri[1] += a1L;
+        } else {
+            rj[0] += a1W;
+            rj[1] += a1L;
+        }
+        rnew = inner2_trig(ri, rj);
+        if (rtmp > rnew)
+            rtmp = rnew;
+
+        // Y Displacement.
+        if (ri_f[0] < rj_f[0])
+            ri[0] -= a0W;
+        else
+            rj[0] -= a0W;
+        rnew = inner2_trig(ri, rj);
+        if (rtmp > rnew)
+            rtmp = rnew;
+
+        // Update LUT.
+        rmin[i][j] = rtmp;
+        rmin[j][j] = rtmp;
+
+        return rtmp;
+    }
 }

@@ -32,6 +32,8 @@ namespace lattice{
          */
         virtual void r(double *r, int i) override;
 
+        virtual int calc_rmin(int i, int j) override;
+
         /**
          * @brief Get integral x and y coordinate in diamond x-y system.
          * 
