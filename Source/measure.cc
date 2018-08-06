@@ -109,12 +109,12 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
     fid_g2e.close();
 
-    fstream fid_out_sc("sc.txt", fstream::out);
+    fstream fid_out_sc(options.sc_fnm, fstream::out);
     for (int i = 0; i < opr_sc.rc_count; i++)
         fid_out_sc << setw(8) << sqrt(double(physics.r_c[i])) << ' ' << opr_sc.values[i] << endl;
     fid_out_sc.close();
 
-    fstream fid_out_af("af.txt", fstream::out);
+    fstream fid_out_af(options.af_fnm, fstream::out);
     for (int i = 0; i < opr_af.n_points; i++)
         fid_out_af << opr_af.points[i][0] << ' '
                    << opr_af.points[i][1] << ' ' << opr_af.values[i] << endl;
