@@ -3,8 +3,8 @@
 source VMC_Path.sh
 
 for i in 8 10 12 14 16; do
-	mkdir U10N$i
-	cd U10N$i
+	mkdir U10N$i.dir
+	cd    U10N$i.dir
 	cat > model.def << EOF
 W = 4
 L = 4

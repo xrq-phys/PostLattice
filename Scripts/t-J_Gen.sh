@@ -5,8 +5,8 @@ source VMC_Path.sh
 for i in 14 16; do
 	for j in 090 100 110 120 130 140; do
 		for t in 0.5 1.0 1.5; do
-			mkdir t$t-N$i-JRatio0.$j
-			cd t$t-N$i-JRatio0.$j
+			mkdir t$t-N$i-JRatio0.$j.dir
+			cd    t$t-N$i-JRatio0.$j.dir
 			cat > model.inp << EOF
 # NB: THIS IS NOT INPUT FILE FOR mVMC OR HPhi
 # SEPARATE AND REMOVE COMMENT BEFORE RUNNING
@@ -20,17 +20,17 @@ for i in 14 16; do
 &HEIS
  model   = "Spin"
  J       = 1.0
- J'      = 0.1 # 0.1 J
+ J'      = 0.$j # 0.$j J
 &END
 #
 &HUB
  model   = "Fermion Hubbard"
- nelec   = 10
+ nelec   = $i
  t       = $t
 &END
 EOF
 			# Concatinate Hamiltonian from Heisenberg and Hubbard model.
-			$anlys_ROOT/t-j_input.py model.inp
+			$anlys_ROOT/Tools_Py/t-j_input.py model.inp
 			$mVMC_ROOT/src/mVMC/vmcdry.out model.heis.def > init.heis.log
 			mv gutzwilleridx.def gutzwilleridx.def.bak
 			$mVMC_ROOT/src/mVMC/vmcdry.out model.hubb.def > init.hubb.log
