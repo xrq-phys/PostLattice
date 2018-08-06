@@ -138,3 +138,4 @@ ax_s.plot(delta_list, sc_list, color=color_s)
 ax_s.tick_params(axis='y')
 
 plt.show()
+

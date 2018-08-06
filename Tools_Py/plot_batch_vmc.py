@@ -174,3 +174,4 @@ ax_s.errorbar(delta_list, sc_list, sc_err, color=color_s)
 ax_s.tick_params(axis='y')
 
 plt.show()
+

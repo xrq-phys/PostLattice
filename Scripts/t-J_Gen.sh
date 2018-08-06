@@ -30,7 +30,7 @@ for i in 14 16; do
 &END
 EOF
 			# Concatinate Hamiltonian from Heisenberg and Hubbard model.
-			$anlys_ROOT/Tools_Py/t-j_input.py model.inp
+			$anlys_ROOT/Tools_Py/t-J_Input.py model.inp
 			$mVMC_ROOT/src/mVMC/vmcdry.out model.heis.def > init.heis.log
 			mv gutzwilleridx.def gutzwilleridx.def.bak
 			$mVMC_ROOT/src/mVMC/vmcdry.out model.hubb.def > init.hubb.log
