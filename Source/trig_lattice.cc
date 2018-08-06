@@ -16,10 +16,6 @@ int inner2_trig(const int *a, const int *b)
 lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
 : a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i, 2)
 {
-    const int supercell_n = std::gcd<int, int>(a1W, a1L);
-    a1Wr = a1W / supercell_n;
-    a1Lr = a1L / supercell_n;
-    
     // R_c.
     // TODO: A better solution.
     int rc_s[12] = { 0, 1, 1 + 1 + 1, 4, 4 + 1 + 2, 9, 4 + 4 + 4, 9 + 1 + 3, 16,
@@ -89,9 +85,10 @@ void lattice::trig2d::r(int *r, int i, int *r_q)
 
 void lattice::trig2d::r(double *r, int i)
 {
-    int xi = i % a0W, yi = i / a0W;
-    r[0] = (xi + double(yi % a1Lr) * a1Wr / a1Lr) / a0W;
-    r[1] = double(yi) / a1L;
+    int ri[2];
+    this->r(ri, i);
+    r[0] = (ri[0] - double(ri[1]) * a1W / a1L) / a0W;
+    r[1] = double(ri[1]) / a1L;
 }
 
 int lattice::trig2d::calc_rmin(int i, int j) {

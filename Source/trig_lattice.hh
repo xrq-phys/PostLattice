@@ -11,7 +11,6 @@ namespace lattice{
     {
         int a0W, ///< Vector a0W with a0L = 0 (otherwise not supported here).
             a1L, a1W; ///< Vector a1.
-        int a1Lr, a1Wr; ///< Smallest integral direction.
 
         trig2d(int a0W_i, int a1L_i, int a1W_i);
 
