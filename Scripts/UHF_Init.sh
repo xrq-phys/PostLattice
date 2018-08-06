@@ -15,7 +15,9 @@ IterationMax   20000
 EOF
 		sed -i '.bak' '/.*NSRCG.*/d' modpara.def
 		$mVMC_ROOT/src/ComplexUHF/UHF namelist.def
-		echo ' InOrbital zqp_APOrbital_opt.dat' >> namelist.def
+		if [ -e zqp_APOrbital_opt.dat ]; then
+			echo ' InOrbital zqp_APOrbital_opt.dat' >> namelist.def
+		fi
 		sed -i '.bak' '/.*Mix.*/d' modpara.def
 		sed -i '.bak' '/.*EPS.*/d' modpara.def
 		sed -i '.bak' '/.*IterationMax.*/d' modpara.def
