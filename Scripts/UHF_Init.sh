@@ -8,7 +8,7 @@ for i in ./*.dir; do
 --------------------
 Mix            0.4
 EPS            10
-IterationMax   8000
+IterationMax   20000
 --------------------
 EOF
 	sed -i '.bak' '/.*NSRCG.*/d' modpara.def

@@ -11,8 +11,8 @@ for i in ./*.dir; do
 		# Green Function Generation Phase
 		cat > model.ini << EOF
 [Control]
-GreenOne = Green1.dat
-GreenTwo = Green2.dat
+GreenOne = Green1.def
+GreenTwo = Green2.def
 Mode     = Gen
 Verbose  = 0
 
