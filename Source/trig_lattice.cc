@@ -1,6 +1,5 @@
 #include "trig_lattice.hh"
 #include <cstring>
-#include <numeric>
 
 // {
 // These are Tool Functions.
