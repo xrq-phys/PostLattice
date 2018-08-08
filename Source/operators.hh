@@ -37,6 +37,22 @@ namespace operators
     };
 
     /**
+     * @brief Double occupation.
+     */
+    struct doublon
+    : operators
+    {
+        doublon()
+        : operators() { values = new double; }
+
+        /**
+         * @brief Implement measurement.
+         * @param x < c a c a >
+         */
+        virtual void measure(int a, int sa, int b, int sb, int i, int si, int j, int sj, double x) override;
+    };
+
+    /**
      * @brief Superconductive correlation function.
      */
     struct sc_corr

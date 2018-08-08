@@ -30,6 +30,7 @@ void measure(lattice::lattice &physics, operator_options &options)
         for (int i = 0; i < physics.dim; i++)
             options.af_n[i] = 1;
     }
+    operators::doublon opr_db;
     operators::spin_struct opr_af(physics, options.af_n);
     operators::sc_corr opr_sc(physics, options.sc_n, options.sc);
 
@@ -105,6 +106,8 @@ void measure(lattice::lattice &physics, operator_options &options)
                         opr_af.measure(rb[i], sb[i], ri[i], si[i], ra[i], sa[i], rj[i], sj[i],
                                        -x[i] + (ri[i] == ra[i] ? x1e[rb[i] + sb[i]][rj[i] + sj[i]] : 0));
                 }
+                if (options.db)
+                    opr_db.measure(rb[i], sb[i], rj[i], sj[i], ra[i], sa[i], ri[i], si[i], x[i]);
             }
     }
     fid_g2e.close();
@@ -118,6 +121,10 @@ void measure(lattice::lattice &physics, operator_options &options)
     for (int i = 0; i < opr_af.n_points; i++)
         fid_out_af << opr_af.points[i][0] << ' '
                    << opr_af.points[i][1] << ' ' << opr_af.values[i] << endl;
+    fid_out_af.close();
+
+    fstream fid_out_db(options.db_fnm, fstream::out);
+    fid_out_db << opr_db.values[0] << endl;
     fid_out_af.close();
 
     delete[] ri; delete[] si; delete[] rj; delete[] sj;

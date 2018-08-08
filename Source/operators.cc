@@ -53,6 +53,10 @@ void allocate_qpoints(int **qpts, const int *nqpt, int *iqpt, const int dim, con
 }
 // }
 
+void operators::doublon::measure(int i, int si, int j, int sj,
+                                 int k, int sk, int l, int sl, double x)
+{ values[0] += (i == j && k == l && i == k && si == sj && sk == sl && si != sk) ? x / 2. : 0; }
+
 void operators::sc_corr::measure(int a, int sa, int b, int sb, 
                                  int i, int si, int j, int sj, double x)
 {
