@@ -19,14 +19,6 @@ inline double inner_r_qidx(double *r, const int *qidx, const int ndim)
         sum += 2 * M_PI * qidx[i] * r[i];
     return sum;
 }
-// }
-
-// {
-// Virtual methods that MUST be overridden.
-void operators::operators::measure(int a, int sa, int b, int sb, 
-                                   int i, int si, int j, int sj, double x)
-{ abort(); }
-// }
 
 inline int idx_nd(const int *iqpt, const int *nqpt, const int ndim)
 {
@@ -51,6 +43,13 @@ void allocate_qpoints(int **qpts, const int *nqpt, int *iqpt, const int dim, con
         std::memcpy(qpts[idx], iqpt, ndim * sizeof(int));
     }
 }
+// }
+
+// {
+// Virtual methods that MUST be overridden.
+void operators::operators::measure(int a, int sa, int b, int sb, 
+                                   int i, int si, int j, int sj, double x)
+{ abort(); }
 // }
 
 void operators::doublon::measure(int i, int si, int j, int sj,
