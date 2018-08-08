@@ -17,7 +17,7 @@ namespace operators
         operators()
         : values(nullptr) { }
 
-        ~operators()
+        virtual ~operators()
         { if (values != nullptr) delete[] values; }
 
         /**
@@ -107,7 +107,7 @@ namespace operators
          */
         spin_struct(lattice::lattice &system_i, const int *ndiv);
 
-        ~spin_struct()
+        virtual ~spin_struct() override
         { for (int i = 0; i < n_points; i++) delete[] points[i]; delete[] points; }
 
         /**
