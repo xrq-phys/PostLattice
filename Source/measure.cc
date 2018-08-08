@@ -125,7 +125,7 @@ void measure(lattice::lattice &physics, operator_options &options)
 
     fstream fid_out_db(options.db_fnm, fstream::out);
     fid_out_db << opr_db.values[0] << endl;
-    fid_out_af.close();
+    fid_out_db.close();
 
     delete[] ri; delete[] si; delete[] rj; delete[] sj;
     delete[] ra; delete[] sa; delete[] rb; delete[] sb;
