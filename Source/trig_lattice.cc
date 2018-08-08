@@ -37,7 +37,7 @@ lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
             ynn = 0;
             // x-index is conserved.
             xnn = x_idx(ri[0], ri[1]);
-            // Boudnary.
+            // Boundary.
             if (a1W % a1L) xnn++;
         } else {
             // x-coordinate conserved.
