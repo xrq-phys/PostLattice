@@ -3,7 +3,7 @@
 source VMC_Path.sh
 
 for i in ./*.dir; do
-	if [ ! -e zqp_APOrbital_opt.dat ]; then
+	if [ ! -e $i/zqp_APOrbital_opt.dat ]; then
 		cd $i
 		echo "Working on $i"
 		cat >> modpara.def << EOF
@@ -23,6 +23,8 @@ EOF
 		sed -i '.bak' '/.*IterationMax.*/d' modpara.def
 		echo ' NSRCG 0' >> modpara.def
 		cd ..
+	else
+		echo "Already done for $i"
 	fi
 done
 
