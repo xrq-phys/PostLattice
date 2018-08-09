@@ -30,9 +30,9 @@ lattice::square2d::square2d(int w_i)
     for (int xi = 0; xi < w; xi++)
         for (int yi = 0; yi < w; yi++) {
             nn[idx_2d(xi, yi)][idx_2d(xi, (yi + 1)     % w)] = 1;
-            nn[idx_2d(xi, yi)][idx_2d(xi, (yi - 1 + w) % w)] = 1;
+            nn[idx_2d(xi, yi)][idx_2d(xi, (yi - 1 + w) % w)] =-1;
             nn[idx_2d(xi, yi)][idx_2d((xi + 1)     % w, yi)] = 2;
-            nn[idx_2d(xi, yi)][idx_2d((xi - 1 + w) % w, yi)] = 2;
+            nn[idx_2d(xi, yi)][idx_2d((xi - 1 + w) % w, yi)] =-2;
         }
 }
 

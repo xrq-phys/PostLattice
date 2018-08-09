@@ -29,7 +29,7 @@ lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
 
         // 0 Deg direction.
         xnn = x_idx(ri[0], ri[1]);
-        nn[i][a0W * ri[1] + (xnn == 0 ? a0W - 1 : xnn - 1)] = 1;
+        nn[i][a0W * ri[1] + (xnn == 0 ? a0W - 1 : xnn - 1)] =-1;
         nn[i][a0W * ri[1] + (xnn == a0W - 1 ? 0 : xnn + 1)] = 1;
         // Y + 1.
         ynn = ri[1] + 1;
@@ -57,8 +57,8 @@ lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
             xnn = x_idx(ri[0], ri[1]);
         }
         xnn = ((xnn % a0W) + a0W) % a0W;
-        nn[i][a0W * ynn + xnn] = 2;
-        nn[i][a0W * ynn + (xnn == a0W - 1 ? 0 : xnn + 1)] = 3;
+        nn[i][a0W * ynn + xnn] =-2;
+        nn[i][a0W * ynn + (xnn == a0W - 1 ? 0 : xnn + 1)] =-3;
     }
 }
 

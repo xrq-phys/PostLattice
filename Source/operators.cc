@@ -1,6 +1,7 @@
 #include "operators.hh"
 #include <cassert>
 #include <cstring>
+#include <cstdlib>
 #include <ccomplex>
 #include <cmath>
 
@@ -71,11 +72,25 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
             sign = -sign;
 
         // Waveform factor only affects this part.
-        if (form == 's') { /* Do nothing. */ }
-        else if (form == 'd')
-            if (system.nn[a][b] != system.nn[i][j] && 
-                system.nn[a][b] +  system.nn[i][j] == 3)
+        if (form == 's' /* S */) { /* Do nothing. */ }
+        else if (form == 'd' /* D_{XY} */) {
+            int alpha_c = std::abs(system.nn[a][b]),
+                alpha_a = std::abs(system.nn[i][j]);
+            if (alpha_a != alpha_c &&
+                alpha_a +  alpha_c == 3)
                 sign = -sign;
+        } else if (form < '4' && form > '0' /* P in 3 directions */) {
+            if (std::abs(system.nn[a][b]) != std::abs(system.nn[i][j]) ||
+                std::abs(system.nn[a][b]) != form - '0')
+                return; // sign = 0;
+            sign *= system.nn[a][b] == system.nn[i][j] ? 1 : -1;
+        } else if (form == 'f' /* F_{X^3-3XY^2} */) {
+            sign *= system.nn[a][b] > 0 ? (system.nn[a][b] % 2) * 2 - 1
+                                        : (system.nn[a][b] % 2) * 2 + 1;
+            sign *= system.nn[i][j] > 0 ? (system.nn[i][j] % 2) * 2 - 1
+                                        : (system.nn[i][j] % 2) * 2 + 1;
+        } else
+            return; // Waveform not supported.
 
         rmin = system.calc_rmin(b, i);
         for (int ii = 0; ii < rc_count; ii++)
