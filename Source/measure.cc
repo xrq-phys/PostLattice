@@ -78,7 +78,7 @@ void measure(lattice::lattice &physics, operator_options &options)
             long fld4 = idx_4so(ri[i], si[i], rj[i], sj[i], ra[i], sa[i], rb[i], sb[i], physics.n);
             if (seen_ijab.count(fld4)) {
                 if (options.verbose)
-                    cout << "Duplicate found at " << iline << " with " << seen_ijab[fld4];
+                    cout << "Duplicate found at " << iline << " with " << seen_ijab[fld4] << endl;
                 exec_this[i] = false;
                 break;
             }
