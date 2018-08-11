@@ -18,4 +18,4 @@ void write_ca(const char *ca_fnm, lattice::lattice &system);
  * @param caca_fnm 2-body Green function definition filename.
  * @param system Lattice system object.
  */
-void write_caca(const char *caca_fnm, lattice::lattice &system);
+void write_caca(const char *caca_fnm, lattice::lattice &system, bool sc = true);

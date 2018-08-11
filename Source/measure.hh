@@ -17,6 +17,7 @@ struct operator_options {
     char sc = '-'; ///< Waveform
     int  sc_n = 4;
     int *af_n = nullptr;
+    bool direct = false;
     bool verbose = false;
     const char *sc_fnm = nullptr;
     const char *af_fnm = nullptr;

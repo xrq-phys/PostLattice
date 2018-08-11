@@ -93,7 +93,7 @@ void measure(lattice::lattice &physics, operator_options &options)
                 if (options.verbose)
                     cout << ' ' << ri[i] << ' ' << si[i] << ' ' << rj[i] << ' ' << sj[i]
                          << ' ' << ra[i] << ' ' << sa[i] << ' ' << ra[i] << ' ' << sb[i] << ' ' << endl;
-                if (options.sc != '-') {
+                if (options.sc != '-' && si[i] == sa[i]) { // For HPhi, we don't use DUUD/UDDU terms.
                     dummy = x[i] + int(ra[i] == ri[i] && rb[i] == rj[i]) / 2.
                             - x1e[rj[i] * 2 + sj[i]][rb[i] * 2 + sb[i]] * int(ra[i] == ri[i]) / 2.
                             - x1e[ri[i] * 2 + si[i]][ra[i] * 2 + sa[i]] * int(rb[i] == rj[i]) / 2.;
@@ -102,7 +102,7 @@ void measure(lattice::lattice &physics, operator_options &options)
                 }
                 if (options.af) {
                     opr_af.measure(rb[i], sb[i], rj[i], sj[i], ra[i], sa[i], ri[i], si[i], x[i]);
-                    if (si[i] != sj[i])
+                    if (si[i] != sj[i] && !options.direct) // For HPhi, use flipping terms instead.
                         opr_af.measure(rb[i], sb[i], ri[i], si[i], ra[i], sa[i], rj[i], sj[i],
                                        -x[i] + (ri[i] == ra[i] ? x1e[rb[i] + sb[i]][rj[i] + sj[i]] : 0));
                 }
