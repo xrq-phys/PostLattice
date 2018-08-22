@@ -19,8 +19,8 @@ int lattice::lattice::calc_rmin(int i, int j)
 { abort(); }
 // }
 
-lattice::square2d::square2d(int w_i)
-: w(w_i), lattice::lattice(w_i * w_i, 2)
+lattice::square2d::square2d(int w_i, int l_i)
+: w(w_i), l(l_i), lattice::lattice(w_i * l_i, 2)
 {
     // TODO: A better solution.
     int rc_s[12] = { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 };
@@ -29,8 +29,8 @@ lattice::square2d::square2d(int w_i)
 
     for (int xi = 0; xi < w; xi++)
         for (int yi = 0; yi < w; yi++) {
-            nn[idx_2d(xi, yi)][idx_2d(xi, (yi + 1)     % w)] = 1;
-            nn[idx_2d(xi, yi)][idx_2d(xi, (yi - 1 + w) % w)] =-1;
+            nn[idx_2d(xi, yi)][idx_2d(xi, (yi + 1)     % l)] = 1;
+            nn[idx_2d(xi, yi)][idx_2d(xi, (yi - 1 + l) % l)] =-1;
             nn[idx_2d(xi, yi)][idx_2d((xi + 1)     % w, yi)] = 2;
             nn[idx_2d(xi, yi)][idx_2d((xi - 1 + w) % w, yi)] =-2;
         }
@@ -45,7 +45,7 @@ void lattice::square2d::r(int *r, int i, int *r_q)
             r_q[0] = 0;
         else 
             r_q[0] = 1;
-        if (r[1] < w / 2)
+        if (r[1] < l / 2)
             r_q[1] = 0;
         else 
             r_q[1] = 1;
@@ -57,7 +57,7 @@ void lattice::square2d::r(double *rd, int i)
     int ri[2];
     r(ri, i);
     rd[0] = double(ri[0]) / w;
-    rd[1] = double(ri[1]) / w;
+    rd[1] = double(ri[1]) / l;
 }
 
 int lattice::square2d::calc_rmin(int i, int j)
@@ -87,9 +87,9 @@ int lattice::square2d::calc_rmin(int i, int j)
         // Different Y quarter
         if (ri_q[1] != rj_q[1]) {
             if (ri_q[1] == 0)
-                ri[1] += w;
+                ri[1] += l;
             else 
-                rj[1] += w;
+                rj[1] += l;
             rnew = inner2(ri, rj);
             if (rtmp > rnew)
                 rtmp = rnew;

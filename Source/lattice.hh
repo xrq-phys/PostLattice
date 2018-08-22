@@ -79,9 +79,10 @@ namespace lattice
     struct square2d
     : lattice::lattice
     {
-        int w;
+        int w; ///< Number of columns (x-length).
+        int l; ///< Number of rows    (y-length).
 
-        square2d(int w_i);
+        square2d(int w_i, int l_i);
 
         /**
          * @brief Implementation of integral r.
