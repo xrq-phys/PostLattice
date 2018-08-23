@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     string lattice_n = inp_fid.Get("Physics", "System", "UNDEFINED");
     if (lattice_n == "Square") {
         long W = inp_fid.GetInteger("Physics", "W", 1);
-        long L = inp_fid.GetInteger("Physics", "L", 1);
+        long L = inp_fid.GetInteger("Physics", "L", W);
         physics = new lattice::square2d(W, L);
     } else if (lattice_n == "Triangular") {
         long a0W = inp_fid.GetInteger("Physics", "a0W", 1),
