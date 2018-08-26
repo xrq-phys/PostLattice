@@ -5,13 +5,14 @@
 #pragma once
 #include "lattice.hh"
 #include "operators.hh"
+#include <string>
 
 /**
  * @brief Options for operators being evaluated.
  */
 struct operator_options {
-    const char *g1e_fnm = nullptr;
-    const char *g2e_fnm = nullptr;
+    std::string g1e_fnm = "";
+    std::string g2e_fnm = "";
     bool db = true;
     bool af = true;
     char sc = '-'; ///< Waveform
@@ -19,9 +20,9 @@ struct operator_options {
     int *af_n = nullptr;
     bool direct = false;
     bool verbose = false;
-    const char *sc_fnm = nullptr;
-    const char *af_fnm = nullptr;
-    const char *db_fnm = nullptr;
+    std::string sc_fnm = "";
+    std::string af_fnm = "";
+    std::string db_fnm = "";
 
     ~operator_options()
     { delete[] af_n; }

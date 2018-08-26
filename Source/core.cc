@@ -37,8 +37,8 @@ int main(int argc, char *argv[])
     operator_options options;
     options.direct = inp_fid.GetBoolean("Control", "Direct", false);
     options.verbose = inp_fid.GetBoolean("Control", "Verbose", false);
-    options.g1e_fnm = inp_fid.Get("Control", "GreenOne", "Green1.txt").c_str();
-    options.g2e_fnm = inp_fid.Get("Control", "GreenTwo", "Green2.txt").c_str();
+    options.g1e_fnm = inp_fid.Get("Control", "GreenOne", "Green1.txt");
+    options.g2e_fnm = inp_fid.Get("Control", "GreenTwo", "Green2.txt");
     string mode_n = inp_fid.Get("Control", "Mode", "UNDEFINED");
     // Allow command-line overriding of control parameters.
     if (argc > 3) {
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
 
     // Execute
     if (mode_n == "Gen") {
-        write_ca  (options.g1e_fnm, *physics);
-        write_caca(options.g2e_fnm, *physics,
+        write_ca  (options.g1e_fnm.c_str(), *physics);
+        write_caca(options.g2e_fnm.c_str(), *physics,
                    inp_fid.Get("Operator", "SC", "-").c_str()[0] != '-');
     } else if (mode_n == "Measure") {
         options.db = inp_fid.GetBoolean("Operator", "Doublon", true);
