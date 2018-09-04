@@ -10,6 +10,7 @@ namespace lattice
     {
         int n;
         int dim;    ///< Dimension.
+        int rc_n;   ///< Number of R_c to Measure.
         int *r_c;   ///< Minimal-r List.
         int **rmin; ///< Minimal r LUT.
         int **nn;   ///< Nearest-Neighhbour LUT.

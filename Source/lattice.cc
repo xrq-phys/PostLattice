@@ -9,7 +9,7 @@
 // TODO: Put it somewhere else.
 int inner2(int *a, int*b)
 { return ((a[0] - b[0]) * (a[0] - b[0])) + ((a[1] - b[1]) * (a[1] - b[1])); }
-void sorted_rc_sq2d(int *&r_c, int hW, int hL)
+int sorted_rc_sq2d(int *&r_c, int hW, int hL)
 {
     std::vector<int> r_v(hW * hL, 0);
     for (int i = 0; i < hW; i++)
@@ -24,6 +24,7 @@ void sorted_rc_sq2d(int *&r_c, int hW, int hL)
     r_c = new int[r_v.size()];
     for (int i = 0; i < r_v.size(); i++)
         r_c[i] = r_v[i];
+    return r_v.size();
 }
 // }
 
@@ -40,7 +41,7 @@ int lattice::lattice::calc_rmin(int i, int j)
 lattice::square2d::square2d(int w_i, int l_i)
 : w(w_i), l(l_i), lattice::lattice(w_i * l_i, 2)
 {
-    sorted_rc_sq2d(r_c, w_i / 2 + 1, l_i / 2 + 1);
+    rc_n = sorted_rc_sq2d(r_c, w_i / 2 + 1, l_i / 2 + 1);
 
     for (int xi = 0; xi < w; xi++)
         for (int yi = 0; yi < l; yi++) {

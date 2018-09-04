@@ -19,7 +19,7 @@ lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
     // TODO: A better solution.
     int rc_s[12] = { 0, 1, 1 + 1 + 1, 4, 4 + 1 + 2, 9, 4 + 4 + 4, 9 + 1 + 3, 16,
                      9 + 4 + 6, 25, 9 + 9 + 9 };
-    r_c = new int[12];
+    r_c = new int[12]; rc_n = 12;
     std::memcpy(r_c, rc_s, 12 * sizeof(int));
 
     // Update LUT.

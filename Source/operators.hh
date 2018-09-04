@@ -63,7 +63,8 @@ namespace operators
         int rc_count; ///< Number of R_c's to use.
 
         sc_corr(lattice::lattice &system_i, const int rc_count_i, const char form_i)
-        : operators::operators(), system(system_i), rc_count(rc_count_i), form(form_i)
+        : operators::operators(), system(system_i), form(form_i),
+          rc_count(rc_count_i < system_i.rc_n ? rc_count_i : system_i.rc_n)
         { values = new double[rc_count]; for (int i = 0; i < rc_count; i++) values[i] = 0; }
 
         /**
