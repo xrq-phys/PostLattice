@@ -1,12 +1,30 @@
 #include "lattice.hh"
 #include <cstring>
 #include <cstdlib>
+#include <vector>
+#include <algorithm>
 
 // {
 // These are Tool Functions.
 // TODO: Put it somewhere else.
 int inner2(int *a, int*b)
 { return ((a[0] - b[0]) * (a[0] - b[0])) + ((a[1] - b[1]) * (a[1] - b[1])); }
+void sorted_rc_sq2d(int *&r_c, int hW, int hL)
+{
+    std::vector<int> r_v(hW * hL, 0);
+    for (int i = 0; i < hW; i++)
+        for (int j = 0; j < hL; j++)
+            r_v[i * hL + j] = i * i + j * j;
+    std::sort(r_v.begin(), r_v.end());
+    for (auto r = r_v.begin() + 1; r != r_v.end(); )
+        if (*r == *(r - 1)) 
+            r_v.erase(r);
+        else 
+            ++r;
+    r_c = new int[r_v.size()];
+    for (int i = 0; i < r_v.size(); i++)
+        r_c[i] = r_v[i];
+}
 // }
 
 // {
@@ -22,10 +40,7 @@ int lattice::lattice::calc_rmin(int i, int j)
 lattice::square2d::square2d(int w_i, int l_i)
 : w(w_i), l(l_i), lattice::lattice(w_i * l_i, 2)
 {
-    // TODO: A better solution.
-    int rc_s[12] = { 0, 1, 1 + 1, 4, 1 + 4, 4 + 4, 9, 9 + 1, 9 + 4, 16, 9 + 9, 16 + 1 };
-    r_c = new int[12];
-    std::memcpy(r_c, rc_s, 12 * sizeof(int));
+    sorted_rc_sq2d(r_c, w_i / 2 + 1, l_i / 2 + 1);
 
     for (int xi = 0; xi < w; xi++)
         for (int yi = 0; yi < l; yi++) {
