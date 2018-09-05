@@ -12,6 +12,7 @@ namespace lattice
         int dim;    ///< Dimension.
         int rc_n;   ///< Number of R_c to Measure.
         int *r_c;   ///< Minimal-r List.
+        int *r_n;   ///< Number of Lattice Points at Each R_c.
         int **rmin; ///< Minimal r LUT.
         int **nn;   ///< Nearest-Neighhbour LUT.
 
@@ -31,11 +32,7 @@ namespace lattice
         }
 
         virtual ~lattice()
-        {
-            free_lut(); 
-            if (r_c != nullptr) 
-                delete[] r_c; 
-        }
+        { free_lut(); delete[] r_c; delete[] r_n; }
 
         /**
          * @brief Query integral location of site index i.
@@ -120,4 +117,11 @@ namespace lattice
         int idx_2d(int x, int y) 
         { return y*w + x; }
     };
+
+    /**
+     * @brief Initializes The System's R_c For SC Calculation. 
+     *        Sets R_c list, number of sites with R=R_c and total number of R_c.
+     * @param system The lattice system object.
+     */
+    void sorted_rc(lattice::lattice &system);
 }

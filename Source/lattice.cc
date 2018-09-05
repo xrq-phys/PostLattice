@@ -5,27 +5,9 @@
 #include <algorithm>
 
 // {
-// These are Tool Functions.
-// TODO: Put it somewhere else.
+// Local Tool Functions.
 int inner2(int *a, int*b)
 { return ((a[0] - b[0]) * (a[0] - b[0])) + ((a[1] - b[1]) * (a[1] - b[1])); }
-int sorted_rc_sq2d(int *&r_c, int hW, int hL)
-{
-    std::vector<int> r_v(hW * hL, 0);
-    for (int i = 0; i < hW; i++)
-        for (int j = 0; j < hL; j++)
-            r_v[i * hL + j] = i * i + j * j;
-    std::sort(r_v.begin(), r_v.end());
-    for (auto r = r_v.begin() + 1; r != r_v.end(); )
-        if (*r == *(r - 1)) 
-            r_v.erase(r);
-        else 
-            ++r;
-    r_c = new int[r_v.size()];
-    for (int i = 0; i < r_v.size(); i++)
-        r_c[i] = r_v[i];
-    return r_v.size();
-}
 // }
 
 // {
@@ -38,10 +20,33 @@ int lattice::lattice::calc_rmin(int i, int j)
 { abort(); }
 // }
 
+void lattice::sorted_rc(lattice::lattice &system)
+{
+    std::vector<int> r_v(system.n, 0);
+    std::vector<int> n_v(system.n, 1);
+    for (int i = 0; i < system.n; i++)
+        r_v[i] = system.calc_rmin(0, i);
+    std::sort(r_v.begin(), r_v.end());
+    for (int i = 1; i != r_v.size(); )
+        if (r_v[i] == r_v[i - 1]) {
+            r_v.erase(r_v.begin() + i);
+            n_v.erase(n_v.begin() + i);
+            n_v[i - 1]++;
+        } else
+            i++;
+    system.r_c = new int[r_v.size()];
+    system.r_n = new int[n_v.size()];
+    system.rc_n = r_v.size();
+    for (int i = 0; i < r_v.size(); i++) {
+        system.r_c[i] = r_v[i];
+        system.r_n[i] = n_v[i];
+    }
+}
+
 lattice::square2d::square2d(int w_i, int l_i)
 : w(w_i), l(l_i), lattice::lattice(w_i * l_i, 2)
 {
-    rc_n = sorted_rc_sq2d(r_c, w_i / 2 + 1, l_i / 2 + 1);
+    sorted_rc(*this);
 
     for (int xi = 0; xi < w; xi++)
         for (int yi = 0; yi < l; yi++) {

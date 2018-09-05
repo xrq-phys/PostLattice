@@ -15,12 +15,7 @@ int inner2_trig(const int *a, const int *b)
 lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
 : a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i, 2)
 {
-    // R_c.
-    // TODO: A better solution.
-    int rc_s[12] = { 0, 1, 1 + 1 + 1, 4, 4 + 1 + 2, 9, 4 + 4 + 4, 9 + 1 + 3, 16,
-                     9 + 4 + 6, 25, 9 + 9 + 9 };
-    r_c = new int[12]; rc_n = 12;
-    std::memcpy(r_c, rc_s, 12 * sizeof(int));
+    sorted_rc(*this);
 
     // Update LUT.
     int ri[2], ynn, xnn;
