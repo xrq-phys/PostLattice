@@ -20,7 +20,7 @@ int lattice::lattice::calc_rmin(int i, int j)
 { abort(); }
 // }
 
-void lattice::sorted_rc(lattice::lattice &system)
+void lattice::sorted_rc(lattice &system)
 {
     std::vector<int> r_v(system.n, 0);
     std::vector<int> n_v(system.n, 1);

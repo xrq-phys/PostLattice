@@ -123,5 +123,5 @@ namespace lattice
      *        Sets R_c list, number of sites with R=R_c and total number of R_c.
      * @param system The lattice system object.
      */
-    void sorted_rc(lattice::lattice &system);
+    void sorted_rc(lattice &system);
 }
