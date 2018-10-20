@@ -1,5 +1,5 @@
 ADD_LIBRARY (PostLattice
-	SHARED
+	STATIC
 	lattice.cc operators.cc trig_lattice.cc
 	lattice.hh operators.hh trig_lattice.hh)
 
@@ -11,4 +11,4 @@ ADD_EXECUTABLE (Post
 TARGET_LINK_LIBRARIES (Post PostLattice inih)
 INSTALL (TARGETS Post PostLattice
 	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib)
+	ARCHIVE DESTINATION lib)
