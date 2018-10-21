@@ -16,6 +16,7 @@ struct operator_options {
     bool db = true;
     bool af = true;
     char sc = '-'; ///< Waveform
+    char sc_stat = 'S'; ///< Statistic mode
     int  sc_n = 4;
     int *af_n = nullptr;
     bool direct = false;

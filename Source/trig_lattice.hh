@@ -31,6 +31,8 @@ namespace lattice{
          */
         virtual void r(double *r, int i) override;
 
+        virtual int idx_rij(int x, int y) override;
+
         virtual int calc_rmin(int i, int j) override;
 
         /**

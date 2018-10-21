@@ -58,8 +58,10 @@ int main(int argc, char *argv[])
         options.db = inp_fid.GetBoolean("Operator", "Doublon", true);
         options.af = inp_fid.GetBoolean("Operator", "Spin_Structure", true);
         options.sc = inp_fid.Get("Operator", "SC", "-").c_str()[0];
-        if (options.sc != '-')
+        if (options.sc != '-') {
             options.sc_n = inp_fid.GetInteger("Operator", "SC_NumR", 6);
+            options.sc_stat = inp_fid.Get("Operator", "SC_Stat", "S").c_str()[0];
+        }
         if (options.af)
             switch (physics->dim) {
             case 2:

@@ -94,11 +94,8 @@ void measure(lattice::lattice &physics, operator_options &options)
                     cout << ' ' << ri[i] << ' ' << si[i] << ' ' << rj[i] << ' ' << sj[i]
                          << ' ' << ra[i] << ' ' << sa[i] << ' ' << ra[i] << ' ' << sb[i] << ' ' << endl;
                 if (options.sc != '-' && si[i] == sa[i]) { // For HPhi, we don't use DUUD/UDDU terms.
-                    dummy = x[i] + int(ra[i] == ri[i] && rb[i] == rj[i]) / 2.
-                            - x1e[rj[i] * 2 + sj[i]][rb[i] * 2 + sb[i]] * int(ra[i] == ri[i]) / 2.
-                            - x1e[ri[i] * 2 + si[i]][ra[i] * 2 + sa[i]] * int(rb[i] == rj[i]) / 2.;
-                    opr_sc.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -dummy);
-                    opr_sc.measure(rb[i], sb[i], ra[i], sa[i], ri[i], si[i], rj[i], sj[i],  dummy);
+                    opr_sc.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -x[i]);
+                    opr_sc.measure(rb[i], sb[i], ra[i], sa[i], ri[i], si[i], rj[i], sj[i],  x[i]);
                 }
                 if (options.af) {
                     opr_af.measure(rb[i], sb[i], rj[i], sj[i], ra[i], sa[i], ri[i], si[i], x[i]);
@@ -113,6 +110,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     fid_g2e.close();
 
     if (options.sc != '-') {
+        opr_sc.refresh(options.sc_stat);
         fstream fid_out_sc(options.sc_fnm, fstream::out);
         for (int i = 0; i < opr_sc.rc_count; i++)
             fid_out_sc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
@@ -122,6 +120,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
 
     if (options.af) {
+        opr_af.refresh();
         fstream fid_out_af(options.af_fnm, fstream::out);
         for (int i = 0; i < opr_af.n_points; i++)
             fid_out_af << scientific << opr_af.points[i][0] << ' ' << opr_af.points[i][1] << ' '
@@ -130,6 +129,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
 
     if (options.db) {
+        opr_af.refresh();
         fstream fid_out_db(options.db_fnm, fstream::out);
         fid_out_db << scientific << opr_db.values[0] << endl;
         fid_out_db.close();

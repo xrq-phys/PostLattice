@@ -18,6 +18,8 @@ void lattice::lattice::r(int *r, int i, int *r_q)
 { abort(); }
 int lattice::lattice::calc_rmin(int i, int j)
 { abort(); }
+int lattice::lattice::idx_rij(int i, int j)
+{ abort(); }
 // }
 
 void lattice::sorted_rc(lattice &system)
@@ -79,6 +81,17 @@ void lattice::square2d::r(double *rd, int i)
     r(ri, i);
     rd[0] = double(ri[0]) / w;
     rd[1] = double(ri[1]) / l;
+}
+
+int lattice::square2d::idx_rij(int i, int j)
+{
+    int ri[2],
+        rj[2];
+    r(ri, i);
+    r(rj, j);
+    ri[0] = (ri[0] - rj[0] + w) % w;
+    ri[1] = (ri[1] - rj[1] + l) % l;
+    return idx_2d(ri[0], ri[1]);
 }
 
 int lattice::square2d::calc_rmin(int i, int j)

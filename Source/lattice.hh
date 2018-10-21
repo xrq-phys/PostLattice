@@ -52,6 +52,15 @@ namespace lattice
         virtual void r(double *r, int i);
 
         /**
+         * @brief Returns site index corresponding to the lattice vector
+         *        which is the distance between site i and j.
+         * @param i Site i.
+         * @param j Site j.
+         * @return The index.
+         */
+        virtual int idx_rij(int i, int j);
+
+        /**
          * @brief Calculates minimal (integral) distance squared between two sites.
          * 
          * @param i Site 1.
@@ -99,6 +108,8 @@ namespace lattice
          * @param r_q Block ID. DIM=2
          */
         virtual void r(double *r, int i) override;
+
+        virtual int idx_rij(int x, int y) override;
 
         /**
          * @brief Implementation of prototype.

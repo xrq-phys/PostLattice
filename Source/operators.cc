@@ -62,8 +62,6 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
 {
     int sign;
     int rmin;
-    int rb[2], 
-        ri[2];
     
     if (validate(a, sa, b, sb, i, si, j, sj)) {
         sign = 1;
@@ -92,12 +90,31 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
         } else
             return; // Waveform not supported.
 
-        rmin = system.calc_rmin(b, i);
-        for (int ii = 0; ii < rc_count; ii++)
-            if (rmin == system.r_c[ii])
 #pragma omp critical
-            values[ii] += x * sign / (2. * system.n);
+        val_mat[system.idx_rij(i, b)] += x * sign / (2. * system.n);
     }
+}
+
+void operators::sc_corr::refresh()
+{ refresh('S'); }
+
+void operators::sc_corr::refresh(char mode)
+{
+    if (mode == 'M' || mode == 'm')
+        for (int i = 0; i < system.n; i++) {
+            int rmin = system.calc_rmin(0, i);
+            for (int j = 0; j < rc_count; j++)
+                if (rmin == system.r_c[j])
+                    if (std::abs(values[j]) < std::abs(val_mat[i]))
+                        values[j] = val_mat[i];
+        }
+    else
+        for (int i = 0; i < system.n; i++) {
+            int rmin = system.calc_rmin(0, i);
+            for (int j = 0; j < rc_count; j++)
+                if (rmin == system.r_c[j])
+                    values[j] += val_mat[i];
+        }
 }
 
 operators::spin_struct::spin_struct(lattice::lattice &system_i, const int *ndiv)

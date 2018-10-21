@@ -34,6 +34,11 @@ namespace operators
          * @param x  < c c a a > or < c a c a > depending on form of the operator.
          */
         virtual void measure(int a, int sa, int b, int sb, int i, int si, int j, int sj, double x);
+
+        /**
+         * @brief Refresh operator data so that it's ready for output.
+         */
+        virtual void refresh() { }
     };
 
     /**
@@ -59,19 +64,28 @@ namespace operators
     : operators
     {
         lattice::lattice &system;
+        double *val_mat; ///< Storage for SC corrlation at indiex difference i.
         char form; ///< Wave form factor of superconductivity: s, d or p.
         int rc_count; ///< Number of R_c's to use.
 
         sc_corr(lattice::lattice &system_i, const int rc_count_i, const char form_i)
         : operators::operators(), system(system_i), form(form_i),
           rc_count(rc_count_i < system_i.rc_n ? rc_count_i : system_i.rc_n)
-        { values = new double[rc_count]; for (int i = 0; i < rc_count; i++) values[i] = 0; }
+        { values = new double[rc_count]; for (int i = 0; i < rc_count; i++) values[i] = 0; 
+          val_mat = new double[system_i.n]; for (int i = 0; i < system_i.n; i++) val_mat[i] = 0; }
+
+        virtual ~sc_corr()
+        { delete[] val_mat; delete[] values; val_mat = nullptr; values = nullptr; }
 
         /**
          * @brief Implement measurement.
          * @param x < c c a a >
          */
         virtual void measure(int a, int sa, int b, int sb, int i, int si, int j, int sj, double x) override;
+
+        virtual void refresh() override;
+
+        virtual void refresh(char mode);
 
         /**
          * @brief Validation if a term MIGHT have contribution to SC correlation.
