@@ -22,16 +22,16 @@ int main(int argc, char *argv[])
 
     lattice::lattice *physics;
     string lattice_n = inp_fid.Get("Physics", "System", "UNDEFINED");
-    if (lattice_n == "Square") {
-        long W = inp_fid.GetInteger("Physics", "W", 1);
-        long L = inp_fid.GetInteger("Physics", "L", W);
-        physics = new lattice::square2d(W, L);
-    } else if (lattice_n == "Triangular") {
-        long a0W = inp_fid.GetInteger("Physics", "a0W", 1),
-             a1L = inp_fid.GetInteger("Physics", "a1L", 1),
-             a1W = inp_fid.GetInteger("Physics", "a1W", 0);
+    long W = inp_fid.GetInteger("Physics", "W", 1);
+    long L = inp_fid.GetInteger("Physics", "L", W);
+    long a0W = inp_fid.GetInteger("Physics", "a0W", W);
+    long a1L = inp_fid.GetInteger("Physics", "a1L", L);
+    long a1W = inp_fid.GetInteger("Physics", "a1W", 0);
+    if (lattice_n == "Square")
+        physics = new lattice::square2d(a0W, a1L);
+    else if (lattice_n == "Triangular")
         physics = new lattice::trig2d(a0W, a1L, a1W);
-    } else
+    else
     { cerr << "System " << lattice_n << " is not supported." << endl; abort(); }
 
     operator_options options;
