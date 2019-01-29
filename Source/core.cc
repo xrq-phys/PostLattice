@@ -3,6 +3,7 @@
  * Main method. Parses input from ini and calls specific routines.
  */
 #include "INIReader.h"
+#include "plot.hh"
 #include "green_gen.hh"
 #include "measure.hh"
 #include "lattice.hh"
@@ -85,6 +86,9 @@ int main(int argc, char *argv[])
         options.sc_fnm = inp_fid.Get("Operator", "SC_Out", "sc.txt").c_str();
         options.af_fnm = inp_fid.Get("Operator", "AF_Out", "af.txt").c_str();
         measure(*physics, options);
+    } else if (mode_n == "Plot") {
+        options.mp_fnm = inp_fid.Get("Control", "Image", "lattice.mp");
+        plot_lattice(options.mp_fnm.c_str(), *physics);
     } else
     { cerr << "Unsupported job name " << mode_n << endl; abort(); }
 

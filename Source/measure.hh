@@ -24,6 +24,7 @@ struct operator_options {
     std::string sc_fnm = "";
     std::string af_fnm = "";
     std::string db_fnm = "";
+    std::string mp_fnm = "";
 
     ~operator_options()
     { delete[] af_n; }
