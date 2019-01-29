@@ -1,7 +1,7 @@
 ADD_LIBRARY (PostLattice
 	STATIC
-	lattice.cc operators.cc trig_lattice.cc
-	lattice.hh operators.hh trig_lattice.hh)
+	lattice.cc operators.cc trig_lattice.cc honeycomb.cc
+	lattice.hh operators.hh trig_lattice.hh honeycomb.hh)
 
 ADD_EXECUTABLE (Post
 	green_gen.hh measure.hh
