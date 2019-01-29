@@ -7,6 +7,7 @@
 #include "measure.hh"
 #include "lattice.hh"
 #include "trig_lattice.hh"
+#include "honeycomb.hh"
 #include <iostream>
 #include <string>
 
@@ -31,6 +32,8 @@ int main(int argc, char *argv[])
         physics = new lattice::square2d(a0W, a1L);
     else if (lattice_n == "Triangular")
         physics = new lattice::trig2d(a0W, a1L, a1W);
+    else if (lattice_n == "Honeycomb")
+        physics = new lattice::honeycomb(a0W, a1L, a1W);
     else
     { cerr << "System " << lattice_n << " is not supported." << endl; abort(); }
 
