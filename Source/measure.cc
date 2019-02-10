@@ -35,9 +35,7 @@ void measure(lattice::lattice &physics, operator_options &options)
 
     map <long, int> seen_ijab;
     int ri, si, ra, sa, rj, sj, rb, sb;
-    int nproc, iproc;
     int iline;
-    bool *exec_this;
     double x, **x1e, dummy;
     int TMP_DBG;
 
