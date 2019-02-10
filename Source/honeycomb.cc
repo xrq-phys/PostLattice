@@ -170,7 +170,7 @@ int lattice::honeycomb::calc_rmin(int i, int j)
 
         // Update LUT.
         rmin[i][j] = rtmp;
-        rmin[j][j] = rtmp;
+        rmin[j][i] = rtmp;
 
         return rtmp;
     }
