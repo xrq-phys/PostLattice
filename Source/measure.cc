@@ -37,7 +37,6 @@ void measure(lattice::lattice &physics, operator_options &options)
     int ri, si, ra, sa, rj, sj, rb, sb;
     int iline;
     double x, **x1e, dummy;
-    int TMP_DBG;
 
     x1e = new double *[physics.n * 2];
     for (int i = 0; i < physics.n * 2; i++) {
@@ -80,7 +79,6 @@ void measure(lattice::lattice &physics, operator_options &options)
             opr_sc.measure(rb, sb, ra, sa, ri, si, rj, sj,  x);
         }
         if (options.af) {
-            TMP_DBG = opr_af.points[320][0];
             opr_af.measure(rb, sb, rj, sj, ra, sa, ri, si, x);
             if (si != sj && !options.direct) // For HPhi, use flipping terms instead.
                 opr_af.measure(rb, sb, ri, si, ra, sa, rj, sj,
