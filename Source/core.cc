@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
         write_caca(options.g2e_fnm.c_str(), *physics,
                    inp_fid.Get("Operator", "SC", "-").c_str()[0] != '-');
     } else if (mode_n == "Measure") {
+        options.chk_duplicate = inp_fid.GetBoolean("Control", "Check_Duplicate", true);
         options.db = inp_fid.GetBoolean("Operator", "Doublon", true);
         options.af = inp_fid.GetBoolean("Operator", "Spin_Structure", true);
         options.sc = inp_fid.Get("Operator", "SC", "-").c_str()[0];

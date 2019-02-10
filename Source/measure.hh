@@ -21,6 +21,7 @@ struct operator_options {
     int *af_n = nullptr;
     bool direct = false;
     bool verbose = false;
+    bool chk_duplicate = true;
     std::string sc_fnm = "";
     std::string af_fnm = "";
     std::string db_fnm = "";

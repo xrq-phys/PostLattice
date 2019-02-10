@@ -5,7 +5,6 @@
 #include <map>
 #include <cmath>
 #include <cassert>
-#include <omp.h>
 
 using namespace std;
 
@@ -34,20 +33,14 @@ void measure(lattice::lattice &physics, operator_options &options)
     operators::spin_struct opr_af(physics, options.af_n);
     operators::sc_corr opr_sc(physics, options.sc_n, options.sc);
 
-    map <long, int> seen_ijab, seen_iiii;
-    int *ri, *si, *ra, *sa, *rj, *sj, *rb, *sb;
+    map <long, int> seen_ijab;
+    int ri, si, ra, sa, rj, sj, rb, sb;
     int nproc, iproc;
     int iline;
     bool *exec_this;
-    double *x, **x1e, dummy;
+    double x, **x1e, dummy;
+    int TMP_DBG;
 
-    nproc = omp_get_num_threads();
-    ri = new int[nproc]; si = new int[nproc];
-    rj = new int[nproc]; sj = new int[nproc];
-    ra = new int[nproc]; sa = new int[nproc];
-    rb = new int[nproc]; sb = new int[nproc];
-    x = new double[nproc];
-    exec_this = new bool[nproc];
     x1e = new double *[physics.n * 2];
     for (int i = 0; i < physics.n * 2; i++) {
         x1e[i] = new double[physics.n * 2];
@@ -57,55 +50,46 @@ void measure(lattice::lattice &physics, operator_options &options)
 
     // Load in one-body part.
     while (true) {
-        fid_g1e >> ra[0] >> sa[0] >> ri[0] >> si[0] >> x[0] >> dummy;
+        fid_g1e >> ra >> sa >> ri >> si >> x >> dummy;
         if (fid_g1e.eof())
             break;
-        x1e[ri[0] * 2 + si[0]][ra[0] * 2 + sa[0]] = x[0];
+        x1e[ri * 2 + si][ra * 2 + sa] = x;
     }
     fid_g1e.close();
 
     iline = 0;
     while (!fid_g2e.eof()) {
-        for (int i = 0; i < nproc; i++) {
-            fid_g2e >> rb[i] >> sb[i] >> rj[i] >> sj[i]
-                    >> ra[i] >> sa[i] >> ri[i] >> si[i] >> x[i] >> dummy;
-            iline += 1;
-            if (fid_g2e.eof()) {
-                for (int j = i; j < nproc; j++)
-                    exec_this[j] = false;
-                break;
-            }
-            long fld4 = idx_4so(ri[i], si[i], rj[i], sj[i], ra[i], sa[i], rb[i], sb[i], physics.n);
+        fid_g2e >> rb >> sb >> rj >> sj
+                >> ra >> sa >> ri >> si >> x >> dummy;
+        iline += 1;
+        if (fid_g2e.eof())
+            break;
+        if (options.chk_duplicate) {
+            long fld4 = idx_4so(ri, si, rj, sj, ra, sa, rb, sb, physics.n);
             if (seen_ijab.count(fld4)) {
                 if (options.verbose)
                     cout << "Duplicate found at " << iline << " with " << seen_ijab[fld4] << endl;
-                exec_this[i] = false;
-                break;
+                continue;
             }
             seen_ijab[fld4] = iline;
-            exec_this[i] = true;
         }
 
-#pragma omp parallel for default(shared) private(iproc, dummy)
-        for (int i = 0; i < nproc; i++)
-            if (exec_this[i] && sa[i] == si[i]) {
-#pragma omp critical
-                if (options.verbose)
-                    cout << ' ' << ri[i] << ' ' << si[i] << ' ' << rj[i] << ' ' << sj[i]
-                         << ' ' << ra[i] << ' ' << sa[i] << ' ' << ra[i] << ' ' << sb[i] << ' ' << endl;
-                if (options.sc != '-' && si[i] == sa[i]) { // For HPhi, we don't use DUUD/UDDU terms.
-                    opr_sc.measure(rb[i], sb[i], ra[i], sa[i], rj[i], sj[i], ri[i], si[i], -x[i]);
-                    opr_sc.measure(rb[i], sb[i], ra[i], sa[i], ri[i], si[i], rj[i], sj[i],  x[i]);
-                }
-                if (options.af) {
-                    opr_af.measure(rb[i], sb[i], rj[i], sj[i], ra[i], sa[i], ri[i], si[i], x[i]);
-                    if (si[i] != sj[i] && !options.direct) // For HPhi, use flipping terms instead.
-                        opr_af.measure(rb[i], sb[i], ri[i], si[i], ra[i], sa[i], rj[i], sj[i],
-                                       -x[i] + (ri[i] == ra[i] ? x1e[rb[i] + sb[i]][rj[i] + sj[i]] : 0));
-                }
-                if (options.db)
-                    opr_db.measure(rb[i], sb[i], rj[i], sj[i], ra[i], sa[i], ri[i], si[i], x[i]);
-            }
+        if (options.verbose)
+            cout << ' ' << ri << ' ' << si << ' ' << rj << ' ' << sj
+                 << ' ' << ra << ' ' << sa << ' ' << ra << ' ' << sb << ' ' << endl;
+        if (options.sc != '-' && si == sa) { // For HPhi, we don't use DUUD/UDDU terms.
+            opr_sc.measure(rb, sb, ra, sa, rj, sj, ri, si, -x);
+            opr_sc.measure(rb, sb, ra, sa, ri, si, rj, sj,  x);
+        }
+        if (options.af) {
+            TMP_DBG = opr_af.points[320][0];
+            opr_af.measure(rb, sb, rj, sj, ra, sa, ri, si, x);
+            if (si != sj && !options.direct) // For HPhi, use flipping terms instead.
+                opr_af.measure(rb, sb, ri, si, ra, sa, rj, sj,
+                               -x + (ri == ra ? x1e[rb + sb][rj + sj] : 0));
+        }
+        if (options.db)
+            opr_db.measure(rb, sb, rj, sj, ra, sa, ri, si, x);
     }
     fid_g2e.close();
 
@@ -122,9 +106,11 @@ void measure(lattice::lattice &physics, operator_options &options)
     if (options.af) {
         opr_af.refresh();
         fstream fid_out_af(options.af_fnm, fstream::out);
-        for (int i = 0; i < opr_af.n_points; i++)
+        for (int i = 0; i < opr_af.n_points; i++) {
+            if (i != 0 && opr_af.points[i][1] < opr_af.points[i - 1][1]) fid_out_af << endl;
             fid_out_af << scientific << opr_af.points[i][0] << ' ' << opr_af.points[i][1] << ' '
                                      << opr_af.values[i] << endl;
+        }
         fid_out_af.close();
     }
 
@@ -135,9 +121,6 @@ void measure(lattice::lattice &physics, operator_options &options)
         fid_out_db.close();
     }
 
-    delete[] ri; delete[] si; delete[] rj; delete[] sj;
-    delete[] ra; delete[] sa; delete[] rb; delete[] sb;
-    delete[] x;  delete[] exec_this;
     for (int i = 0; i < physics.n * 2; i++)
         delete[] x1e[i];
     delete[] x1e;

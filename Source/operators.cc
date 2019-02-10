@@ -90,7 +90,6 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
         } else
             return; // Waveform not supported.
 
-#pragma omp critical
         val_mat[system.idx_rij(i, b)] += x * sign / (2. * system.n);
     }
 }
@@ -153,7 +152,6 @@ void operators::spin_struct::measure(int ri, int si, int rj, int sj,
     for (int i = 0; i < n_points; i++) {
         double space_part = 1 / (3. * system.n * system.n) *
                             std::cos(inner_r_qidx(dr, points[i], system.dim));
-#pragma omp critical
         values[i] += spin_part * space_part * x;
     }
 }
