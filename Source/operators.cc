@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include "operators.hh"
 #include <cassert>
 #include <cstring>
@@ -125,9 +126,12 @@ operators::spin_struct::spin_struct(lattice::lattice &system_i, const int *ndiv)
         n_points *= ndiv[i];
 
     values = new double[n_points];
+    for (int i = 0; i < n_points; i++)
+        values[i] = 0;
     points = new int*[n_points];
-    int qpt_buff[system.dim];
+    int *qpt_buff = new int[system.dim];
     allocate_qpoints(points, ndiv, qpt_buff, 0, system.dim);
+    delete[] qpt_buff;
 }
 
 void operators::spin_struct::measure(int ri, int si, int rj, int sj,

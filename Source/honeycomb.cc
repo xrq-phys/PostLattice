@@ -1,6 +1,6 @@
 #include "honeycomb.hh"
 #ifdef _DEBUG
-#include <cstdio>
+#include <iostream>
 #endif
 
 // {

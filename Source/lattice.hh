@@ -84,7 +84,7 @@ namespace lattice
     };
 
     struct square2d
-    : lattice::lattice
+    : lattice
     {
         int w; ///< Number of columns (x-length).
         int l; ///< Number of rows    (y-length).
