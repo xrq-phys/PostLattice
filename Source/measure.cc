@@ -95,7 +95,8 @@ void measure(lattice::lattice &physics, operator_options &options)
         for (int i = 0; i < opr_sc.rc_count; i++)
             fid_out_sc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
                        << setw(18) << scientific << opr_sc.values[i] << ' '
-                       << setw( 8) << physics.r_n[i] << endl;
+                       << setw( 8) << (options.sc_stat == 'M' || 
+                                       options.sc_stat == 'm' ? 1 : physics.r_n[i]) << endl;
         fid_out_sc.close();
     }
 
