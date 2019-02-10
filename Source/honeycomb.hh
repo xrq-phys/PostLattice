@@ -34,7 +34,10 @@ namespace lattice {
 
         /**
          * @brief Implementation of equivalent index finder.
-         *        Note that if the indice is negative, one should start from site 1 instead of 0.
+         *        Note that for vectors from 1 to 0 site index (in a cell), there exists
+         *        no site such that r(x, 0) = r(i, j). Hence the vector's inverse is used.
+         *        e.g. for i=0 and j=1, take i=1 and j=0 instead so the return value is 1.
+         *        [TODO] A better rule required for other complex lattices.
          * 
          * @param x Site i.
          * @param y Site j.
