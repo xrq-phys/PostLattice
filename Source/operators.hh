@@ -64,7 +64,7 @@ namespace operators
     : operators
     {
         lattice::lattice &system;
-        double *val_mat; ///< Storage for SC corrlation at indiex difference i.
+        double *val_mat; ///< Storage for SC correlation at index difference i.
         char form; ///< Wave form factor of superconductivity: s, d or p.
         int rc_count; ///< Number of R_c's to use.
 

@@ -82,7 +82,7 @@ void measure(lattice::lattice &physics, operator_options &options)
             opr_af.measure(rb, sb, rj, sj, ra, sa, ri, si, x);
             if (si != sj && !options.direct) // For HPhi, use flipping terms instead.
                 opr_af.measure(rb, sb, ri, si, ra, sa, rj, sj,
-                               -x + (ri == ra ? x1e[rb + sb][rj + sj] : 0));
+                               -x + (ri == ra ? x1e[rj * 2 + sj][rb * 2 + sb] : 0));
         }
         if (options.db)
             opr_db.measure(rb, sb, rj, sj, ra, sa, ri, si, x);
