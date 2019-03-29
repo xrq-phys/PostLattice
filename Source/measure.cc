@@ -71,9 +71,9 @@ void measure(lattice::lattice &physics, operator_options &options)
             seen_ijab[fld4] = iline;
         }
 
-        if (options.verbose)
-            cout << ' ' << ri << ' ' << si << ' ' << rj << ' ' << sj
-                 << ' ' << ra << ' ' << sa << ' ' << ra << ' ' << sb << ' ' << endl;
+        // if (options.verbose)
+        //     cout << ' ' << ri << ' ' << si << ' ' << rj << ' ' << sj
+        //          << ' ' << ra << ' ' << sa << ' ' << ra << ' ' << sb << ' ' << endl;
         if (options.sc != '-' && si == sa) { // For HPhi, we don't use DUUD/UDDU terms.
             opr_sc.measure(rb, sb, ra, sa, rj, sj, ri, si, -x);
             opr_sc.measure(rb, sb, ra, sa, ri, si, rj, sj,  x);
