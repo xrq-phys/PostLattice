@@ -49,9 +49,11 @@ void write_caca(const char *caca_fnm, lattice::lattice &system, bool sc)
                             nopr += 2;
                         }
                     } else if (sc && system.nn[i][k] && system.nn[j][l]) {
-                        tmop_fid << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << endl
-                                 << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << endl;
-                        nopr += 2;
+                        if (i != l || j != k) {
+                            tmop_fid << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << endl
+                                     << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << endl;
+                            nopr += 2;
+                        }
                     }
                 }
     tmop_fid.close();
