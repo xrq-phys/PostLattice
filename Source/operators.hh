@@ -66,10 +66,11 @@ namespace operators
         lattice::lattice &system;
         double *val_mat; ///< Storage for SC correlation at index difference i.
         char form; ///< Wave form factor of superconductivity: s, d or p.
+        int use_p; ///< Whether to calculate parallel spin paring: 0AP, 1P.
         int rc_count; ///< Number of R_c's to use.
 
-        sc_corr(lattice::lattice &system_i, const int rc_count_i, const char form_i)
-        : operators::operators(), system(system_i), form(form_i),
+        sc_corr(lattice::lattice &system_i, const int rc_count_i, const char form_i, const int use_p_i)
+        : operators::operators(), system(system_i), form(form_i), use_p(use_p_i),
           rc_count(rc_count_i < system_i.rc_n ? rc_count_i : system_i.rc_n)
         { values = new double[rc_count]; for (int i = 0; i < rc_count; i++) values[i] = 0; 
           val_mat = new double[system_i.n]; for (int i = 0; i < system_i.n; i++) val_mat[i] = 0; }
@@ -101,7 +102,7 @@ namespace operators
          * @return If the term exists.
          */
         bool validate(int a, int sa, int b, int sb, int i, int si, int j, int sj)
-        { return si != sj && sa != sb && system.nn[a][b] && system.nn[i][j]; }
+        { return (use_p ? si == sj : si != sj && sa != sb) && system.nn[a][b] && system.nn[i][j]; }
     };
 
     /**

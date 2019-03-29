@@ -57,14 +57,16 @@ int main(int argc, char *argv[])
     if (mode_n == "Gen") {
         write_ca  (options.g1e_fnm.c_str(), *physics);
         write_caca(options.g2e_fnm.c_str(), *physics,
-                   inp_fid.Get("Operator", "SC", "-").c_str()[0] != '-');
+                   inp_fid.Get("Operator", "SC", "-").c_str()[0] != '-',
+                   inp_fid.GetInteger("Operator", "SC_UseP", 0) != 0);
     } else if (mode_n == "Measure") {
         options.chk_duplicate = inp_fid.GetBoolean("Control", "Check_Duplicate", true);
         options.db = inp_fid.GetBoolean("Operator", "Doublon", true);
         options.af = inp_fid.GetBoolean("Operator", "Spin_Structure", true);
         options.sc = inp_fid.Get("Operator", "SC", "-").c_str()[0];
         if (options.sc != '-') {
-            options.sc_n = inp_fid.GetInteger("Operator", "SC_NumR", 6);
+            options.sc_n = inp_fid.GetInteger("Operator", "SC_NumR", 100);
+            options.sc_use_p = inp_fid.GetInteger("Operator", "SC_UseP", 0);
             options.sc_stat = inp_fid.Get("Operator", "SC_Stat", "S").c_str()[0];
         }
         if (options.af)

@@ -31,7 +31,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
     operators::doublon opr_db;
     operators::spin_struct opr_af(physics, options.af_n);
-    operators::sc_corr opr_sc(physics, options.sc_n, options.sc);
+    operators::sc_corr opr_sc(physics, options.sc_n, options.sc, options.sc_use_p);
 
     map <long, int> seen_ijab;
     int ri, si, ra, sa, rj, sj, rb, sb;
@@ -75,8 +75,12 @@ void measure(lattice::lattice &physics, operator_options &options)
         //     cout << ' ' << ri << ' ' << si << ' ' << rj << ' ' << sj
         //          << ' ' << ra << ' ' << sa << ' ' << ra << ' ' << sb << ' ' << endl;
         if (options.sc != '-' && si == sa) { // For HPhi, we don't use DUUD/UDDU terms.
-            opr_sc.measure(rb, sb, ra, sa, rj, sj, ri, si, -x);
-            opr_sc.measure(rb, sb, ra, sa, ri, si, rj, sj,  x);
+            if (!opr_sc.use_p) {
+                opr_sc.measure(rb, sb, ra, sa, rj, sj, ri, si, -x);
+                opr_sc.measure(rb, sb, ra, sa, ri, si, rj, sj,  x);
+            } else
+                opr_sc.measure(rb, sb, ra, sa, rj, sj, ri, si,
+                               -x + (ra == rj ? x1e[ri * 2 + si][rb * 2 + sb] : 0));
         }
         if (options.af) {
             opr_af.measure(rb, sb, rj, sj, ra, sa, ri, si, x);

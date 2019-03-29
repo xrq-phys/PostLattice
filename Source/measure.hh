@@ -17,6 +17,7 @@ struct operator_options {
     bool af = true;
     char sc = '-'; ///< Waveform
     char sc_stat = 'S'; ///< Statistic mode
+    int  sc_use_p = 0; ///< Parallel SC pairing
     int  sc_n = 4;
     int *af_n = nullptr;
     bool direct = false;
