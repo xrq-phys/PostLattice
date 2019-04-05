@@ -18,6 +18,7 @@ struct operator_options {
     char sc = '-'; ///< Waveform
     char sc_stat = 'S'; ///< Statistic mode
     int  sc_use_p = 0; ///< Parallel SC pairing
+    int  sc_simple = 0; ///< Count SC correlation only from site index-0
     int  sc_n = 4;
     int *af_n = nullptr;
     bool direct = false;

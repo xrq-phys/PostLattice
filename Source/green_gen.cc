@@ -28,7 +28,7 @@ void write_ca(const char *ca_fnm, lattice::lattice &system)
     ca_fid.close();
 }
 
-void write_caca(const char *caca_fnm, lattice::lattice &system, bool sc, bool sc_p)
+void write_caca(const char *caca_fnm, lattice::lattice &system, bool sc, bool sc_p, bool sc_simp)
 {
     fstream tmop_fid(tm_fnm, fstream::out);
     int nopr = 0;
@@ -48,7 +48,7 @@ void write_caca(const char *caca_fnm, lattice::lattice &system, bool sc, bool sc
                                      << i << ' ' << 0 << ' ' << l << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << j << ' ' << 1 << endl;
                             nopr += 2;
                         }
-                    } else if (sc && system.nn[i][k] && system.nn[j][l]) {
+                    } else if (sc && system.nn[i][k] && system.nn[j][l] && (sc_simp ? k == 0 : 1)) {
                         if (i != l || j != k) {
                             tmop_fid << i << ' ' << 1 << ' ' << j << ' ' << 1 << ' ' << k << ' ' << 0 << ' ' << l << ' ' << 0 << endl
                                      << i << ' ' << 0 << ' ' << j << ' ' << 0 << ' ' << k << ' ' << 1 << ' ' << l << ' ' << 1 << endl;
