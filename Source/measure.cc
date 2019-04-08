@@ -30,7 +30,7 @@ void measure(lattice::lattice &physics, operator_options &options)
             options.af_n[i] = 1;
     }
     operators::doublon opr_db;
-    operators::spin_struct opr_af(physics, options.af_n);
+    operators::spin_struct opr_af(physics);
     operators::sc_corr opr_sc(physics, options.sc_n, options.sc, options.sc_use_p);
 
     map <long, int> seen_ijab;
@@ -108,10 +108,9 @@ void measure(lattice::lattice &physics, operator_options &options)
     if (options.af) {
         opr_af.refresh();
         fstream fid_out_af(options.af_fnm, fstream::out);
-        for (int i = 0; i < opr_af.n_points; i++) {
-            if (i != 0 && opr_af.points[i][1] < opr_af.points[i - 1][1]) fid_out_af << endl;
-            fid_out_af << scientific << opr_af.points[i][0] << ' ' << opr_af.points[i][1] << ' '
-                                     << opr_af.values[i] << endl;
+        for (int i = 0; i < physics.n * physics.ncell; i++) {
+            fid_out_af << scientific << opr_af.connection[i][0] << ' ' << opr_af.connection[i][1] << ' '
+                                     << opr_af.val_mat[i] << endl;
         }
         fid_out_af.close();
     }

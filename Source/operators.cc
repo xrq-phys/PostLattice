@@ -118,21 +118,23 @@ void operators::sc_corr::refresh(char mode)
         }
 }
 
-operators::spin_struct::spin_struct(lattice::lattice &system_i, const int *ndiv)
+operators::spin_struct::spin_struct(lattice::lattice &system_i)
 : operators::operators(), system(system_i)
 {
-    // Total number of q-points.
-    n_points = 1;
-    for (int i = 0; i < system.dim; i++) 
-        n_points *= ndiv[i];
-
-    values = new double[n_points];
-    for (int i = 0; i < n_points; i++)
-        values[i] = 0;
-    points = new int*[n_points];
-    int *qpt_buff = new int[system.dim];
-    allocate_qpoints(points, ndiv, qpt_buff, 0, system.dim);
-    delete[] qpt_buff;
+    int idx;
+    // Initialize points
+    val_mat = new double[system_i.n * system_i.ncell];
+    connection = new int*[system_i.n * system_i.ncell];
+    for (int i = 0; i < system_i.n * system_i.ncell; i++) {
+        val_mat[i] = 0;
+        connection[i] = new int[2];
+    }
+    for (int i = 0; i < system_i.n; i++)
+        for (int j = 0; j < system_i.ncell; j++) {
+            idx = system_i.idx_rij(i, j);
+            connection[idx][0] = i;
+            connection[idx][1] = j;
+        }
 }
 
 void operators::spin_struct::measure(int ri, int si, int rj, int sj,
@@ -146,17 +148,5 @@ void operators::spin_struct::measure(int ri, int si, int rj, int sj,
                       + pauli_z[si][sj] * pauli_z[sk][sl] 
                       - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
 
-    // exp(r * q) == cos(r * q) (by symmetry).
-    double *dr = new double[system.dim],
-           *r1 = new double[system.dim],
-           *r2 = new double[system.dim];
-    system.r(r1, ri);
-    system.r(r2, rk);
-    for (int i = 0; i < system.dim; i++)
-        dr[i] = r1[i] - r2[i];
-    for (int i = 0; i < n_points; i++) {
-        double space_part = 1 / (3. * system.n * system.n) *
-                            std::cos(inner_r_qidx(dr, points[i], system.dim));
-        values[i] += spin_part * space_part * x;
-    }
+    val_mat[system.idx_rij(ri, rk)] += spin_part * x;
 }

@@ -114,8 +114,8 @@ namespace operators
     : operators
     {
         lattice::lattice &system;
-        int n_points;
-        int **points; ///< Q-points.
+        int **connection; ///< Correlation Site Indices
+        double *val_mat;
 
         /**
          * @brief Construct a new spin struct object.
@@ -123,10 +123,11 @@ namespace operators
          * @param system_i System.
          * @param ndiv Number of q-points in each dimension.
          */
-        spin_struct(lattice::lattice &system_i, const int *ndiv);
+        spin_struct(lattice::lattice &system_i);
 
         virtual ~spin_struct() override
-        { for (int i = 0; i < n_points; i++) delete[] points[i]; delete[] points; }
+        { for (int i = 0; i < system.n * system.ncell; i++) delete[] connection[i]; delete[] connection;
+          delete[] val_mat;}
 
         /**
          * @brief Implement measurement.
