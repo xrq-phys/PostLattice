@@ -72,8 +72,10 @@ namespace operators
         sc_corr(lattice::lattice &system_i, const int rc_count_i, const char form_i, const int use_p_i)
         : operators::operators(), system(system_i), form(form_i), use_p(use_p_i),
           rc_count(rc_count_i < system_i.rc_n ? rc_count_i : system_i.rc_n)
-        { values = new double[rc_count]; for (int i = 0; i < rc_count; i++) values[i] = 0; 
-          val_mat = new double[system_i.n]; for (int i = 0; i < system_i.n; i++) val_mat[i] = 0; }
+        { values = new double[rc_count];
+          for (int i = 0; i < rc_count; i++) values[i] = 0;
+          val_mat = new double[system_i.n * system_i.ncell];
+          for (int i = 0; i < system_i.n * system_i.ncell; i++) val_mat[i] = 0; }
 
         virtual ~sc_corr()
         { delete[] val_mat; delete[] values; val_mat = nullptr; values = nullptr; }

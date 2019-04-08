@@ -101,16 +101,17 @@ void operators::sc_corr::refresh()
 void operators::sc_corr::refresh(char mode)
 {
     if (mode == 'M' || mode == 'm')
-        for (int i = 0; i < system.n; i++) {
-            int rmin = system.calc_rmin(0, i);
+        for (int i = 0; i < system.n * system.ncell; i++) {
+            int rmin = system.calc_rmin(i / system.n /* from nth site in 0th cell */,
+                                        i % system.n /* to nth site in whole lattice */);
             for (int j = 0; j < rc_count; j++)
                 if (rmin == system.r_c[j])
                     if (std::abs(values[j]) < std::abs(val_mat[i]))
                         values[j] = val_mat[i];
         }
     else
-        for (int i = 0; i < system.n; i++) {
-            int rmin = system.calc_rmin(0, i);
+        for (int i = 0; i < system.n * system.ncell; i++) {
+            int rmin = system.calc_rmin(i / system.n, i % system.n);
             for (int j = 0; j < rc_count; j++)
                 if (rmin == system.r_c[j])
                     values[j] += val_mat[i];

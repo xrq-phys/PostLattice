@@ -46,7 +46,7 @@ void lattice::sorted_rc(lattice &system)
 }
 
 lattice::square2d::square2d(int w_i, int l_i)
-: w(w_i), l(l_i), lattice::lattice(w_i * l_i, 2)
+: w(w_i), l(l_i), lattice::lattice(w_i * l_i, 2, 1)
 {
     sorted_rc(*this);
 

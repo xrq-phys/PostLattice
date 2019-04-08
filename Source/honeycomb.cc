@@ -32,7 +32,7 @@ int inner2_honeycomb(const int *a, const int ai, const int *b, const int bi)
 // }
 
 lattice::honeycomb::honeycomb(int a0W_i, int a1L_i, int a1W_i)
-: a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i * 2, 2)
+: a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i * 2, 2, 2)
 {
     sorted_rc(*this);
 
@@ -98,11 +98,9 @@ void lattice::honeycomb::r(double *r, int i)
 
 int lattice::honeycomb::idx_rij(int i, int j)
 {
-    int idc, k;
+    int idc, k, shift;
     int ri[2],
         rj[2];
-    if (j % 2 && (i + 1) % 2) // Reverse the vector to make equivalent site finding possible.
-    { k = i; i = j; j = k; }
     r(ri, i);
     r(rj, j);
     ri[0] -= rj[0];
@@ -116,7 +114,9 @@ int lattice::honeycomb::idx_rij(int i, int j)
     if (ri[0] < x_diam(0, ri[1]))
         ri[0] += a0W;
     idc = ri[1] * a0W + x_idx(ri[0], ri[1]);
-    if (i % 2 && (j + 1) % 2)
+    if (j % 2 && (i + 1) % 2)
+        return idc * 2 + n;
+    else if (i % 2 && (j + 1) % 2)
         return idc * 2 + 1;
     else
         return idc * 2;
