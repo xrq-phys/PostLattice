@@ -125,9 +125,17 @@ namespace operators
          */
         spin_struct(lattice::lattice &system_i);
 
+        virtual void refresh() override {}
+
+        /**
+         * @brief Perform Fourier transformation and stores k-space vectors to values.
+         * @param ndiv Number of Q-Points per dimension.
+         */
+        virtual void refresh(int *ndiv);
+
         virtual ~spin_struct() override
         { for (int i = 0; i < system.n * system.ncell; i++) delete[] connection[i]; delete[] connection;
-          delete[] val_mat;}
+          delete[] val_mat; delete[] values; }
 
         /**
          * @brief Implement measurement.

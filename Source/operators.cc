@@ -25,7 +25,7 @@ inline double inner_r_qidx(double *r, const int *qidx, const int ndim)
 inline int idx_nd(const int *iqpt, const int *nqpt, const int ndim)
 {
     int idx = 0, nelem = 1;
-    for (int i = ndim - 1; i >=0; i--) {
+    for (int i = ndim - 1; i >= 0; i--) {
         idx += iqpt[i] * nelem;
         nelem *= nqpt[i];
     }
@@ -44,6 +44,34 @@ void allocate_qpoints(int **qpts, const int *nqpt, int *iqpt, const int dim, con
         qpts[idx] = new int[ndim];
         std::memcpy(qpts[idx], iqpt, ndim * sizeof(int));
     }
+}
+
+void mini_fourier(int cdim, int *ndiv, int *nidxspc, int *qidx,
+                  lattice::lattice &system, double *val_mat, double *values) {
+    if (cdim != system.dim)
+        for (int i = 0; i < ndiv[cdim]; i++) {
+            qidx[cdim] = i;
+            mini_fourier(cdim + 1, ndiv, nidxspc, qidx, system, val_mat, values);
+        } else {
+            // exp(r * q) == cos(r * q) (by symmetry).
+            double *dr = new double[system.dim],
+                   *r1 = new double[system.dim],
+                   *r2 = new double[system.dim];
+            for (int i = 0; i < system.n; i++)
+                for (int j = 0; j < system.ncell; j++) {
+                    int idx = 0;
+                    system.r(r1, i);
+                    system.r(r2, j);
+                    for (int k = 0; k < system.dim; k++)
+                        dr[i] = r1[i] - r2[i];
+                    for (int k = 1; k < system.dim; k++)
+                        idx += qidx[k] * nidxspc[k];
+                    values[idx] += 1 / (3. * system.n * system.n) *
+                                   std::cos(inner_r_qidx(dr, qidx, system.dim)) *
+                                   val_mat[system.idx_rij(i, j)];
+                }
+            delete[] dr; delete[] r1; delete[] r2;
+        }
 }
 // }
 
@@ -149,4 +177,22 @@ void operators::spin_struct::measure(int ri, int si, int rj, int sj,
                       - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
 
     val_mat[system.idx_rij(ri, rk)] += spin_part * x;
+}
+
+void operators::spin_struct::refresh(int *ndiv) {
+    int n_qpts = 1;
+    int *nidxspc = new int[system.dim];
+    int *qidx    = new int[system.dim];
+    // Allocate memory.
+    for (int i = system.dim - 1; i >= 0; i--) {
+        n_qpts *= ndiv[i];
+        nidxspc[i] = n_qpts;
+    }
+    values = new double[n_qpts];
+
+    // Execute
+    mini_fourier(0, ndiv, nidxspc, qidx, system, val_mat, values);
+
+    delete[] nidxspc;
+    delete[] qidx;
 }
