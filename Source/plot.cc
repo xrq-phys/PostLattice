@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void plot_lattice(const char *mp_fnm, lattice::lattice &system)
+void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label_on)
 {
     assert(system.dim == 2);
     double r[2], rj[2];
@@ -62,6 +62,10 @@ void plot_lattice(const char *mp_fnm, lattice::lattice &system)
         mp_fid << "pickup pencircle scaled 4pt;" << endl << "drawdot (" 
                << r[0] * x_scal + x_offset << "cm," 
                << r[1] * y_scal + y_offset << "cm) withcolor (.0,.0,1.);" << endl;
+        if (label_on)
+            mp_fid << "label.bot(btex" << i << "," << system.calc_rmin(0, i) << "etex,("
+                   << r[0] * x_scal + x_offset << "cm,"
+                   << r[1] * y_scal + y_offset << "cm));" << endl;
     }
 
     // Metapost file ending.

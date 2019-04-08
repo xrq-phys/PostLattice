@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
         measure(*physics, options);
     } else if (mode_n == "Plot") {
         options.mp_fnm = inp_fid.Get("Control", "Image", "lattice.mp");
-        plot_lattice(options.mp_fnm.c_str(), *physics);
+        plot_lattice(options.mp_fnm.c_str(), *physics, options.verbose);
     } else
     { cerr << "Unsupported job name " << mode_n << endl; abort(); }
 
