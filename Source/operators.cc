@@ -50,16 +50,16 @@ void allocate_qpoints(int **qpts, const int *nqpt, int *iqpt, const int dim, con
 // {
 // Virtual methods that MUST be overridden.
 void operators::operators::measure(int a, int sa, int b, int sb, 
-                                   int i, int si, int j, int sj, double x)
+                                   int i, int si, int j, int sj, std::complex<double> x)
 { abort(); }
 // }
 
 void operators::doublon::measure(int i, int si, int j, int sj,
-                                 int k, int sk, int l, int sl, double x)
+                                 int k, int sk, int l, int sl, std::complex<double> x)
 { values[0] += (i == j && k == l && i == k && si == sj && sk == sl && si != sk) ? x / 2. : 0; }
 
 void operators::sc_corr::measure(int a, int sa, int b, int sb, 
-                                 int i, int si, int j, int sj, double x)
+                                 int i, int si, int j, int sj, std::complex<double> x)
 {
     int sign;
     int rmin;
@@ -90,7 +90,7 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
         } else
             return; // Waveform not supported.
 
-        val_mat[system.idx_rij(i, b)] += x * sign / (2. * system.n);
+        val_mat[system.idx_rij(i, b)] += x * double(sign) / (2. * system.n);
     }
 }
 
@@ -125,7 +125,7 @@ operators::spin_struct::spin_struct(lattice::lattice &system_i, const int *ndiv)
     for (int i = 0; i < system.dim; i++) 
         n_points *= ndiv[i];
 
-    values = new double[n_points];
+    values = new std::complex<double>[n_points];
     for (int i = 0; i < n_points; i++)
         values[i] = 0;
     points = new int*[n_points];
@@ -135,7 +135,7 @@ operators::spin_struct::spin_struct(lattice::lattice &system_i, const int *ndiv)
 }
 
 void operators::spin_struct::measure(int ri, int si, int rj, int sj,
-                                     int rk, int sk, int rl, int sl, double x)
+                                     int rk, int sk, int rl, int sl, std::complex<double> x)
 {
     if (ri != rj || rk != rl)
         return;
@@ -145,7 +145,6 @@ void operators::spin_struct::measure(int ri, int si, int rj, int sj,
                       + pauli_z[si][sj] * pauli_z[sk][sl] 
                       - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
 
-    // exp(r * q) == cos(r * q) (by symmetry).
     double *dr = new double[system.dim],
            *r1 = new double[system.dim],
            *r2 = new double[system.dim];
@@ -154,8 +153,8 @@ void operators::spin_struct::measure(int ri, int si, int rj, int sj,
     for (int i = 0; i < system.dim; i++)
         dr[i] = r1[i] - r2[i];
     for (int i = 0; i < n_points; i++) {
-        double space_part = 1 / (3. * system.n * system.n) *
-                            std::cos(inner_r_qidx(dr, points[i], system.dim));
+        std::complex<double> space_part = 1 / (3. * system.n * system.n) *
+            std::exp(std::complex<double>(0, 1) * inner_r_qidx(dr, points[i], system.dim));
         values[i] += spin_part * space_part * x;
     }
 }

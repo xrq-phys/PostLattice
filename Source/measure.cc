@@ -33,31 +33,32 @@ void measure(lattice::lattice &physics, operator_options &options)
     operators::spin_struct opr_af(physics, options.af_n);
     operators::sc_corr opr_sc(physics, options.sc_n, options.sc, options.sc_use_p);
 
-    map <long, int> seen_ijab;
+    map<long, int> seen_ijab;
     int ri, si, ra, sa, rj, sj, rb, sb;
     int iline;
-    double x, **x1e, dummy;
+    double xre, ximag;
+    complex<double> **x1e, x;
 
-    x1e = new double *[physics.n * 2];
+    x1e = new complex<double> *[physics.n * 2];
     for (int i = 0; i < physics.n * 2; i++) {
-        x1e[i] = new double[physics.n * 2];
+        x1e[i] = new complex<double>[physics.n * 2];
         for (int j = 0; j < physics.n * 2; j++)
             x1e[i][j] = 0.;
     }
 
     // Load in one-body part.
     while (true) {
-        fid_g1e >> ra >> sa >> ri >> si >> x >> dummy;
+        fid_g1e >> ra >> sa >> ri >> si >> xre >> ximag;
         if (fid_g1e.eof())
             break;
-        x1e[ri * 2 + si][ra * 2 + sa] = x;
+        x1e[ri * 2 + si][ra * 2 + sa] = complex<double>(xre, ximag);
     }
     fid_g1e.close();
 
     iline = 0;
     while (!fid_g2e.eof()) {
         fid_g2e >> rb >> sb >> rj >> sj
-                >> ra >> sa >> ri >> si >> x >> dummy;
+                >> ra >> sa >> ri >> si >> xre >> ximag;
         iline += 1;
         if (fid_g2e.eof())
             break;
@@ -70,6 +71,7 @@ void measure(lattice::lattice &physics, operator_options &options)
             }
             seen_ijab[fld4] = iline;
         }
+        x.real(xre); x.imag(ximag);
 
         // if (options.verbose)
         //     cout << ' ' << ri << ' ' << si << ' ' << rj << ' ' << sj
@@ -97,11 +99,13 @@ void measure(lattice::lattice &physics, operator_options &options)
     if (options.sc != '-') {
         opr_sc.refresh(options.sc_stat);
         fstream fid_out_sc(options.sc_fnm, fstream::out);
-        for (int i = 0; i < opr_sc.rc_count; i++)
+        for (int i = 0; i < opr_sc.rc_count; i++) {
+            x = opr_sc.values[i] * double(options.sc_simple ? physics.n : 1);
             fid_out_sc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
-                       << setw(18) << scientific << opr_sc.values[i] * (options.sc_simple ? physics.n : 1) << ' '
-                       << setw( 8) << (options.sc_stat == 'M' || 
+                       << setw(18) << scientific << x.real() << ' ' << x.imag() << ' '
+                       << setw( 8) << (options.sc_stat == 'M' ||
                                        options.sc_stat == 'm' ? 1 : physics.r_n[i]) << endl;
+        }
         fid_out_sc.close();
     }
 
@@ -110,8 +114,8 @@ void measure(lattice::lattice &physics, operator_options &options)
         fstream fid_out_af(options.af_fnm, fstream::out);
         for (int i = 0; i < opr_af.n_points; i++) {
             if (i != 0 && opr_af.points[i][1] < opr_af.points[i - 1][1]) fid_out_af << endl;
-            fid_out_af << scientific << opr_af.points[i][0] << ' ' << opr_af.points[i][1] << ' '
-                                     << opr_af.values[i] << endl;
+            fid_out_af << scientific << opr_af.points[i][0]     << ' ' << opr_af.points[i][1]     << ' '
+                                     << opr_af.values[i].real() << ' ' << opr_af.values[i].imag() << endl;
         }
         fid_out_af.close();
     }
@@ -119,7 +123,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     if (options.db) {
         opr_af.refresh();
         fstream fid_out_db(options.db_fnm, fstream::out);
-        fid_out_db << scientific << opr_db.values[0] << endl;
+        fid_out_db << scientific << opr_db.values[0].real() << ' ' << opr_db.values[0].imag() << endl;
         fid_out_db.close();
     }
 
