@@ -153,8 +153,10 @@ operators::spin_struct::spin_struct(lattice::lattice &system_i)
     // Initialize points
     val_mat = new double[system_i.n * system_i.ncell];
     connection = new int*[system_i.n * system_i.ncell];
+    norm_mat = new double[system_i.n * system_i.ncell];
     for (int i = 0; i < system_i.n * system_i.ncell; i++) {
         val_mat[i] = 0;
+        norm_mat[i] = 0;
         connection[i] = new int[2];
     }
     for (int i = 0; i < system_i.n; i++)
@@ -177,6 +179,8 @@ void operators::spin_struct::measure(int ri, int si, int rj, int sj,
                       - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
 
     val_mat[system.idx_rij(ri, rk)] += spin_part * x;
+    if (si == sj) norm_mat[system.idx_rij(ri, rk)] += x;
+    else norm_mat[system.idx_rij(ri, rk)] += 2*x;
 }
 
 void operators::spin_struct::refresh(int *ndiv) {

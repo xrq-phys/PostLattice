@@ -116,6 +116,7 @@ namespace operators
         lattice::lattice &system;
         int **connection; ///< Correlation Site Indices
         double *val_mat;
+        double *norm_mat;
 
         /**
          * @brief Construct a new spin struct object.
@@ -135,7 +136,7 @@ namespace operators
 
         virtual ~spin_struct() override
         { for (int i = 0; i < system.n * system.ncell; i++) delete[] connection[i]; delete[] connection;
-          delete[] val_mat; delete[] values; }
+          delete[] val_mat; delete[] values; delete[] norm_mat; }
 
         /**
          * @brief Implement measurement.

@@ -106,13 +106,24 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
 
     if (options.af) {
+        int n_tmp = 0;
+        double v_tmp = 0.0;
+        double v_err = 0.0;
         opr_af.refresh();
         fstream fid_out_af(options.af_fnm, fstream::out);
         for (int i = 0; i < physics.n * physics.ncell; i++) {
             fid_out_af << scientific << opr_af.connection[i][0] << ' ' << opr_af.connection[i][1] << ' '
                                      << opr_af.val_mat[i] << endl;
+            if (physics.nn[opr_af.connection[i][0]][opr_af.connection[i][1]]) {
+                n_tmp++;
+                v_tmp += opr_af.val_mat[i]*4;
+                v_err += pow(opr_af.val_mat[i]*4, 2);
+            }
         }
         fid_out_af.close();
+        v_tmp /= n_tmp;
+        v_err /= n_tmp;
+        printf("NN Spin Correlation: Cos(Theta) = %lf (Std_Err = %lf)\n", v_tmp, sqrt(v_err - v_tmp * v_tmp));
     }
 
     if (options.db) {
