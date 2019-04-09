@@ -75,8 +75,7 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
         else if (form == 'd' /* D_{XY} */) {
             int alpha_c = std::abs(system.nn[a][b]),
                 alpha_a = std::abs(system.nn[i][j]);
-            if (alpha_a != alpha_c &&
-                alpha_a +  alpha_c == 3)
+            if (alpha_a != alpha_c && (alpha_a == 1 || alpha_c == 1))
                 sign = -sign;
         } else if (form < '4' && form > '0' /* P in 3 directions */) {
             if (std::abs(system.nn[a][b]) != std::abs(system.nn[i][j]) ||
