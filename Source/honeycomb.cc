@@ -32,7 +32,7 @@ int inner2_honeycomb(const int *a, const int ai, const int *b, const int bi)
 // }
 
 lattice::honeycomb::honeycomb(int a0W_i, int a1L_i, int a1W_i)
-: a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i * 2, 2, 2)
+: a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i * 2, 2, 2, 3)
 {
     sorted_rc(*this);
 

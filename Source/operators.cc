@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include "operators.hh"
+#include <sstream>
 #include <cassert>
 #include <cstring>
 #include <cstdlib>
@@ -58,39 +59,73 @@ void operators::doublon::measure(int i, int si, int j, int sj,
                                  int k, int sk, int l, int sl, std::complex<double> x)
 { values[0] += (i == j && k == l && i == k && si == sj && sk == sl && si != sk) ? x / 2. : 0; }
 
+operators::sc_corr::sc_corr(lattice::lattice &system_i, const int rc_count_i, const int use_p_i, std::string form_s)
+: operators::operators(), system(system_i), use_p(use_p_i),
+  rc_count(rc_count_i < system_i.rc_n ? rc_count_i : system_i.rc_n)
+{
+    double xre, xim;
+    char form_name;
+    // R-based correlation.
+    values = new std::complex<double>[rc_count];
+    for (int i = 0; i < rc_count; i++)
+        values[i] = 0;
+
+    // Real-space correlation.
+    val_mat = new std::complex<double>[system_i.n * system_i.ncell];
+    for (int i = 0; i < system_i.n * system_i.ncell; i++)
+        val_mat[i] = 0;
+
+    // Waveform.
+    form = new std::complex<double>[system_i.nbond];
+    for (int i = 0; i < system_i.nbond; i++)
+        form[i] = 0;
+    std::stringstream form_ss(form_s);
+    form_ss >> form_name;
+    if (form_name == 's') {
+        for (int i = 0; i < system_i.nbond; i++)
+            form[i] = 1;
+    } else if (form_name == 'd') {
+        form[0] = 1;
+        if (system_i.nbond > 1)
+            form[1] = 1;
+        for (int i = 2; i < system_i.nbond; i++)
+            form[i] = -1;
+    } else if (form_name < '9' && form_name > '0' /* P in N directions */) {
+        int bond_sel = form_name - '1';
+        form[bond_sel * 2] = 1;
+        form[bond_sel * 2 + 1] = -1;
+    } else if (form_name == 'f') {
+        for (int i = 0; i < 3; i++) {
+            form[2 * i] = 1;
+            form[2 * i + 1] = -1;
+        }
+    } else if (form_name == '+' /* Customized wave form, see document. */) {
+        for (int i = 0; i < system_i.nbond; i++) {
+            form_ss >> xre >> xim;
+            form[i].real(xre);
+            form[i].imag(xim);
+        }
+    } else { /* Not supported. */ }
+}
+
 void operators::sc_corr::measure(int a, int sa, int b, int sb, 
                                  int i, int si, int j, int sj, std::complex<double> x)
 {
-    int sign;
+    std::complex<double> form_loc;
     int rmin;
     
     if (validate(a, sa, b, sb, i, si, j, sj)) {
-        sign = 1;
+        form_loc = 1;
 
         if (sb != si) 
-            sign = -sign;
+            form_loc *= -1;
 
         // Waveform factor only affects this part.
-        if (form == 's' /* S */) { /* Do nothing. */ }
-        else if (form == 'd' /* D_{XY} */) {
-            int alpha_c = std::abs(system.nn[a][b]),
-                alpha_a = std::abs(system.nn[i][j]);
-            if (alpha_a != alpha_c && (alpha_a == 1 || alpha_c == 1))
-                sign = -sign;
-        } else if (form < '4' && form > '0' /* P in 3 directions */) {
-            if (std::abs(system.nn[a][b]) != std::abs(system.nn[i][j]) ||
-                std::abs(system.nn[a][b]) != form - '0')
-                return; // sign = 0;
-            sign *= system.nn[a][b] == system.nn[i][j] ? 1 : -1;
-        } else if (form == 'f' /* F_{X^3-3XY^2} */) {
-            sign *= system.nn[a][b] > 0 ? (system.nn[a][b] % 2) * 2 - 1
-                                        : (system.nn[a][b] % 2) * 2 + 1;
-            sign *= system.nn[i][j] > 0 ? (system.nn[i][j] % 2) * 2 - 1
-                                        : (system.nn[i][j] % 2) * 2 + 1;
-        } else
-            return; // Waveform not supported.
+        int alpha_c = (std::abs(system.nn[a][b]) - 1) * 2 + (system.nn[a][b] > 0 ? 0 : 1);
+        int alpha_a = (std::abs(system.nn[i][j]) - 1) * 2 + (system.nn[i][j] > 0 ? 0 : 1);
+        form_loc *= form[alpha_a] * form[alpha_c];
 
-        val_mat[system.idx_rij(i, b)] += x * double(sign) / (2. * system.n);
+        val_mat[system.idx_rij(i, b)] += x * form_loc / (2. * system.n);
     }
 }
 

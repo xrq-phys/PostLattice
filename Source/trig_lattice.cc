@@ -13,7 +13,7 @@ int inner2_trig(const int *a, const int *b)
 // }
 
 lattice::trig2d::trig2d(int a0W_i, int a1L_i, int a1W_i)
-: a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i, 2, 1)
+: a0W(a0W_i), a1L(a1L_i), a1W(a1W_i), lattice::lattice(a0W_i * a1L_i, 2, 1, 6)
 {
     sorted_rc(*this);
 

@@ -13,9 +13,9 @@
 struct operator_options {
     std::string g1e_fnm = "";
     std::string g2e_fnm = "";
+    std::string sc = "-"; ///< Waveform, or specified manually.
     bool db = true;
     bool af = true;
-    char sc = '-'; ///< Waveform
     char sc_stat = 'S'; ///< Statistic mode
     int  sc_use_p = 0; ///< Parallel SC pairing
     int  sc_simple = 0; ///< Count SC correlation only from site index-0

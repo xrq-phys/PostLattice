@@ -31,12 +31,12 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
     operators::doublon opr_db;
     operators::spin_struct opr_af(physics, options.af_n);
-    operators::sc_corr opr_sc(physics, options.sc_n, options.sc, options.sc_use_p);
+    operators::sc_corr opr_sc(physics, options.sc_n, options.sc_use_p, options.sc.c_str());
 
     map<long, int> seen_ijab;
     int ri, si, ra, sa, rj, sj, rb, sb;
     int iline;
-    double xre, ximag;
+    double xre, xim;
     complex<double> **x1e, x;
 
     x1e = new complex<double> *[physics.n * 2];
@@ -48,17 +48,17 @@ void measure(lattice::lattice &physics, operator_options &options)
 
     // Load in one-body part.
     while (true) {
-        fid_g1e >> ra >> sa >> ri >> si >> xre >> ximag;
+        fid_g1e >> ra >> sa >> ri >> si >> xre >> xim;
         if (fid_g1e.eof())
             break;
-        x1e[ri * 2 + si][ra * 2 + sa] = complex<double>(xre, ximag);
+        x1e[ri * 2 + si][ra * 2 + sa] = complex<double>(xre, xim);
     }
     fid_g1e.close();
 
     iline = 0;
     while (!fid_g2e.eof()) {
         fid_g2e >> rb >> sb >> rj >> sj
-                >> ra >> sa >> ri >> si >> xre >> ximag;
+                >> ra >> sa >> ri >> si >> xre >> xim;
         iline += 1;
         if (fid_g2e.eof())
             break;
@@ -71,12 +71,13 @@ void measure(lattice::lattice &physics, operator_options &options)
             }
             seen_ijab[fld4] = iline;
         }
-        x.real(xre); x.imag(ximag);
+        x.real(xre);
+        x.imag(xim);
 
         // if (options.verbose)
         //     cout << ' ' << ri << ' ' << si << ' ' << rj << ' ' << sj
         //          << ' ' << ra << ' ' << sa << ' ' << ra << ' ' << sb << ' ' << endl;
-        if (options.sc != '-' && si == sa &&
+        if (options.sc[0] != '-' && si == sa &&
             (options.sc_simple ? ra == 0 : 1)) { // From HPhi, we don't use DUUD/UDDU terms.
             if (!opr_sc.use_p) {
                 opr_sc.measure(rb, sb, ra, sa, rj, sj, ri, si, -x);
@@ -96,7 +97,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
     fid_g2e.close();
 
-    if (options.sc != '-') {
+    if (options.sc[0] != '-') {
         opr_sc.refresh(options.sc_stat);
         fstream fid_out_sc(options.sc_fnm, fstream::out);
         for (int i = 0; i < opr_sc.rc_count; i++) {

@@ -66,20 +66,15 @@ namespace operators
     {
         lattice::lattice &system;
         std::complex<double> *val_mat; ///< Storage for SC correlation at index difference i.
-        char form; ///< Wave form factor of superconductivity: s, d or p.
+        std::complex<double> *form; ///< Wave form factor of superconductivity.
+        // char form; ///< Wave form factor of superconductivity: s, d or p. TODO: Delete it.
         int use_p; ///< Whether to calculate parallel spin paring: 0AP, 1P.
         int rc_count; ///< Number of R_c's to use.
 
-        sc_corr(lattice::lattice &system_i, const int rc_count_i, const char form_i, const int use_p_i)
-        : operators::operators(), system(system_i), form(form_i), use_p(use_p_i),
-          rc_count(rc_count_i < system_i.rc_n ? rc_count_i : system_i.rc_n)
-        { values = new std::complex<double>[rc_count];
-          for (int i = 0; i < rc_count; i++) values[i] = 0;
-          val_mat = new std::complex<double>[system_i.n * system_i.ncell];
-          for (int i = 0; i < system_i.n * system_i.ncell; i++) val_mat[i] = 0; }
+        sc_corr(lattice::lattice &system_i, const int rc_count_i, const int use_p_i, std::string form_s);
 
         virtual ~sc_corr()
-        { delete[] val_mat; delete[] values; val_mat = nullptr; values = nullptr; }
+        { delete[] val_mat; delete[] form; }
 
         /**
          * @brief Implement measurement.

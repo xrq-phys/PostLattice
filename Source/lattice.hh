@@ -10,6 +10,7 @@ namespace lattice
     {
         int n;
         int ncell;  ///< Number of sites per cell.
+        int nbond;  ///< Maximum number of bonds connected to each site.
         int dim;    ///< Dimension.
         int rc_n;   ///< Number of R_c to Measure.
         int *r_c;   ///< Minimal-r List.
@@ -17,8 +18,8 @@ namespace lattice
         int **rmin; ///< Minimal r LUT.
         int **nn;   ///< Nearest-Neighhbour LUT.
 
-        lattice(int n_i, int dim_i, int ncell_i)
-        : n(n_i), dim(dim_i), ncell(ncell_i)
+        lattice(int n_i, int dim_i, int ncell_i, int nbond_i)
+        : n(n_i), dim(dim_i), ncell(ncell_i), nbond(nbond_i)
         {
             nn = new int*[n];
             rmin = new int*[n];
