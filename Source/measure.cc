@@ -36,7 +36,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     map<long, int> seen_ijab;
     int ri, si, ra, sa, rj, sj, rb, sb;
     int iline;
-    double xre, xim;
+    double xre, xim, r[2];
     complex<double> **x1e, x;
 
     x1e = new complex<double> *[physics.n * 2];
@@ -100,13 +100,21 @@ void measure(lattice::lattice &physics, operator_options &options)
     if (options.sc[0] != '-') {
         opr_sc.refresh(options.sc_stat);
         fstream fid_out_sc(options.sc_fnm, fstream::out);
-        for (int i = 0; i < opr_sc.rc_count; i++) {
-            x = opr_sc.values[i] * double(options.sc_simple ? physics.n : 1);
-            fid_out_sc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
-                       << setw(18) << scientific << x.real() << ' ' << x.imag() << ' '
-                       << setw( 8) << (options.sc_stat == 'M' ||
-                                       options.sc_stat == 'm' ? 1 : physics.r_n[i]) << endl;
-        }
+        if (options.sc_stat == 'D' || options.sc_stat == 'd')
+            for (int i = 0; i < physics.n; i++) {
+                physics.r(r, i);
+                x = opr_sc.val_mat[i] * double(options.sc_simple ? physics.n : 1);
+                fid_out_sc << setw( 8) << fixed << r[0] << ' ' << r[1] << ' '
+                           << setw(18) << scientific << x.real() << ' ' << x.imag() << endl;
+            }
+        else
+            for (int i = 0; i < opr_sc.rc_count; i++) {
+                x = opr_sc.values[i] * double(options.sc_simple ? physics.n : 1);
+                fid_out_sc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
+                           << setw(18) << scientific << x.real() << ' ' << x.imag() << ' '
+                           << setw( 8) << (options.sc_stat == 'M' ||
+                                           options.sc_stat == 'm' ? 1 : physics.r_n[i]) << endl;
+            }
         fid_out_sc.close();
     }
 
