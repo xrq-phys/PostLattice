@@ -12,49 +12,20 @@
 
 using namespace std;
 
+void plot_bonds(fstream &mp_fid, lattice::lattice &system);
+
 void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label_on)
 {
+    double r[2];
     assert(system.dim == 2);
-    double r[2], rj[2];
     fstream mp_fid(mp_fnm, fstream::out);
+
     // Metapost file header.
     mp_fid << "beginfig(1);" << endl;
     mp_fid << "pickup pencircle scaled 1pt;" << endl;
 
-    // PBC bonds
-    for (int i = 0; i < system.n; i++) {
-        system.r(r, i);
-
-        for (int j = i; j < system.n; j++)
-            if (system.nn[i][j]) {
-                system.r(rj, j);
-
-                if (pow(r[0] - rj[0], 2) + pow(r[1] - rj[1], 2) >= 1. / 4)
-                    mp_fid << "draw ("
-                        << r [0] * x_scal + x_offset << "cm," 
-                        << r [1] * y_scal + y_offset << "cm)--(" 
-                        << rj[0] * x_scal + x_offset << "cm," 
-                        << rj[1] * y_scal + y_offset << "cm)"
-                        << " withcolor (1.,.7,.0);" << endl;
-            }
-    }
-
-    // In-supercell bonds
-    for (int i = 0; i < system.n; i++) {
-        system.r(r, i);
-
-        for (int j = i; j < system.n; j++)
-            if (system.nn[i][j]) {
-                system.r(rj, j);
-
-                if (pow(r[0] - rj[0], 2) + pow(r[1] - rj[1], 2) < 1. / 4)
-                    mp_fid << "draw ("
-                        << r [0] * x_scal + x_offset << "cm," 
-                        << r [1] * y_scal + y_offset << "cm)--(" 
-                        << rj[0] * x_scal + x_offset << "cm," 
-                        << rj[1] * y_scal + y_offset << "cm);" << endl;
-            }
-    }
+    // Bonds
+    plot_bonds(mp_fid, system);
 
     // Site
     for (int i = 0; i < system.n; i++) {
@@ -71,4 +42,46 @@ void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label
     // Metapost file ending.
     mp_fid << "endfig;" << endl 
            << "end"     << endl;
+}
+
+
+void plot_bonds(fstream &mp_fid, lattice::lattice &system)
+{
+    double r [2],
+           rj[2];
+
+    // PBC bonds
+    for (int i = 0; i < system.n; i++) {
+        system.r(r, i);
+
+        for (int j = i; j < system.n; j++)
+            if (system.nn[i][j]) {
+                system.r(rj, j);
+
+                if (pow(r[0] - rj[0], 2) + pow(r[1] - rj[1], 2) >= 1. / 4)
+                    mp_fid << "draw ("
+                           << r [0] * x_scal + x_offset << "cm,"
+                           << r [1] * y_scal + y_offset << "cm)--("
+                           << rj[0] * x_scal + x_offset << "cm,"
+                           << rj[1] * y_scal + y_offset << "cm)"
+                           << " withcolor (1.,.7,.0);" << endl;
+            }
+    }
+
+    // In-supercell bonds
+    for (int i = 0; i < system.n; i++) {
+        system.r(r, i);
+
+        for (int j = i; j < system.n; j++)
+            if (system.nn[i][j]) {
+                system.r(rj, j);
+
+                if (pow(r[0] - rj[0], 2) + pow(r[1] - rj[1], 2) < 1. / 4)
+                    mp_fid << "draw ("
+                           << r [0] * x_scal + x_offset << "cm,"
+                           << r [1] * y_scal + y_offset << "cm)--("
+                           << rj[0] * x_scal + x_offset << "cm,"
+                           << rj[1] * y_scal + y_offset << "cm);" << endl;
+            }
+    }
 }

@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
         options.chk_duplicate = inp_fid.GetBoolean("Control", "Check_Duplicate", true);
         options.db = inp_fid.GetBoolean("Operator", "Doublon", true);
         options.af = inp_fid.GetBoolean("Operator", "Spin_Structure", true);
+        options.st = inp_fid.GetBoolean("Operator", "Charge_Structure", true);
         options.sc = inp_fid.Get("Operator", "SC", "-").c_str()[0];
         if (options.sc != '-') {
             options.sc_n = inp_fid.GetInteger("Operator", "SC_NumR", 100);
@@ -90,6 +91,7 @@ int main(int argc, char *argv[])
         options.db_fnm = inp_fid.Get("Operator", "Doublon_Out", "doublon.txt").c_str();
         options.sc_fnm = inp_fid.Get("Operator", "SC_Out", "sc.txt").c_str();
         options.af_fnm = inp_fid.Get("Operator", "AF_Out", "af.txt").c_str();
+        options.st_fnm = inp_fid.Get("Operator", "ST_Out", "st.txt").c_str();
         measure(*physics, options);
     } else if (mode_n == "Plot") {
         options.mp_fnm = inp_fid.Get("Control", "Image", "lattice.mp");

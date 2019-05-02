@@ -146,13 +146,14 @@ void operators::sc_corr::refresh(char mode)
         }
 }
 
-operators::spin_struct::spin_struct(lattice::lattice &system_i)
+operators::site_corr::site_corr(lattice::lattice &system_i)
 : operators::operators(), system(system_i)
 {
     int idx;
     // Initialize points
     val_mat = new double[system_i.n * system_i.ncell];
     connection = new int*[system_i.n * system_i.ncell];
+    conn_slave = 0;
     for (int i = 0; i < system_i.n * system_i.ncell; i++) {
         val_mat[i] = 0;
         connection[i] = new int[2];
@@ -165,21 +166,29 @@ operators::spin_struct::spin_struct(lattice::lattice &system_i)
         }
 }
 
-void operators::spin_struct::measure(int ri, int si, int rj, int sj,
-                                     int rk, int sk, int rl, int sl, double x)
+operators::site_corr::site_corr(site_corr &opr_i)
+: operators::operators(), system(opr_i.system)
 {
-    if (ri != rj || rk != rl)
-        return;
-    
-    // Si \cdot Sk.
-    double spin_part = (pauli_x[si][sj] * pauli_x[sk][sl] 
-                      + pauli_z[si][sj] * pauli_z[sk][sl] 
-                      - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
-
-    val_mat[system.idx_rij(ri, rk)] += spin_part * x;
+    lattice::lattice &system_i = opr_i.system;
+    val_mat = new double[system_i.n * system_i.ncell];
+    connection = opr_i.connection;
+    conn_slave = 1;
+    for (int i = 0; i < system_i.n * system_i.ncell; i++)
+        val_mat[i] = 0;
 }
 
-void operators::spin_struct::refresh(int *ndiv) {
+operators::site_corr::~site_corr()
+{
+    if (!conn_slave) {
+        for (int i = 0; i < system.n * system.ncell; i++)
+            delete[] connection[i];
+        delete[] connection;
+    }
+    delete[] val_mat;
+    delete[] values;
+}
+
+void operators::site_corr::refresh(int *ndiv) {
     int n_qpts = 1;
     int *nidxspc = new int[system.dim];
     int *qidx    = new int[system.dim];
@@ -195,4 +204,29 @@ void operators::spin_struct::refresh(int *ndiv) {
 
     delete[] nidxspc;
     delete[] qidx;
+}
+
+void operators::spin_struct::measure(int ri, int si, int rj, int sj,
+                                     int rk, int sk, int rl, int sl, double x)
+{
+    if (ri != rj || rk != rl)
+        return;
+
+    // Si \cdot Sk.
+    double spin_part = (pauli_x[si][sj] * pauli_x[sk][sl]
+                        + pauli_z[si][sj] * pauli_z[sk][sl]
+                        - pauli_y[si][sj] * pauli_y[sk][sl]) / 4.;
+
+    val_mat[system.idx_rij(ri, rk)] += spin_part * x;
+}
+
+void operators::charge_struct::measure(int ri, int si, int rj, int sj,
+                                       int rk, int sk, int rl, int sl, double x)
+{
+    if (ri != rj || rk != rl ||
+        si != sj || sk != sl)
+        return;
+
+    // Regardless spin direction, add up.
+    val_mat[system.idx_rij(ri, rk)] += x;
 }

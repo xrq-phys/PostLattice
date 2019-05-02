@@ -31,6 +31,7 @@ void measure(lattice::lattice &physics, operator_options &options)
     }
     operators::doublon opr_db;
     operators::spin_struct opr_af(physics);
+    operators::charge_struct opr_st(opr_af);
     operators::sc_corr opr_sc(physics, options.sc_n, options.sc, options.sc_use_p);
 
     map <long, int> seen_ijab;
@@ -89,6 +90,8 @@ void measure(lattice::lattice &physics, operator_options &options)
                 opr_af.measure(rb, sb, ri, si, ra, sa, rj, sj,
                                -x + (ri == ra ? x1e[rj * 2 + sj][rb * 2 + sb] : 0));
         }
+        if (options.st)
+            opr_st.measure(rb, sb, rj, sj, ra, sa, ri, si, x);
         if (options.db)
             opr_db.measure(rb, sb, rj, sj, ra, sa, ri, si, x);
     }
@@ -113,6 +116,16 @@ void measure(lattice::lattice &physics, operator_options &options)
                                      << opr_af.val_mat[i] << endl;
         }
         fid_out_af.close();
+    }
+
+    if (options.st) {
+        opr_st.refresh();
+        fstream fid_out_st(options.st_fnm, fstream::out);
+        for (int i = 0; i < physics.n * physics.ncell; i++) {
+            fid_out_st << scientific << opr_st.connection[i][0] << ' ' << opr_st.connection[i][1] << ' '
+                       << opr_st.val_mat[i] << endl;
+        }
+        fid_out_st.close();
     }
 
     if (options.db) {

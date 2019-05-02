@@ -15,6 +15,7 @@ struct operator_options {
     std::string g2e_fnm = "";
     bool db = true;
     bool af = true;
+    bool st = true;
     char sc = '-'; ///< Waveform
     char sc_stat = 'S'; ///< Statistic mode
     int  sc_use_p = 0; ///< Parallel SC pairing
@@ -26,6 +27,7 @@ struct operator_options {
     bool chk_duplicate = true;
     std::string sc_fnm = "";
     std::string af_fnm = "";
+    std::string st_fnm = "";
     std::string db_fnm = "";
     std::string mp_fnm = "";
 

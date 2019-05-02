@@ -108,22 +108,33 @@ namespace operators
     };
 
     /**
-     * @brief Spin structure.
+     * @brief Base class for 2-site correlation.
      */
-    struct spin_struct
+    struct site_corr
     : operators
     {
         lattice::lattice &system;
         int **connection; ///< Correlation Site Indices
+        int conn_slave;
         double *val_mat;
 
         /**
-         * @brief Construct a new spin struct object.
+         * @brief Construct a new 2-site correlation object.
          * 
          * @param system_i System.
          * @param ndiv Number of q-points in each dimension.
          */
-        spin_struct(lattice::lattice &system_i);
+        site_corr(lattice::lattice &system_i);
+
+        /**
+         * @brief Construct a new 2-site correlation object from the same system,
+         *        copying connection data from previous object.
+         *
+         * @param opr_i Operator object to copy connection data from.
+         */
+        site_corr(site_corr &opr_i);
+
+        virtual ~site_corr() override;
 
         virtual void refresh() override {}
 
@@ -132,10 +143,38 @@ namespace operators
          * @param ndiv Number of Q-Points per dimension.
          */
         virtual void refresh(int *ndiv);
+    };
 
-        virtual ~spin_struct() override
-        { for (int i = 0; i < system.n * system.ncell; i++) delete[] connection[i]; delete[] connection;
-          delete[] val_mat; delete[] values; }
+    /**
+     * Spin-structure factor - 2-point spin inner product.
+     */
+    struct spin_struct
+    : site_corr
+    {
+        spin_struct(lattice::lattice &system_i)
+        : site_corr(system_i) { }
+
+        spin_struct(site_corr &opr_i)
+        : site_corr(opr_i) { }
+
+        /**
+         * @brief Implement measurement.
+         * @param x < c a c a >
+         */
+        virtual void measure(int a, int sa, int b, int sb, int i, int si, int j, int sj, double x) override;
+    };
+
+    /**
+     * Charge-structure factor - 2-point density correlation.
+     */
+    struct charge_struct
+    : site_corr
+    {
+        charge_struct(lattice::lattice &system_i)
+        : site_corr(system_i) { }
+
+        charge_struct(site_corr &opr_i)
+        : site_corr(opr_i) { }
 
         /**
          * @brief Implement measurement.
