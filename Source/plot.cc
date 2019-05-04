@@ -12,10 +12,14 @@
 
 using namespace std;
 
-void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label_on)
+void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label_on,
+                  double (*size_func)(double *, int), double *size_mat,
+                  double (*spin_func)(double *, int), double *spin_mat)
 {
     assert(system.dim == 2);
-    double r[2], rj[2];
+    double r [2],
+           rj[2];
+    double dsize;
     fstream mp_fid(mp_fnm, fstream::out);
     // Metapost file header.
     mp_fid << "beginfig(1);" << endl;
@@ -59,13 +63,26 @@ void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label
     // Site
     for (int i = 0; i < system.n; i++) {
         system.r(r, i);
-        mp_fid << "pickup pencircle scaled 4pt;" << endl << "drawdot (" 
-               << r[0] * x_scal + x_offset << "cm," 
-               << r[1] * y_scal + y_offset << "cm) withcolor (.0,.0,1.);" << endl;
+        // Label
         if (label_on)
             mp_fid << "label.bot(btex" << i << "," << system.calc_rmin(0, i) << "etex,("
                    << r[0] * x_scal + x_offset << "cm,"
                    << r[1] * y_scal + y_offset << "cm));" << endl;
+        // Lattice point or density correlation
+        dsize = size_func(size_mat, i);
+        mp_fid << "pickup pencircle scaled " << dsize << "pt;" << endl << "drawdot ("
+               << r[0] * x_scal + x_offset << "cm,"
+               << r[1] * y_scal + y_offset << "cm) withcolor (.0,.0,1.);" << endl;
+        // Spin correlation
+        dsize = spin_func(spin_mat, i);
+        mp_fid << "pickup pencircle scaled 1pt;" << endl;
+        if (abs(dsize) < 1) {
+            dsize *= 20 * system.n;
+            mp_fid << "drawarrow ("
+                   << r[0] * x_scal + x_offset - dsize << "cm,"
+                   << r[1] * y_scal + y_offset + dsize << "cm) withcolor ("
+                   << int(dsize > 0) << ".,.0," << int(dsize < 0) << ".);" << endl;
+        }
     }
 
     // Metapost file ending.
