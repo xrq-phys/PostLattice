@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
         options.sc_fnm = inp_fid.Get("Operator", "SC_Out", "sc.txt").c_str();
         options.af_fnm = inp_fid.Get("Operator", "AF_Out", "af.txt").c_str();
         options.st_fnm = inp_fid.Get("Operator", "ST_Out", "st.txt").c_str();
+        options.mp_fnm = inp_fid.Get("Control", "Image", "correlation.mp");
         measure(*physics, options);
     } else if (mode_n == "Plot") {
         options.mp_fnm = inp_fid.Get("Control", "Image", "lattice.mp");

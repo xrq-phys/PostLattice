@@ -12,9 +12,9 @@
 
 using namespace std;
 
-void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label_on,
-                  double (*size_func)(double *, int), double *size_mat,
-                  double (*spin_func)(double *, int), double *spin_mat)
+void plot_lattice(const char *mp_fnm, lattice::lattice &system, bool label_on,
+                  bool size_on, const double *size_mat,
+                  bool spin_on, const double *spin_mat)
 {
     assert(system.dim == 2);
     double r [2],
@@ -69,17 +69,18 @@ void plot_lattice(const char *mp_fnm, lattice::lattice &system, const bool label
                    << r[0] * x_scal + x_offset << "cm,"
                    << r[1] * y_scal + y_offset << "cm));" << endl;
         // Lattice point or density correlation
-        dsize = size_func(size_mat, i);
+        dsize = size_on ? size_mat[i] * 20 : 4.0;
         mp_fid << "pickup pencircle scaled " << dsize << "pt;" << endl << "drawdot ("
                << r[0] * x_scal + x_offset << "cm,"
-               << r[1] * y_scal + y_offset << "cm) withcolor (.0,.0,1.);" << endl;
+               << r[1] * y_scal + y_offset << "cm) withcolor (.0,1.,.0);" << endl;
         // Spin correlation
-        dsize = spin_func(spin_mat, i);
-        mp_fid << "pickup pencircle scaled 1pt;" << endl;
-        if (abs(dsize) < 1) {
-            dsize *= 20 * system.n;
+        if (spin_on) {
+            dsize *= spin_mat[i] / 10;
+            mp_fid << "pickup pencircle scaled 1pt;" << endl;
             mp_fid << "drawarrow ("
-                   << r[0] * x_scal + x_offset - dsize << "cm,"
+                   << r[0] * x_scal + x_offset << "cm,"
+                   << r[1] * y_scal + y_offset - dsize << "cm)--("
+                   << r[0] * x_scal + x_offset << "cm,"
                    << r[1] * y_scal + y_offset + dsize << "cm) withcolor ("
                    << int(dsize > 0) << ".,.0," << int(dsize < 0) << ".);" << endl;
         }

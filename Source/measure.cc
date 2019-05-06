@@ -1,4 +1,5 @@
 #include "measure.hh"
+#include "plot.hh"
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -134,6 +135,9 @@ void measure(lattice::lattice &physics, operator_options &options)
         fid_out_db << scientific << opr_db.values[0] << endl;
         fid_out_db.close();
     }
+
+    if (options.af && options.st)
+        plot_lattice(options.mp_fnm.c_str(), physics, false, true, opr_st.val_mat, true, opr_af.val_mat);
 
     for (int i = 0; i < physics.n * 2; i++)
         delete[] x1e[i];
