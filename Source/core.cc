@@ -41,8 +41,10 @@ int main(int argc, char *argv[])
     operator_options options;
     options.direct = inp_fid.GetBoolean("Control", "Direct", false);
     options.verbose = inp_fid.GetBoolean("Control", "Verbose", false);
-    options.g1e_fnm = inp_fid.Get("Control", "GreenOne", "Green1.txt");
-    options.g2e_fnm = inp_fid.Get("Control", "GreenTwo", "Green2.txt");
+    options.g1e_idx_fnm = inp_fid.Get("Control", "GreenOne", "Green1.txt");
+    options.g2e_idx_fnm = inp_fid.Get("Control", "GreenTwo", "Green2.txt");
+    options.g1e_fnm = inp_fid.Get("Control", "GreenOneOut", "CisAjs.txt");
+    options.g2e_fnm = inp_fid.Get("Control", "GreenTwoOut", "CisAjsCktAlt.txt");
     string mode_n = inp_fid.Get("Control", "Mode", "UNDEFINED");
     // Allow command-line overriding of control parameters.
     if (argc > 3) {
@@ -55,13 +57,15 @@ int main(int argc, char *argv[])
 
     // Execute
     if (mode_n == "Gen") {
-        write_ca  (options.g1e_fnm.c_str(), *physics);
-        write_caca(options.g2e_fnm.c_str(), *physics,
-                   inp_fid.Get("Operator", "SC", "-").c_str()[0] != '-',
+        write_ca  (options.g1e_idx_fnm.c_str(), *physics);
+        write_caca(options.g2e_idx_fnm.c_str(), *physics,
+                   inp_fid.Get("Operator", "SC", "-")[0] != '-',
                    inp_fid.GetInteger("Operator", "SC_UseP", 0) != 0,
                    inp_fid.GetInteger("Operator", "SC_Simple", 0) != 0);
     } else if (mode_n == "Measure") {
         options.chk_duplicate = inp_fid.GetBoolean("Control", "Check_Duplicate", true);
+        options.ca_verbose = inp_fid.GetBoolean("Control", "Green_Verbose", true);
+        options.ca_legacy = inp_fid.GetBoolean("Control", "Green_Legacy", false);
         options.db = inp_fid.GetBoolean("Operator", "Doublon", true);
         options.af = inp_fid.GetBoolean("Operator", "Spin_Structure", true);
         options.st = inp_fid.GetBoolean("Operator", "Charge_Structure", true);
