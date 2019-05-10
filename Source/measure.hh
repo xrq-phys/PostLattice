@@ -13,6 +13,8 @@
 struct operator_options {
     std::string g1e_fnm = "";
     std::string g2e_fnm = "";
+    std::string g1e_idx_fnm = "";
+    std::string g2e_idx_fnm = "";
     std::string sc = "-"; ///< Waveform, or specified manually.
     bool db = true;
     bool af = true;
@@ -24,6 +26,8 @@ struct operator_options {
     bool direct = false;
     bool verbose = false;
     bool chk_duplicate = true;
+    bool ca_verbose = true; ///< Green function output has i|j|k|l|x or x|x|x|... form
+    bool ca_legacy = true; ///< Green function indices has r|s|r|s or r|r|s form
     std::string sc_fnm = "";
     std::string af_fnm = "";
     std::string db_fnm = "";

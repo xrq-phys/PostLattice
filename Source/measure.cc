@@ -19,8 +19,10 @@ long idx_1so(int i, int si)
 
 void measure(lattice::lattice &physics, operator_options &options)
 {
-    fstream fid_g1e = fstream(options.g1e_fnm);
-    fstream fid_g2e = fstream(options.g2e_fnm);
+    fstream fid_g1e(options.g1e_fnm);
+    fstream fid_g2e(options.g2e_fnm);
+    fstream fid_g1e_idx(options.g1e_idx_fnm);
+    fstream fid_g2e_idx(options.g2e_idx_fnm);
     assert(!(fid_g1e.fail() || fid_g2e.fail()));
 
     // Check & modify some options.
@@ -46,9 +48,29 @@ void measure(lattice::lattice &physics, operator_options &options)
             x1e[i][j] = 0.;
     }
 
+    // Skip GF definition file headers.
+    if (!options.ca_verbose) {
+        char cbuffer[200];
+        for (int i = 0; i < 5; i++) {
+            fid_g1e_idx.getline(cbuffer, 200, '\n');
+            fid_g2e_idx.getline(cbuffer, 200, '\n');
+        }
+    } // Yet another non-empty check.
+    assert(!(fid_g1e.eof() || fid_g2e.eof()));
+
     // Load in one-body part.
     while (true) {
-        fid_g1e >> ra >> sa >> ri >> si >> xre >> xim;
+        if (options.ca_verbose)
+            fid_g1e >> ra >> sa >> ri >> si >> xre >> xim;
+        else {
+            if (options.ca_legacy) {
+                fid_g1e_idx >> iline >> ra >> ri >> sa;
+                si = sa;
+            } else
+                fid_g1e_idx >> ra >> sa >> ri >> si;
+            fid_g1e >> xre;
+            xim = 0;
+        }
         if (fid_g1e.eof())
             break;
         x1e[ri * 2 + si][ra * 2 + sa] = complex<double>(xre, xim);
@@ -57,8 +79,20 @@ void measure(lattice::lattice &physics, operator_options &options)
 
     iline = 0;
     while (!fid_g2e.eof()) {
-        fid_g2e >> rb >> sb >> rj >> sj
-                >> ra >> sa >> ri >> si >> xre >> xim;
+        if (options.ca_verbose)
+            fid_g2e >> rb >> sb >> rj >> sj
+                     >> ra >> sa >> ri >> si >> xre >> xim;
+        else {
+            if (options.ca_legacy) {
+                fid_g2e_idx >> rb >> rj >> sb >> ra >> ri >> sa;
+                sj = sb;
+                si = sa;
+            } else
+                fid_g2e_idx >> rb >> sb >> rj >> sj
+                             >> ra >> sa >> ri >> si;
+            fid_g2e >> xre;
+            xim = 0;
+        }
         iline += 1;
         if (fid_g2e.eof())
             break;
