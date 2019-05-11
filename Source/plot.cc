@@ -13,7 +13,10 @@
 using namespace std;
 
 double find_min(const double *arr, int n)
-{ double m = 0; for (int i = 0; i < n; i++) if (arr[i] > m) m = arr[i]; return m; }
+{ double m = 0; for (int i = 0; i < n; i++) if (abs(arr[i]) < m) m = arr[i]; return m; }
+
+double find_max(const double *arr, int n)
+{ double m = 0; for (int i = 0; i < n; i++) if (abs(arr[i]) > m) m = arr[i]; return m; }
 
 void plot_lattice(const char *mp_fnm, lattice::lattice &system, bool label_on,
                   bool size_on, const double *size_mat,
@@ -67,10 +70,10 @@ void plot_lattice(const char *mp_fnm, lattice::lattice &system, bool label_on,
     resize_c = 1. / 1;
     resize_s = 1. / 10;
     min_c = find_min(size_mat, system.n);
-    if (size_on && system.n > 8)
-        resize_c = 0.5 / (size_mat[8] - min_c);
-    if (spin_on && system.n > 8)
-        resize_s = 0.1 / abs(spin_mat[8]);
+    if (size_on)
+        resize_c = 0.5 / (find_max(size_mat + 1, system.n - 1) - min_c);
+    if (spin_on)
+        resize_s = 0.2 / find_max(spin_mat + 1, system.n - 1);
     for (int i = 1; i < system.n; i++) {
         system.r(r, i);
         // Label
