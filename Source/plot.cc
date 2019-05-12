@@ -13,7 +13,7 @@
 using namespace std;
 
 double find_min(const double *arr, int n)
-{ double m =10; for (int i = 0; i < n; i++) if (abs(arr[i]) < m) m = arr[i]; return m; }
+{ double m =80; for (int i = 0; i < n; i++) if (abs(arr[i]) < m) m = arr[i]; return m; }
 
 double find_max(const double *arr, int n)
 { double m = 0; for (int i = 0; i < n; i++) if (abs(arr[i]) > m) m = arr[i]; return m; }
@@ -71,9 +71,10 @@ void plot_lattice(const char *mp_fnm, lattice::lattice &system, bool label_on,
     resize_s = 1. / 10;
     min_c = find_min(size_mat + 1, system.n - 1);
     if (size_on)
-        resize_c = 0.5 / (find_max(size_mat + 1, system.n - 1) - min_c);
+        resize_c = 0.4 / (find_max(size_mat + 1, system.n - 1) - min_c);
     if (spin_on)
-        resize_s = 0.2 / find_max(spin_mat + 1, system.n - 1);
+        resize_s = 0.3 / find_max(spin_mat + 1, system.n - 1);
+    cout << "DBG:" << min_c << " " << 0.4 / resize_c << " " << 0.3 / resize_s << " " << endl;
     for (int i = 1; i < system.n; i++) {
         system.r(r, i);
         // Label
@@ -82,7 +83,7 @@ void plot_lattice(const char *mp_fnm, lattice::lattice &system, bool label_on,
                    << r[0] * x_scal + x_offset << "cm,"
                    << r[1] * y_scal + y_offset << "cm));" << endl;
         // Lattice point or density correlation
-        dsize = size_on ? (size_mat[i] - min_c) * resize_c + 0.1 : 4.0;
+        dsize = size_on ? (size_mat[i] - min_c) * resize_c + 0.3 : 4.0;
         mp_fid << "pickup pencircle scaled " << dsize << "cm;" << endl << "drawdot ("
                << r[0] * x_scal + x_offset << "cm,"
                << r[1] * y_scal + y_offset << "cm) withcolor (.0,1.,.0);" << endl;
