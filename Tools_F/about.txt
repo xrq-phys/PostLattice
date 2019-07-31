@@ -1,1 +1,0 @@
-Legacy/Errorous Fortran Programs. Don't trust anything about SC here!
