@@ -47,8 +47,8 @@ void lattice::lieb::r(double *r, int i)
 {
     int r_i[2];
     this->r(r_i, i);
-    r[0] = r_i[0];
-    r[1] = r_i[1];
+    r[0] = double(r_i[0]) / (w * 2);
+    r[1] = double(r_i[1]) / (l * 2);
 }
 
 int lattice::lieb::idx_rij(int i, int j) {
