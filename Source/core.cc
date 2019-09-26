@@ -7,6 +7,7 @@
 #include "green_gen.hh"
 #include "measure.hh"
 #include "lattice.hh"
+#include "lieb.hh"
 #include "trig_lattice.hh"
 #include "honeycomb.hh"
 #include <iostream>
@@ -35,6 +36,8 @@ int main(int argc, char *argv[])
         physics = new lattice::trig2d(a0W, a1L, a1W);
     else if (lattice_n == "Honeycomb")
         physics = new lattice::honeycomb(a0W, a1L, a1W);
+    else if (lattice_n == "Lieb")
+        physics = new lattice::lieb(a0W, a1L);
     else
     { cerr << "System " << lattice_n << " is not supported." << endl; abort(); }
 
