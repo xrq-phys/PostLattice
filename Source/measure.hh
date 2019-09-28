@@ -29,6 +29,7 @@ struct operator_options {
     bool chk_duplicate = true;
     bool ca_verbose = true; ///< Green function output has i|j|k|l|x or x|x|x|... form
     bool ca_legacy = true; ///< Green function indices has r|s|r|s or r|r|s form
+    bool corr_r = false; ///< Print real-space coordinate instead of relative indices in real-space correlations
     std::string sc_fnm = "";
     std::string af_fnm = "";
     std::string st_fnm = "";

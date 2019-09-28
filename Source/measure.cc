@@ -145,8 +145,16 @@ void measure(lattice::lattice &physics, operator_options &options)
         opr_af.refresh();
         fstream fid_out_af(options.af_fnm, fstream::out);
         for (int i = 0; i < physics.n * physics.ncell; i++) {
-            fid_out_af << scientific << opr_af.connection[i][0] << ' ' << opr_af.connection[i][1] << ' '
-                                     << opr_af.val_mat[i] << endl;
+            if (options.corr_r) {
+                if (opr_af.connection[i][1] == 0) {
+                    double r[2];
+                    physics.r(r, opr_af.connection[i][0]);
+                    fid_out_af << scientific << r[0] << ' ' << r[1] << ' '
+                               << opr_af.val_mat[i] << endl;
+                }
+            } else
+                fid_out_af << scientific << opr_af.connection[i][0] << ' ' << opr_af.connection[i][1] << ' '
+                                         << opr_af.val_mat[i] << endl;
         }
         fid_out_af.close();
     }
@@ -155,8 +163,16 @@ void measure(lattice::lattice &physics, operator_options &options)
         opr_st.refresh();
         fstream fid_out_st(options.st_fnm, fstream::out);
         for (int i = 0; i < physics.n * physics.ncell; i++) {
-            fid_out_st << scientific << opr_st.connection[i][0] << ' ' << opr_st.connection[i][1] << ' '
-                       << opr_st.val_mat[i] << endl;
+            if (options.corr_r) {
+                if (opr_st.connection[i][1] == 0) {
+                    double r[2];
+                    physics.r(r, opr_st.connection[i][0]);
+                    fid_out_st << scientific << r[0] << ' ' << r[1] << ' '
+                               << opr_st.val_mat[i] << endl;
+                }
+            } else
+                fid_out_st << scientific << opr_st.connection[i][0] << ' ' << opr_st.connection[i][1] << ' '
+                           << opr_st.val_mat[i] << endl;
         }
         fid_out_st.close();
     }

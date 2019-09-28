@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
             default:
                 break;
             }
+        options.corr_r = inp_fid.GetInteger("Operator", "Corr_R", 0);
         options.db_fnm = inp_fid.Get("Operator", "Doublon_Out", "doublon.txt").c_str();
         options.sc_fnm = inp_fid.Get("Operator", "SC_Out", "sc.txt").c_str();
         options.af_fnm = inp_fid.Get("Operator", "AF_Out", "af.txt").c_str();
