@@ -1,7 +1,7 @@
 #include "lieb.hh"
 
 lattice::lieb::lieb(int w_i, int l_i)
-: w(w_i), l(l_i), lattice::lattice(w_i * l_i * 3, 2, 3)
+: w(w_i), l(l_i), lattice::lattice(w_i * l_i * 3, 2, 3, 4)
 {
     sorted_rc(*this);
 
