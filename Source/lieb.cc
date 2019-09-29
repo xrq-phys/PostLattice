@@ -1,5 +1,10 @@
 #include "lieb.hh"
 
+// Tool Routines {
+int inner2(int *a, int *b, bool cell = false)
+{ return ((a[0] - b[0]) * (a[0] - b[0])) + ((a[1] - b[1]) * (a[1] - b[1])); }
+// }
+
 lattice::lieb::lieb(int w_i, int l_i)
 : w(w_i), l(l_i), lattice::lattice(w_i * l_i * 3, 2, 3, 4)
 {
@@ -52,10 +57,8 @@ void lattice::lieb::r(double *r, int i)
 }
 
 int lattice::lieb::idx_rij(int i, int j) {
-    if (i % ncell)
-        return 0; // Sorry for temporarily using 0-0 correlation as trash can.
-
     int icell = i / ncell,
+        isite = i % ncell,
         jcell = j / ncell,
         jsite = j % ncell;
     int xicl = icell % w,
@@ -65,18 +68,60 @@ int lattice::lieb::idx_rij(int i, int j) {
     int xrcl = (xjcl - xicl + w) % w,
         yrcl = (yjcl - yicl + l) % l;
 
-    return (yrcl * w + xrcl) * ncell + jsite;
+    return (yrcl * w + xrcl) * ncell + jsite + isite * n;
 }
 
 int lattice::lieb::calc_rmin(int i, int j) {
-    if (i != 0)
-        return -1;
-    int r[2], r_q[2];
+    // Currently copying square lattice's code.
+    if (rmin[i][j] >= 0)
+        return rmin[i][j];
+    else {
+        int ri[2], rj[2], ri_q[2], rj_q[2];
+        int rtmp, rnew;
+        r(ri, i, ri_q);
+        r(rj, j, rj_q);
 
-    this->r(r, j, r_q);
-    if (r_q[0]) r[0] -= w * 2;
-    if (r_q[1]) r[1] -= l * 2;
+        // [0, 0]
+        rtmp = inner2(ri, rj);
 
-    return r[0]*r[0] + r[1]*r[1];
+        // Different X quarter
+        if (ri_q[0] != rj_q[0]) {
+            if (ri_q[0] == 0)
+                ri[0] += w * 2;
+            else
+                rj[0] += w * 2;
+            rnew = inner2(ri, rj);
+            if (rtmp > rnew)
+                rtmp = rnew;
+        }
+
+        // Different Y quarter
+        if (ri_q[1] != rj_q[1]) {
+            if (ri_q[1] == 0)
+                ri[1] += l * 2;
+            else
+                rj[1] += l * 2;
+            rnew = inner2(ri, rj);
+            if (rtmp > rnew)
+                rtmp = rnew;
+
+            // Correction if both X and Y quarter are different
+            if (ri_q[0] != rj_q[0]) {
+                if (ri_q[0] == 0)
+                    ri[0] -= w * 2;
+                else
+                    rj[0] -= w * 2;
+                rnew = inner2(ri, rj);
+                if (rtmp > rnew)
+                    rtmp = rnew;
+            }
+        }
+
+        // Update LUT
+        rmin[i][j] = rtmp;
+        rmin[j][i] = rtmp;
+
+        return rtmp;
+    }
 }
 
