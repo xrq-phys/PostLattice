@@ -73,6 +73,40 @@ void mini_fourier(int cdim, int *ndiv, int *nidxspc, int *qidx,
             delete[] dr; delete[] r1; delete[] r2;
         }
 }
+
+void stat_rc(double *values, lattice::lattice &system, int rc_count, char mode, double *val_mat)
+{
+    // Compute according specified modes.
+    if (mode == 'M' || mode == 'm')
+        for (int i = 0; i < system.n * system.ncell; i++) {
+            int rmin = system.calc_rmin(i / system.n /* from nth site in 0th cell */,
+                                        i % system.n /* to nth site in whole lattice */);
+            for (int j = 0; j < rc_count; j++)
+                if (rmin == system.r_c[j])
+                    if (std::abs(values[j]) < std::abs(val_mat[i]))
+                        values[j] = val_mat[i];
+        }
+    else
+        for (int i = 0; i < system.n * system.ncell; i++) {
+            int rmin = system.calc_rmin(i / system.n, i % system.n);
+            for (int j = 0; j < rc_count; j++)
+                if (rmin == system.r_c[j])
+                    switch (mode) {
+                    case 'A':
+                    case 'a':
+                        if (system.ncell > 1)
+                            values[j] += val_mat[i] * pow(-1, i / system.n);
+                        else
+                            if (system.dim == 2) {
+                                int r[2]; system.r(r, i);
+                                values[j] += val_mat[i] * pow(-1, r[0] + r[1]);
+                            }
+                        break;
+                    default:
+                        values[j] += abs(val_mat[i]);
+                    }
+        }
+}
 // }
 
 // {
@@ -127,24 +161,7 @@ void operators::sc_corr::refresh()
 { refresh('S'); }
 
 void operators::sc_corr::refresh(char mode)
-{
-    if (mode == 'M' || mode == 'm')
-        for (int i = 0; i < system.n * system.ncell; i++) {
-            int rmin = system.calc_rmin(i / system.n /* from nth site in 0th cell */,
-                                        i % system.n /* to nth site in whole lattice */);
-            for (int j = 0; j < rc_count; j++)
-                if (rmin == system.r_c[j])
-                    if (std::abs(values[j]) < std::abs(val_mat[i]))
-                        values[j] = val_mat[i];
-        }
-    else
-        for (int i = 0; i < system.n * system.ncell; i++) {
-            int rmin = system.calc_rmin(i / system.n, i % system.n);
-            for (int j = 0; j < rc_count; j++)
-                if (rmin == system.r_c[j])
-                    values[j] += val_mat[i];
-        }
-}
+{ stat_rc(values, system, rc_count, mode, val_mat); }
 
 operators::site_corr::site_corr(lattice::lattice &system_i)
 : operators::operators(), system(system_i)
@@ -196,13 +213,21 @@ void operators::site_corr::refresh(int *ndiv) {
         n_qpts *= ndiv[i];
         nidxspc[i] = n_qpts;
     }
-    values = new double[n_qpts];
+    delete[] values; values = new double[n_qpts];
+    for (int i = 0; i < n_qpts; i++) values[i] = 0;
 
     // Execute
     mini_fourier(0, ndiv, nidxspc, qidx, system, val_mat, values);
 
     delete[] nidxspc;
     delete[] qidx;
+}
+
+void operators::site_corr::refresh(char mode, int rc_count)
+{
+    delete[] values; values = new double[rc_count];
+    for (int i = 0; i < rc_count; i++) values[i] = 0;
+    stat_rc(values, system, rc_count, mode, val_mat);
 }
 
 void operators::spin_struct::measure(int ri, int si, int rj, int sj,

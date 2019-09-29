@@ -74,9 +74,11 @@ int main(int argc, char *argv[])
             options.sc_n = inp_fid.GetInteger("Operator", "SC_NumR", 100);
             options.sc_use_p = inp_fid.GetInteger("Operator", "SC_UseP", 0);
             options.sc_simple = inp_fid.GetInteger("Operator", "SC_Simple", 0);
-            options.sc_stat = inp_fid.Get("Operator", "SC_Stat", "S").c_str()[0];
+            options.rc_sc_stat = inp_fid.Get("Operator", "SC_Stat", "S").c_str()[0];
         }
         if (options.af)
+            options.rc_af_stat = inp_fid.Get("Operator", "AF_Stat", "S").c_str()[0];
+            /*
             switch (physics->dim) {
             case 2:
                 options.af_n = new int[2];
@@ -91,12 +93,14 @@ int main(int argc, char *argv[])
                 break;
             default:
                 break;
-            }
+            }*/
         options.corr_r = inp_fid.GetInteger("Operator", "Corr_R", 0);
         options.db_fnm = inp_fid.Get("Operator", "Doublon_Out", "doublon.txt").c_str();
         options.sc_fnm = inp_fid.Get("Operator", "SC_Out", "sc.txt").c_str();
         options.af_fnm = inp_fid.Get("Operator", "AF_Out", "af.txt").c_str();
         options.st_fnm = inp_fid.Get("Operator", "ST_Out", "st.txt").c_str();
+        options.sc_rc_fnm = inp_fid.Get("Operator", "SC_OutRc", "sc2.txt").c_str();
+        options.af_rc_fnm = inp_fid.Get("Operator", "AF_OutRc", "af2.txt").c_str();
         options.mp_fnm = inp_fid.Get("Control", "Image", "correlation.mp");
         measure(*physics, options);
     } else if (mode_n == "Plot") {

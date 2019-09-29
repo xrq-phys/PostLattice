@@ -139,6 +139,13 @@ namespace operators
         virtual void refresh() override {}
 
         /**
+         * @brief Calculate real-space correlation vs. R.
+         * @param mode Average or find maximum.
+         * @param rc_count Number of R's to count.
+         */
+        virtual void refresh(char mode, int rc_count);
+
+        /**
          * @brief Perform Fourier transformation and stores k-space vectors to values.
          * @param ndiv Number of Q-Points per dimension.
          */

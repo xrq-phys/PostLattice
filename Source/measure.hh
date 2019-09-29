@@ -19,7 +19,8 @@ struct operator_options {
     bool af = true;
     bool st = true;
     char sc = '-'; ///< Waveform
-    char sc_stat = 'S'; ///< Statistic mode
+    char rc_sc_stat = 'S'; ///< Statistic mode
+    char rc_af_stat = 'S'; ///< Statistic mode for spin structure R_c.
     int  sc_use_p = 0; ///< Parallel SC pairing
     int  sc_simple = 0; ///< Count SC correlation only from site index-0
     int  sc_n = 4;
@@ -33,6 +34,8 @@ struct operator_options {
     std::string sc_fnm = "";
     std::string af_fnm = "";
     std::string st_fnm = "";
+    std::string sc_rc_fnm = ""; ///< This is previous version's output of SC corr.
+    std::string af_rc_fnm = ""; ///< R_c counted AF's output.
     std::string db_fnm = "";
     std::string mp_fnm = "";
 

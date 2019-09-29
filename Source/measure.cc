@@ -131,19 +131,39 @@ void measure(lattice::lattice &physics, operator_options &options)
     fid_g2e.close();
 
     if (options.sc != '-') {
-        opr_sc.refresh(options.sc_stat);
+        opr_sc.refresh(options.rc_sc_stat);
         fstream fid_out_sc(options.sc_fnm, fstream::out);
-        for (int i = 0; i < opr_sc.rc_count; i++)
-            fid_out_sc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
-                       << setw(18) << scientific << opr_sc.values[i] * (options.sc_simple ? physics.n : 1) << ' '
-                       << setw( 8) << (options.sc_stat == 'M' || 
-                                       options.sc_stat == 'm' ? 1 : physics.r_n[i]) << endl;
+        fstream fid_out_sc_rc(options.sc_rc_fnm, fstream::out);
+
+        for (int k = 0; k < physics.n * physics.ncell; k++) {
+            int j = k % physics.n,
+                i = k / physics.n;
+            if (options.corr_r) {
+                if (i == 0) {
+                    double r[2];
+                    physics.r(r, j);
+                    fid_out_sc << scientific << r[0] << ' ' << r[1] << ' '
+                               << opr_sc.val_mat[k] << endl;
+                }
+            } else
+                fid_out_sc << scientific << j << ' ' << i << ' '
+                           << opr_sc.val_mat[k] << endl;
+        }
         fid_out_sc.close();
+
+        for (int i = 0; i < opr_sc.rc_count; i++)
+            fid_out_sc_rc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
+                          << setw(18) << scientific << opr_sc.values[i] * (options.sc_simple ? physics.n : 1) << ' '
+                          << setw( 8) << (options.rc_sc_stat == 'M' ||
+                                          options.rc_sc_stat == 'm' ? 1 : physics.r_n[i]) << endl;
+        fid_out_sc_rc.close();
     }
 
     if (options.af) {
-        opr_af.refresh();
+        opr_af.refresh(options.rc_af_stat, physics.rc_n); ///< [TODO] Stop using params for SC calc.
         fstream fid_out_af(options.af_fnm, fstream::out);
+        fstream fid_out_af_rc(options.af_rc_fnm, fstream::out);
+
         for (int i = 0; i < physics.n * physics.ncell; i++) {
             if (options.corr_r) {
                 if (opr_af.connection[i][1] == 0) {
@@ -157,6 +177,13 @@ void measure(lattice::lattice &physics, operator_options &options)
                                          << opr_af.val_mat[i] << endl;
         }
         fid_out_af.close();
+
+        for (int i = 0; i < physics.rc_n; i++)
+            fid_out_af_rc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
+                          << setw(18) << scientific << opr_af.values[i] << ' '
+                          << setw( 8) << (options.rc_af_stat == 'M' ||
+                                          options.rc_af_stat == 'm' ? 1 : physics.r_n[i]) << endl;
+        fid_out_af_rc.close();
     }
 
     if (options.st) {
