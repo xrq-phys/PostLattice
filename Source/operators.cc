@@ -185,7 +185,6 @@ operators::site_corr::~site_corr()
         delete[] connection;
     }
     delete[] val_mat;
-    delete[] values;
 }
 
 void operators::site_corr::refresh(int *ndiv) {
