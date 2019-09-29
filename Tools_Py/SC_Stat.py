@@ -22,7 +22,7 @@ for calc_fnm in calc_list:
     while (len(calc_fln) > 1):
         if (len(rc_lst) == i):
             rc_lst.append(float(calc_fln[0]))
-            rn_lst.append(float(calc_fln[3]))
+            rn_lst.append(float(calc_fln[2]))
             sc_lst.append(float(calc_fln[1]))
             sc_err.append(float(calc_fln[1]) ** 2)
         else:
