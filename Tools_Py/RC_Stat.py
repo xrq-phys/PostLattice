@@ -40,7 +40,7 @@ sc_err /= len(calc_list)
 sc_err -= sc_lst ** 2
 sc_err = np.sqrt(sc_err / (len(calc_list) - 1))
 
-sc_out = open("sc_avg.dat", "w")
+sc_out = open("rc_avg.dat", "w")
 for i in xrange(len(rc_lst)):
     sc_out.write("%lf %lf %lf\n" % (rc_lst[i], sc_lst[i] / rn_lst[i],\
                                                sc_err[i] / rn_lst[i]))
