@@ -50,3 +50,4 @@ struct operator_options {
  * @param options Options struct.
  */
 void measure(lattice::lattice &physics, operator_options &options);
+void convert(lattice::lattice &physics, operator_options &options);

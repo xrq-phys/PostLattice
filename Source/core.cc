@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
                    inp_fid.Get("Operator", "SC", "-")[0] != '-',
                    inp_fid.GetInteger("Operator", "SC_UseP", 0) != 0,
                    inp_fid.GetInteger("Operator", "SC_Simple", 0) != 0);
-    } else if (mode_n == "Measure") {
+    } else if (mode_n == "Measure" || mode_n == "Convert") {
         options.chk_duplicate = inp_fid.GetBoolean("Control", "Check_Duplicate", true);
         options.ca_verbose = inp_fid.GetBoolean("Control", "Green_Verbose", true);
         options.ca_legacy = inp_fid.GetBoolean("Control", "Green_Legacy", false);
@@ -102,7 +102,10 @@ int main(int argc, char *argv[])
         options.sc_rc_fnm = inp_fid.Get("Operator", "SC_OutRc", "sc2.txt").c_str();
         options.af_rc_fnm = inp_fid.Get("Operator", "AF_OutRc", "af2.txt").c_str();
         options.mp_fnm = inp_fid.Get("Control", "Image", "correlation.mp");
-        measure(*physics, options);
+        if (mode_n == "Convert")
+            convert(*physics, options);
+        else
+            measure(*physics, options);
     } else if (mode_n == "Plot") {
         options.mp_fnm = inp_fid.Get("Control", "Image", "lattice.mp");
         plot_lattice(options.mp_fnm.c_str(), *physics, options.verbose);
