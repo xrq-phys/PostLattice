@@ -18,6 +18,32 @@ long idx_1so(int i, int si)
 { return i * 2 + si; }
 // }
 
+void convert(lattice::lattice &physics, operator_options &options)
+{
+    fstream fid_mat(options.af_fnm);
+    operators::site_corr opr(physics);
+
+    while (!fid_mat.eof()) {
+        int i, j;
+        double x;
+
+        fid_mat >> i >> j >> x;
+        if (fid_mat.eof())
+            break;
+        opr.val_mat[physics.idx_rij(i, j)] = x;
+    }
+    fid_mat.close();
+
+    fstream fid_rc(options.af_rc_fnm);
+    opr.refresh(options.rc_af_stat, physics.rc_n);
+    for (int i = 0; i < physics.rc_n; i++)
+        fid_rc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
+               << setw(18) << scientific << opr.values[i] << ' '
+               << setw( 8) << (options.rc_af_stat == 'M' ||
+                               options.rc_af_stat == 'm' ? 1 : physics.r_n[i]) << endl;
+    fid_rc.close();
+}
+
 void measure(lattice::lattice &physics, operator_options &options)
 {
     fstream fid_g1e(options.g1e_fnm);
