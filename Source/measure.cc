@@ -34,7 +34,7 @@ void convert(lattice::lattice &physics, operator_options &options)
     }
     fid_mat.close();
 
-    fstream fid_rc(options.af_rc_fnm);
+    fstream fid_rc(options.af_rc_fnm, fstream::out);
     opr.refresh(options.rc_af_stat, physics.rc_n);
     for (int i = 0; i < physics.rc_n; i++)
         fid_rc << setw( 8) << fixed << sqrt(double(physics.r_c[i])) << ' '
