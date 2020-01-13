@@ -3,7 +3,6 @@
 #include <cassert>
 #include <cstring>
 #include <cstdlib>
-#include <ccomplex>
 #include <cmath>
 
 // Pauli matrices.
