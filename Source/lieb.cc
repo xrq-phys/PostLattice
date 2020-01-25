@@ -1,4 +1,5 @@
 #include "lieb.hh"
+#include <cstring>
 
 // Tool Routines {
 int inner2(int *a, int *b, bool cell = false)
@@ -8,6 +9,9 @@ int inner2(int *a, int *b, bool cell = false)
 lattice::lieb::lieb(int w_i, int l_i)
 : w(w_i), l(l_i), lattice::lattice(w_i * l_i * 3, 2, 3, 4)
 {
+    // Override name.
+    // TODO: Atribute name to others too.
+    memcpy(id, "Lieb", sizeof(char) * 5);
     sorted_rc(*this);
 
     int icell, jcell;

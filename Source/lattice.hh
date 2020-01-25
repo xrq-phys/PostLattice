@@ -17,9 +17,10 @@ namespace lattice
         int *r_n;   ///< Number of Lattice Points at Each R_c.
         int **rmin; ///< Minimal r LUT.
         int **nn;   ///< Nearest-Neighhbour LUT.
+        char id[20];///< Identifier for case-specific manipulations.
 
         lattice(int n_i, int dim_i, int ncell_i, int nbond_i)
-        : n(n_i), dim(dim_i), ncell(ncell_i), nbond(nbond_i)
+        : n(n_i), dim(dim_i), ncell(ncell_i), nbond(nbond_i), id("General")
         {
             nn = new int*[n];
             rmin = new int*[n];

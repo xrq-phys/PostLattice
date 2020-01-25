@@ -112,7 +112,11 @@ void operators::sc_corr::measure(int a, int sa, int b, int sb,
 {
     std::complex<double> form_loc;
     int rmin;
-    
+
+    // Special case for Lieb lattice.
+    if (strcmp("Lieb", system.id) == 0 && (i % 3 || b % 3))
+        return;
+
     if (validate(a, sa, b, sb, i, si, j, sj)) {
         form_loc = 1;
 
